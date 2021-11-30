@@ -1,0 +1,80 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}
+
+.contenedor{
+    padding-left: 3em !important;
+    padding-right: 2em !important;
+}
+
+.navegacion{
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    font-family: "latolight";
+    margin-top: 1em;
+    &__titulo{
+        border-right: 1px solid #ccc;
+        margin:0;
+        padding-right: 10px;
+        margin-right: 10px;
+        font-size: 30px;
+        font-weight: 500;
+    }
+    em{
+        color: #bbbbbb;
+        font-weight: lighter;
+    }
+}
+
+.boton{
+    display: flex;
+    align-items: center;
+    align-self: center;
+    align-content: center;
+    justify-content: center;
+}
+
+.widget{
+    border-width: 1px;
+    border-style: solid;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-color: lightgray;
+    &-header{
+        padding: 0 10px;
+        height: 35px;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: lightgray;
+        background-color: #EBEBEB;
+        h3{
+            display: flex;
+            align-self: center;
+            vertical-align: middle;
+            font-family: "latobold";
+            font-size: 1.1em;
+            margin: 0;
+            line-height: 35px;
+            
+        }
+        .mat-icon{
+            display: flex;
+            align-self: center;
+            margin-right: 5px;
+        }
+    }
+    &-content{
+        padding: 20px 10px;
+    }
+}
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';

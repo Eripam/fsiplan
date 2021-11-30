@@ -1,0 +1,29 @@
+<cdk-accordion class="example-accordion">
+    <span class="example-accordion-titulo">MENU PRINCIPAL</span>
+    <cdk-accordion-item
+      *ngFor="let item of items; let index = index;"
+      #accordionItem="cdkAccordionItem"
+      class="example-accordion-item"
+      role="button"
+      tabindex="0"
+      [attr.id]="'accordion-header-' + index"
+      [attr.aria-expanded]="accordionItem.expanded"
+      [attr.aria-controls]="'accordion-body-' + index">
+      <div class="example-accordion-item-header row p-2 m-0" (click)="accordionItem.toggle()">
+        <div  class="col-10 row">
+            <div class="col-2"><mat-icon>{{item.iconClass}}</mat-icon></div>
+            <span class="col-10">{{ item.name }}</span>
+        </div>
+        <span class="example-accordion-item-description col-2">
+         <div class="col-12"><mat-icon>keyboard_arrow_down</mat-icon></div>
+        </span>
+      </div>
+      <div class="example-accordion-item-body" role="region"
+        [style.display]="accordionItem.expanded ? '' : 'none'"
+        [attr.id]="'accordion-body-' + index"
+        [attr.aria-labelledby]="'accordion-header-' + index"
+        *ngFor="let submenu of item.submenu;">
+        <a href="{{submenu.url}}">{{submenu.name}}</a>
+      </div>
+    </cdk-accordion-item>
+  </cdk-accordion>

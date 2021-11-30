@@ -1,0 +1,22 @@
+body {
+  padding: 0em;
+  margin: 0em;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #b2b6bf;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+mat-drawer {
+  width: 260px;
+  background: #ececec;
+  top: 7.5%;
+}
+
+mat-drawer-container {
+  height: 100%;
+  background-color: #f1f1f1;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

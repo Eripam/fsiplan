@@ -1,0 +1,48 @@
+<header class="container-fluid header" style="border-bottom: 3px solid #d31a2b;">
+  <div class="row p-1 m-0">
+    <div class="col-1 text-center row p-0 m-0">
+      <div class="col-6"><button mat-icon-button (click)="toggleSidebar()"><mat-icon>menu</mat-icon></button></div>
+      <div class="col-6"><img [src]="'assets/imagenes/icono.png'" width="40"></div>
+    </div>
+    <h5 class="titulo d-none d-md-block d-lg-block col-4 col-lg-5 align-self-center p-0">
+      Sistema Integral de Planificación Institucional
+    </h5>
+    <h5 class="titulo-2 d-block d-md-none d-lg-none col-2 align-self-center p-0">
+      SIPLANI
+    </h5>
+    <div class="row col-6 col-sm-6 col-md-4 col-lg-4 align-self-center justify-content-end">
+      <label for="" class="col-12 col-lg-4 align-self-center text-center p-0 m-0 titulo-rol"
+        >Rol de Usuario:</label>
+      <div class="col-12 col-lg-5 m-0 p-0 text-start">
+        <select
+          class="form-select"
+          aria-label="Default select example"
+          id="inputGroupSelect01" [(ngModel)]="seleccionada" name="operacion">
+          <option *ngFor="let op of operaciones" [value]="op.valor">
+            {{ op.muestraValor }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="col-4 col-sm-4 col-md-2 col-lg-2 align-self-center text-end p-0">
+      <img [src]="'assets/imagenes/user-avatar.png'" class="col-2 col-sm-2 col-md-3 col-lg-1 p-0" alt=""/>
+      <span class="col-6 col-lg-9 header-titulo">erika.arevalo@espoch.edu.ec</span>
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Example icon-button with a menu"
+      >
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <span>Erika Pamela Arévalo Cuadrado</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Cerrar Sesión</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</header>
