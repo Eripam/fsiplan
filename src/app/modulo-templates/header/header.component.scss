@@ -1,0 +1,41 @@
+.example-spacer {
+    flex: 1 1 auto;
+  }
+  
+  .header {
+    background-color: white;
+    &-titulo {
+      font-size: 0.65em;
+      cursor: pointer;
+    }
+    @media all and (min-width: 0px) and (max-width: 500px) {
+      .header-titulo {
+        font-size: 0.55em;
+      }
+      .titulo-rol{
+          font-size: 0.55em;
+      }
+    }
+    @media all and (max-width: 1200px) {
+      .header-titulo {
+        font-size: 0.55em;
+      }
+      .titulo-rol{
+          font-size: 0.55em;
+      }
+    }
+  
+    @media all and (min-width: 700px) and (max-width:1000px) {
+      .titulo {
+        font-size: 0.9em;
+      }
+    }
+  }
+  
+  select {
+    font-size: 0.85em;
+    @media all and (max-width: 1200px) {
+      font-size: 0.65em;
+    }
+  }
+  

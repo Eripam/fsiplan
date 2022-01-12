@@ -1,0 +1,339 @@
+<p-toast></p-toast>
+<!--Modal para ingresar usuarios-->
+<p-dialog [(visible)]="productDialog" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+  <ng-template pTemplate="content">
+    <div class="form-group row m-1">
+      <label for="txtCedulaPersona" class="col-sm-2 col-form-label">Cédula:</label>
+      <div class="col-sm-9">
+        <input type="number" class="form-control" name="txtCedulaPersona" [(ngModel)]="txtCedula" #strCedulaPersona placeholder="Cédula">
+        <input type="hidden" class="form-control" name="hddCodigo" [(ngModel)]="txtCodigo" value="{{bsPersona?.datos?.per_id != undefined?bsPersona?.datos?.per_id:''}}">
+      </div>
+      <div class="col-1">
+        <button class="align-self-center" type="button" (click)="buscarUsuarioC(strCedulaPersona.value)"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+      <div class="form-group row m-1">
+          <label for="name" class="col-sm-2 col-form-label">Nombres:</label>
+          <div class="col-sm-10">
+            <input type="text" pInputText class="form-control" required disabled="true" name="txtNombres" [(ngModel)]="txtNombre" placeholder="Nombres" value="{{bsPersona?.datos?.per_nombres != undefined?bsPersona?.datos?.per_nombres:''}}">
+          </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="txtApellidoP" class="col-sm-2 col-form-label">Apellidos:</label>
+        <div class="col-sm-5">
+          <input type="text" class="form-control" disabled="true" name="txtApellidoP" [(ngModel)]="txtApellidoP" placeholder="Primer apellido" value="{{bsPersona?.datos?.per_primerApellido != undefined?bsPersona?.datos?.per_primerApellido:''}}">
+        </div>
+        <div class="col-sm-5">
+          <input type="text" class="form-control" disabled="true" name="txtApellidoS" [(ngModel)]="txtApellidoS" placeholder="Segundo apellido" value="{{bsPersona?.datos?.per_segundoApellido != undefined?bsPersona?.datos?.per_segundoApellido:''}}">
+        </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="txtCorreo" class="col-sm-2 col-form-label">Correo:</label>
+        <div class="col-sm-10">
+          <input type="email" class="form-control" [disabled]="!bsPersona?.success" name="txtCorreo" [(ngModel)]="txtEmail" placeholder="Correo" value="{{bsPersona?.datos?.per_email != undefined?bsPersona?.datos?.per_email:''}}">
+        </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarUsuario()"></button>
+  </ng-template>
+</p-dialog>
+<!--Modal para ingresar roles-->
+<p-dialog [(visible)]="productDialog3" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+  <ng-template pTemplate="content">
+    <div class="form-group row m-1">
+      <label for="txtNombrePersona" class="col-sm-2 col-form-label">Nombre:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="txtNombreRol" [(ngModel)]="txtNombreRol" placeholder="Nombre">
+      </div>
+    </div>
+      <div class="form-group row m-1">
+          <label for="name" class="col-sm-2 col-form-label">Descripción:</label>
+          <div class="col-sm-10">
+            <textarea pInputText class="form-control" required name="txtDescripcionRol" [(ngModel)]="txtDescripcionRol" placeholder="Descripción"></textarea>
+          </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogRol()"></button>
+      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarRol()"></button>
+  </ng-template>
+</p-dialog>
+<!--Modal para modificar usuario-->
+<p-dialog [(visible)]="productDialog2" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+  <ng-template pTemplate="content">
+    <div class="form-group row m-1">
+      <label for="txtCedulaPersona" class="col-sm-2 col-form-label">Cédula:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" disabled="true" name="txtCedulaPersona" [(ngModel)]="txtCedula" placeholder="Cédula">
+        <input type="hidden" class="form-control" name="hddCodigo" [(ngModel)]="txtCodigo">
+      </div>
+    </div>
+      <div class="form-group row m-1">
+          <label for="name" class="col-sm-2 col-form-label">Nombres:</label>
+          <div class="col-sm-10">
+            <input type="text" pInputText class="form-control" required disabled="true" name="txtNombres" [(ngModel)]="txtNombre" placeholder="Nombres" value="{{bsPersona?.datos?.per_nombres != undefined?bsPersona?.datos?.per_nombres:''}}">
+          </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="txtApellidoP" class="col-sm-2 col-form-label">Apellidos:</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" disabled="true" name="txtApellidoP" [(ngModel)]="txtApellidoP" placeholder="Primer apellido" value="{{bsPersona?.datos?.per_primerApellido != undefined?bsPersona?.datos?.per_primerApellido:''}}">
+        </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="txtCorreo" class="col-sm-2 col-form-label">Correo:</label>
+        <div class="col-sm-10">
+          <input type="email" class="form-control" name="txtCorreo" [(ngModel)]="txtEmail" placeholder="Correo" value="{{bsPersona?.datos?.per_email != undefined?bsPersona?.datos?.per_email:''}}">
+        </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="txtCorreo" class="col-sm-2 col-form-label">Estado:</label>
+        <div class="col-sm-10">
+          <select name="sltEstado" id="sltEstado" class="form-control" [(ngModel)]="txtEstado">
+            <option [ngValue]='1'>Activo</option>
+            <option [ngValue]='0'>Inactivo</option>
+          </select>
+        </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogM()"></button>
+      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarmodificarUsuario()"></button>
+  </ng-template>
+</p-dialog>
+<!--Modal para modificar roles-->
+<p-dialog [(visible)]="productDialog4" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+  <ng-template pTemplate="content">
+    <div class="form-group row m-1">
+      <label for="txtCedulaPersona" class="col-sm-2 col-form-label">Código:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" disabled="true" name="txtCodigoRol" [(ngModel)]="txtCodigoRol" placeholder="Cédula">
+      </div>
+    </div>
+    <div class="form-group row m-1">
+      <label for="txtNombrePersona" class="col-sm-2 col-form-label">Nombre:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="txtNombreRol" [(ngModel)]="txtNombreRol" placeholder="Nombre">
+      </div>
+    </div>
+    <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label">Descripción:</label>
+        <div class="col-sm-10">
+          <textarea pInputText class="form-control" required name="txtDescripcionRol" [(ngModel)]="txtDescripcionRol" placeholder="Descripción"></textarea>
+        </div>
+    </div>
+    <div class="form-group row m-1">
+      <label for="txtCorreo" class="col-sm-2 col-form-label">Estado:</label>
+      <div class="col-sm-10">
+        <select name="sltEstado" id="sltEstado" class="form-control" [(ngModel)]="txtEstado">
+          <option [ngValue]='1'>Activo</option>
+          <option [ngValue]='0'>Inactivo</option>
+        </select>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogMRol()"></button>
+      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarmodificarRol()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-breadcrumb [model]="items" [home]="home"></p-breadcrumb>
+<div class="navegacion">
+  <h2 class="navegacion__titulo">Gestión de Usuarios y Roles</h2>
+  <em>Creación de usuarios y roles para el sistema </em>
+</div>
+
+<p-tabView styleClass="tabview-custom">
+  <p-tabPanel>
+      <ng-template pTemplate = "header">
+          <span>Usuarios</span>
+      </ng-template>
+      <div>
+        <span class="buscar-crear">
+          <button pButton pRipple label="Crear Usuario" icon="pi pi-plus" class="p-mr-2" (click)="openNew()"></button>
+            <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+        </span>
+    </div>
+    <div class="widget-header mt-3"><h3>Listado de Usuarios</h3></div>
+  <p-table #dt1 [value]="listaUsuarios" dataKey="id" [rowHover]="true"
+      [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+      [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+      [globalFilterFields]="['per_codigo','per_cedula','per_nombres','per_apellidos', 'per_estado']" responsiveLayout="scroll">
+      
+      <ng-template pTemplate="header">
+          <tr>
+              <th pSortableColumn="per_codigo" style="width: 8rem">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Código
+                  <p-sortIcon field="per_codigo"></p-sortIcon>
+              </div>
+              </th>
+              <th pSortableColumn="per_cedula">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Cédula
+                    <p-sortIcon field="per_cedula"></p-sortIcon>
+                    <p-columnFilter type="text" field="per_cedula" display="menu" class="p-ml-auto"></p-columnFilter>
+                </div>
+            </th>
+            <th pSortableColumn="per_nombres">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                  Nombres
+                  <p-sortIcon field="per_nombres"></p-sortIcon>
+                  <p-columnFilter type="text" field="per_nombres" display="menu" class="p-ml-auto"></p-columnFilter>
+              </div>
+            </th>
+            <th pSortableColumn="per_apellidos">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                  Apellidos
+                  <p-sortIcon field="per_apellidos"></p-sortIcon>
+                  <p-columnFilter type="text" field="per_apellidos" display="menu" class="p-ml-auto"></p-columnFilter>
+              </div>
+            </th>
+            <th pSortableColumn="per_email">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                  Correo
+                  <p-sortIcon field="per_email"></p-sortIcon>
+                  <p-columnFilter type="text" field="per_email" display="menu" class="p-ml-auto"></p-columnFilter>
+              </div>
+            </th>
+              <th>
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                      Estado
+                      <p-columnFilter field="per_estado" matchMode="equals" display="menu">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                <ng-template let-option pTemplate="item">
+                                    <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                </ng-template>
+                            </p-dropdown>
+                        </ng-template>
+                    </p-columnFilter>
+                  </div>
+              </th>
+              <th style="width: 8rem">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                      Acción
+                  </div>
+              </th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-customer>
+          <tr>
+              <td>
+                  {{customer.per_codigo}}
+              </td>
+              <td>
+                  {{customer.per_cedula}}
+              </td>
+              <td>
+                  {{customer.per_nombres}}
+              </td>
+              <td>
+                 {{customer.per_apellidos}}
+              </td>
+              <td>
+                  {{customer.per_email}}
+              </td>
+              <td class="text-center">
+                <span [class]="'customer-badge status-' + customer.per_estado">{{customer.per_estado_nombre}}</span>
+              </td>
+              <td class="text-center">
+                  <button pButton pRipple icon="pi pi-pencil" class="p-button p-mr-2" (click)="modificarUsuario(customer)"></button>
+              </td>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7">No se encontrarón registros.</td>
+          </tr>
+      </ng-template>
+  </p-table>
+</p-tabPanel>
+<p-tabPanel header="Header II">
+  <ng-template pTemplate = "header">
+    <span>Roles</span>
+</ng-template>
+<div>
+  <span class="buscar-crear">
+    <button pButton pRipple label="Crear Rol" icon="pi pi-plus" class="p-mr-2" (click)="openNewRol()"></button>
+      <input pInputText type="text" (input)="dt2.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+  </span>
+</div>
+<div class="widget-header mt-3"><h3>Listado de Roles</h3></div>
+<p-table #dt2 [value]="listaRoles" dataKey="id" [rowHover]="true"
+[rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+[paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+[globalFilterFields]="['rol_codigo','rol_nombre','rol_descripcion','rol_estado']" responsiveLayout="scroll">
+
+<ng-template pTemplate="header">
+    <tr>
+        <th pSortableColumn="rol_codigo" style="width: 8rem">
+          <div class="p-d-flex p-jc-between p-ai-center">
+            Código
+            <p-sortIcon field="rol_codigo"></p-sortIcon>
+        </div>
+        </th>
+        <th pSortableColumn="rol_nombre">
+          <div class="p-d-flex p-jc-between p-ai-center">
+              Nombre
+              <p-sortIcon field="rol_nombre"></p-sortIcon>
+              <p-columnFilter type="text" field="rol_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+          </div>
+      </th>
+      <th pSortableColumn="rol_descripcion">
+        <div class="p-d-flex p-jc-between p-ai-center">
+            Descripción
+            <p-sortIcon field="rol_descripcion"></p-sortIcon>
+            <p-columnFilter type="text" field="rol_descripcion" display="menu" class="p-ml-auto"></p-columnFilter>
+        </div>
+      </th>
+        <th>
+            <div class="p-d-flex p-jc-between p-ai-center">
+                Estado
+                <p-columnFilter field="rol_estado" matchMode="equals" display="menu">
+                  <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                          <ng-template let-option pTemplate="item">
+                              <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                          </ng-template>
+                      </p-dropdown>
+                  </ng-template>
+              </p-columnFilter>
+            </div>
+        </th>
+        <th style="width: 8rem">
+            <div class="p-d-flex p-jc-between p-ai-center">
+                Acción
+            </div>
+        </th>
+    </tr>
+</ng-template>
+<ng-template pTemplate="body" let-customer>
+    <tr>
+        <td>
+            {{customer.rol_codigo}}
+        </td>
+        <td>
+            {{customer.rol_nombre}}
+        </td>
+        <td>
+            {{customer.rol_descripcion}}
+        </td>
+        <td class="text-center">
+          <span [class]="'customer-badge status-' + customer.rol_estado">{{customer.rol_estado_nombre}}</span>
+        </td>
+        <td class="text-center">
+            <button pButton pRipple icon="pi pi-pencil" class="p-button p-mr-2" (click)="modificarRol(customer)"></button>
+        </td>
+    </tr>
+</ng-template>
+<ng-template pTemplate="emptymessage">
+    <tr>
+        <td colspan="5">No se encontrarón registros.</td>
+    </tr>
+</ng-template>
+</p-table>
+</p-tabPanel>
