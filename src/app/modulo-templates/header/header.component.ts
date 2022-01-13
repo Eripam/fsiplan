@@ -36,17 +36,9 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.items = [
-      {
-        items: [
-          { label: 'Erika Pamela Arévalo Cuadrado' },
-          {
-            label: 'Cerrar Sesión',
-            icon: 'fas fa-power-off',
-            routerLink: '/',
-          },
-        ],
-      },
-    ];
+            {label: 'Erika Pamela Arévalo Cuadrado', icon: 'pi pi-user'},
+            {label: 'Cerrar Sesión', icon: 'pi pi-power-off', routerLink:'/'}
+        ];
   }
 
   toggleSidebar() {

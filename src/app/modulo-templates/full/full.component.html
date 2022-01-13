@@ -9,7 +9,7 @@
   <body>
     <app-spinner></app-spinner>
     <app-header (onShowMenuHeader)="onChangeMenuHeader($event)"></app-header>
-      <div class="container-fluid contenedor p-0 m-0 row">
+      <div class="container-fluid contenedor p-0 m-0">
         <app-menu [mostrarMenu]="showMenu" (showMenu)="onShowMenu($event)"></app-menu>
         <div id="main-content-wrapper" class="content-wrapper expanded">
           <router-outlet></router-outlet>

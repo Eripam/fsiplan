@@ -39,7 +39,7 @@ $(document).ready(function() {
     // checking for minified left sidebar
     checkMinified();
 
-    $('.js-toggle-minified').on('click', function() {
+    $('div.js-toggle-minified').on('click', function() {
         if (!$('.left-sidebar').hasClass('minified')) {
             $('.left-sidebar').addClass('minified');
             $('.content-wrapper').addClass('expanded');
