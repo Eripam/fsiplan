@@ -1,0 +1,82 @@
+<!--<div class="menu" [hidden]="mostrarMenu">
+  <div class="menu-encabezado row">
+    <span class="menu-encabezado-titulo col-10 text-center">MENU PRINCIPAL</span>
+    <div class="col-2">
+      <i class="pi pi-times" (click)="cerrarM()"></i>
+    </div>
+  </div>
+  <p-panelMenu
+    #menulateral
+    [model]="items"
+    [style]="{ width: '350px' }" [multiple]="false"
+  ></p-panelMenu>
+</div>
+
+<div id="left-sidebar" class="left-sidebar minified">
+  <div class="sidebar-scroll">
+    <nav class="main-nav">
+      <ul class="main-menu">
+        <li><a href="#" class="js-sub-menu-toggle"><i class="fas fa-tachometer-alt"></i><span class="text">Seguridad</span>
+          <i class="toggle-icon fa fa-angle-left"></i></a>
+          <ul class="sub-menu ">
+            <li><a routerLink="/seguridad/usuario"><span class="text">Usuario - Roles</span></a></li>
+            <li><a routerLink="/seguridad/dependencia"><span class="text">Tipo y Dependencias</span></a></li>
+            <li><a routerLink="/seguridad/rolpersona"><span class="text">Asignación de Roles y Permisos</span></a></li>
+          </ul>
+        </li>
+        <li><a href="#" class="js-sub-menu-toggle"><i class="fa fa-columns"></i><span class="text">Layouts <span class="badge element-bg-color-blue">New</span></span>
+          <i class="toggle-icon fa fa-angle-left"></i></a>
+          <ul class="sub-menu ">
+            <li><a href="layout-collapsed.html"><span class="text">Collapsed Sidebar</span></a></li>
+            <li><a href="layout-minified.html"><span class="text">Minified Sidebar</span></a></li>
+            <li><a href="layout-ontop-navigation.html"><span class="text">On-Top Navigation</span></a></li>
+          </ul>
+        </li>
+        <li><a href="#" class="js-sub-menu-toggle"><i class="fa fa-clipboard fa-fw"></i><span class="text">Pages</span>
+          <i class="toggle-icon fa fa-angle-left"></i></a>
+          <ul class="sub-menu ">
+            <li><a href="page-profile.html"><span class="text">Profile</span></a></li>
+            <li><a href="page-invoice.html"><span class="text">Invoice</span></a></li>
+            <li><a href="page-knowledgebase.html"><span class="text">Knowledge Base</span></a></li>
+            <li><a href="page-new-message.html"><span class="text">New Message</span></a></li>
+            <li><a href="page-view-message.html"><span class="text">View Message</span></a></li>
+            <li><a href="page-search-result.html"><span class="text">Search Result</span></a></li>
+            <li><a href="page-submit-ticket.html"><span class="text">Submit Ticket</span></a></li>
+            <li><a href="page-faq.html"><span class="text">FAQ</span></a></li>
+            <li><a href="page-register.html"><span class="text">Register</span></a></li>
+            <li><a href="page-register-transparent.html"><span class="text">Register Transparent</span></a></li>
+            <li><a href="page-login.html"><span class="text">Login</span></a></li>
+            <li><a href="page-login-transparent.html"><span class="text">Login Transparent</span></a></li>
+            <li><a href="page-404.html"><span class="text">404</span></a></li>
+            <li><a href="page-404-transparent.html"><span class="text">404 Transparent</span></a></li>
+            <li><a href="page-blank.html"><span class="text">Blank Page</span></a></li>
+          </ul>
+        </li>
+        <li><a href="page-inbox.html"><i class="fa fa-envelope-o"></i><span class="text">Inbox <span class="badge red-bg">32</span></span></a></li>
+        <li><a href="#" class="js-sub-menu-toggle"><i class="fa fa-file"></i><span class="text">File Manager</span>
+          <i class="toggle-icon fa fa-angle-left"></i></a>
+          <ul class="sub-menu ">
+            <li><a href="page-file-manager.html"><span class="text">Default</span></a></li>
+            <li><a href="page-file-manager-transparent.html"><span class="text">Transparent</span></a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>-->
+<div id="left-sidebar" class="left-sidebar minified">
+  <div class="sidebar-scroll">
+    <nav class="main-nav">
+      <ul class="main-menu" *ngFor="let menu of items">
+        <li><a class="js-sub-menu-toggle"><i class="{{menu.icon}}"></i><span class="text">{{menu.label}}</span>
+          <i class="toggle-icon fa fa-angle-left"></i></a>
+          <ul class="sub-menu">
+            <div *ngFor="let sub of menu.submenu">
+            <li><a [routerLink]="sub.router"><span class="text">{{sub.label}}</span></a></li>
+          </div>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

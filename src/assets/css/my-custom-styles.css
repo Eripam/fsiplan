@@ -1,0 +1,36 @@
+/*	
+*	################################################################################
+*	
+*	My Custom Style for KINGADMIN
+*	---------------------------------------------------------------------
+*
+*	Version		1.0
+*	Author		Your Name
+*	
+*	Override theme style or create your new styles. Direct change to main.css
+*	is not recommended to avoid problems when theme updates arrived in the future
+*	
+*	################################################################################
+*/
+.logo2{
+    color: white;padding-left: 50px;margin-top: -30px;
+  font-family: 'Nexa';
+}
+.tabla-centrar-busqueda{
+  text-align: center;
+  left: 25%;
+}
+.tabla-centrar-busqueda-fecha{
+  text-align: center;
+  left: 10%;
+}
+.menudinamico{
+  display: block;
+  position: relative;
+  padding: 13px 0 13px 15px;
+  font-size: 14px;
+  color: #555;
+  background-color: #ececec;
+  border-top: 1px solid #dfdfdf;
+  text-decoration: none;
+}

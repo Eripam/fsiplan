@@ -1,80 +1,156 @@
 /* You can add global styles to this file, and also import other style files */
-
 html,
 body {
   height: 100%;
+  background-color: #f1f1f1 !important;
 }
+
 body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
 }
 
-.contenedor{
-    padding-left: 3em !important;
-    padding-right: 2em !important;
+.contenedor {
+  padding-left: 3em !important;
+  padding-right: 2em !important;
 }
 
-.navegacion{
-    margin-bottom: 50px;
-    display: flex;
-    align-items: center;
-    font-family: "latolight";
-    margin-top: 1em;
-    &__titulo{
-        border-right: 1px solid #ccc;
-        margin:0;
-        padding-right: 10px;
-        margin-right: 10px;
-        font-size: 30px;
-        font-weight: 500;
-    }
-    em{
-        color: #bbbbbb;
-        font-weight: lighter;
-    }
+.navegacion {
+  margin-bottom: 50px;
+  display: flex;
+  align-items: center;
+  font-family: "latolight";
+  margin-top: 1em;
+  &__titulo {
+    border-right: 1px solid #ccc;
+    margin: 0;
+    padding-right: 10px;
+    margin-right: 10px;
+    font-size: 30px;
+    font-weight: 500;
+  }
+  em {
+    color: #bbbbbb;
+    font-weight: lighter;
+  }
 }
 
-.boton{
-    display: flex;
-    align-items: center;
-    align-self: center;
-    align-content: center;
-    justify-content: center;
+.boton {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  align-content: center;
+  justify-content: center;
 }
 
-.widget{
-    border-width: 1px;
-    border-style: solid;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    border-color: lightgray;
-    &-header{
-        padding: 0 10px;
-        height: 35px;
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
-        border-bottom-color: lightgray;
-        background-color: #EBEBEB;
-        h3{
-            display: flex;
-            align-self: center;
-            vertical-align: middle;
-            font-family: "latobold";
-            font-size: 1.1em;
-            margin: 0;
-            line-height: 35px;
-            
-        }
-        .mat-icon{
-            display: flex;
-            align-self: center;
-            margin-right: 5px;
-        }
+.widget {
+  border-width: 1px;
+  border-style: solid;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  border-color: lightgray;
+  &-header {
+    padding: 0 10px;
+    height: 35px;
+    background-color: #ebebeb;
+    h3 {
+      display: flex;
+      align-self: center;
+      justify-content: center;
+      vertical-align: middle;
+      font-family: "latobold";
+      font-size: 1.1em;
+      margin: 0;
+      line-height: 35px;
     }
-    &-content{
-        padding: 20px 10px;
+    .mat-icon {
+      display: flex;
+      align-self: center;
+      margin-right: 5px;
     }
+  }
+  &-content {
+    padding: 20px 10px;
+  }
 }
-/* Importing Bootstrap SCSS file. */
-@import '~bootstrap/scss/bootstrap';
+
+@font-face {
+  font-family: "latolight";
+  src: url("./assets/fonts/lato-lig-webfont.eot");
+  src: url("./assets/fonts/lato-lig-webfont.eot?#iefix") format("embedded-opentype"),
+    url("./assets/fonts/lato-lig-webfont.woff") format("woff"),
+    url("./assets/fonts/lato-lig-webfont.ttf") format("truetype"),
+    url("./assets/fonts/lato-lig-webfont.svg") format("svg");
+}
+
+@font-face {
+  font-family: "latoregular";
+  src: url("./assets/fonts/lato-reg-webfont.eot");
+  src: url("./assets/fonts/lato-reg-webfont.eot?#iefix") format("embedded-opentype"),
+    url("./assets/fonts/lato-reg-webfont.woff") format("woff"),
+    url("./assets/fonts/lato-reg-webfont.ttf") format("truetype"),
+    url("./assets/fonts/lato-reg-webfont.svg") format("svg");
+}
+
+@font-face {
+  font-family: "latobold";
+  src: url("./assets/fonts/lato-bol-webfont.eot");
+  src: url("./assets/fonts/lato-bol-webfont.eot?#iefix") format("embedded-opentype"),
+    url("./assets/fonts/lato-bol-webfont.woff") format("woff"),
+    url("./assets/fonts/lato-bol-webfont.ttf") format("truetype"),
+    url("./assets/fonts/lato-bol-webfont.svg") format("svg");
+}
+
+.status-1{
+  background-color: #C8E6C9;
+  color: #256029;
+  padding: .35em;
+  border-radius: 5px;
+}
+
+.status-0{
+  background-color:#FFCDD2;
+  color: #c63737;
+  padding: .35em;
+  border-radius: 5px;
+}
+
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(74, 74, 74, 0.8);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buscar-crear{
+  display: flex;
+  justify-content: space-between;
+}
+
+.p-datatable.p-datatable-sm .p-datatable-thead > tr > th{
+  background: #ebebeb;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.home {
+  margin-bottom: 20px;
+  list-style: none;
+  border-radius: 4px;
+  a {
+    list-style: none;
+    color: #555;
+  }
+}
+
+.p-breadcrumb{
+  background: transparent !important;
+}

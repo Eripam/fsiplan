@@ -1,14 +1,17 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
-    "analytics": false
+    "analytics": "5d977334-770a-42e1-a9b0-07046a6840ed"
   },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "fsiplan": {
+    "fSiplan": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
         "@schematics/angular:application": {
           "strict": true
         }
@@ -20,24 +23,32 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/fsiplan",
+            "outputPath": "dist/fSiplan",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "inlineStyleLanguage": "scss",
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
-              "src/assets/styles/my-theme.scss",
               "src/styles.scss",
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "node_modules/primeng/resources/themes/siplani/theme.scss",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/primeicons/primeicons.css",
+              "src/assets/css/main.css",
+              "src/assets/css/my-custom-styles.css",
+              "src/assets/fontawesome/css/all.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/@popperjs/core/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "src/assets/js/plugins/modernizr/modernizr.js",
+              "src/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js",
+              "src/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js",
+              "src/assets/js/king-common.js",
+              "src/assets/fontawesome/js/all.js"
             ]
           },
           "configurations": {
@@ -62,6 +73,15 @@
               ],
               "outputHashing": "all"
             },
+            "erika": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.erika.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -77,10 +97,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "fsiplan:build:production"
+              "browserTarget": "fSiplan:build:production"
+            },
+            "erika": {
+              "browserTarget": "fSiplan:build:erika"
             },
             "development": {
-              "browserTarget": "fsiplan:build:development"
+              "browserTarget": "fSiplan:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -88,7 +111,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "fsiplan:build"
+            "browserTarget": "fSiplan:build"
           }
         },
         "test": {
@@ -98,19 +121,14 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.scss"
-            ],
+            "inlineStyleLanguage": "scss",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         }
       }
     }
   },
-  "defaultProject": "fsiplan"
+  "defaultProject": "fSiplan"
 }
