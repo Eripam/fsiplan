@@ -11,4 +11,6 @@ export class configServiciosWeb {
   urlServiciosSiplanRol: string = environment.urlServiciosSiplan+'rol/';
   urlServiciosSiplanDep: string = environment.urlServiciosSiplan+'dependencia/';
   urlServiciosSiplanRolP: string = environment.urlServiciosSiplan+'rolpersona/';
+  urlServiciosSiplanPadreO: string = environment.urlServiciosSiplan+'padreop/';
+  urlServiciosSiplanOpcion: string = environment.urlServiciosSiplan+'opciones/';
 }

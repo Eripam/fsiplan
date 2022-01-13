@@ -50,3 +50,18 @@ export interface rolpersona {
 	rpe_rol_m?: number;
 	rpe_estado_nombre?: string;
 }
+export interface PadreOpcion {
+	pop_codigo?: number;
+	pop_nombre?: string;
+	pop_icono?: string;
+	pop_estado?: number;
+	pop_estado_nombre?: string;
+}
+export interface opcion {
+	opc_codigo?: number;
+	opc_nombre?: string;
+	opc_descripcion?: string;
+	opc_url?: string;
+	opc_estado?: number;
+	opc_estado_nombre?: string;
+}

@@ -20,10 +20,11 @@ import { TabViewModule } from 'primeng/tabview';
 import { UsuariosComponent } from './Paginas/usuarios/usuarios.component';
 import { DependenciasComponent } from './Paginas/dependencias/dependencias.component';
 import { RolpersonaComponent } from './Paginas/rolpersona/rolpersona.component';
+import { OpcionesComponent } from './Paginas/opciones/opciones.component';
 
 
 @NgModule({
-  declarations: [UsuariosComponent, DependenciasComponent, RolpersonaComponent],
+  declarations: [UsuariosComponent, DependenciasComponent, RolpersonaComponent, OpcionesComponent],
   imports: [
     CommonModule,
     ModuloSeguridadRoutingModule,

@@ -143,14 +143,13 @@
         </span>
     </div>
     <div class="widget-header mt-3"><h3>Listado de Tipo Dependencia</h3></div>
-  <p-table #dt1 [value]="listaTipoDep" dataKey="id" [rowHover]="true"
+  <p-table #dt1 [value]="listaTipoDep" dataKey="id" [rowHover]="true" scrollHeight="500px"
       [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
       [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
-      [globalFilterFields]="['tde_codigo','tde_nombre', 'tde_estado']" responsiveLayout="scroll">
-      
+      [globalFilterFields]="['tde_codigo','tde_nombre', 'tde_estado_nombre']" responsiveLayout="scroll">
       <ng-template pTemplate="header">
           <tr>
-              <th pSortableColumn="tde_codigo" style="width: 8rem" class="text-center">
+              <th pSortableColumn="tde_codigo" style="width: 8rem; text-align: center;">
                 <div class="p-d-flex p-jc-between p-ai-center">
                   Código
                   <p-sortIcon field="tde_codigo"></p-sortIcon>
@@ -218,10 +217,10 @@
   </span>
 </div>
 <div class="widget-header mt-3"><h3>Listado de Dependencias</h3></div>
-<p-table #dt2 [value]="listaDep" dataKey="id" [rowHover]="true" scrollHeight="400px" [scrollable]="true"
+<p-table #dt2 [value]="listaDep" dataKey="id" [rowHover]="true" scrollHeight="500px"
 [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
 [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
-[globalFilterFields]="['dep_codigo','dep_nombre', 'dep_alias', 'dep_estado']" responsiveLayout="scroll">
+[globalFilterFields]="['dep_codigo','dep_nombre', 'dep_alias', 'dep_estado_nombre', 'tde_nombre', 'dep_nombre_p']" responsiveLayout="scroll">
 
 <ng-template pTemplate="header">
     <tr>
@@ -229,7 +228,7 @@
           <div class="p-d-flex p-jc-between p-ai-center">
             Código
             <p-sortIcon field="dep_codigo"></p-sortIcon>
-        </div>
+          </div>
         </th>  
         <th pSortableColumn="dep_nombre">
           <div class="p-d-flex p-jc-between p-ai-center">
@@ -238,14 +237,14 @@
             <p-columnFilter type="text" field="dep_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
           </div>
          </th>
-         <th pSortableColumn="dep_alias">
+         <th pSortableColumn="dep_alias" class="text-center">
           <div class="p-d-flex p-jc-between p-ai-center">
             Alias
             <p-sortIcon field="dep_alias"></p-sortIcon>
             <p-columnFilter type="text" field="dep_alias" display="menu" class="p-ml-auto"></p-columnFilter>
           </div>
          </th>
-         <th pSortableColumn="tde_nombre">
+         <th pSortableColumn="tde_nombre" class="text-center">
           <div class="p-d-flex p-jc-between p-ai-center">
             Tipo
             <p-sortIcon field="tde_nombre"></p-sortIcon>
@@ -288,10 +287,10 @@
         <td>
             {{dep.dep_nombre}}
         </td>
-        <td>
+        <td class="text-center">
           {{dep.dep_alias}}
         </td>
-        <td>
+        <td class="text-center">
           {{dep.tde_nombre}}
         </td>
         <td>

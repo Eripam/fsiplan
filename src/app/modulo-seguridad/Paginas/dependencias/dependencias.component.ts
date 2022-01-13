@@ -141,7 +141,7 @@ export class DependenciasComponent implements OnInit {
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Tipo Dependencia ' + this.mensajesg.IngresadoCorrectamente});
         this.listarTipoDependencias();
       } else {
-        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
       }
     }
   }
@@ -170,7 +170,7 @@ export class DependenciasComponent implements OnInit {
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Dependencia ' + this.mensajesg.IngresadoCorrectamente});
         this.listarDependencias();
       } else {
-        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
       }
     }
   }
@@ -219,7 +219,7 @@ export class DependenciasComponent implements OnInit {
           this.listarTipoDependencias();
           this.listarDependencias();
         } else {
-          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
         }
       }
     }
@@ -249,7 +249,7 @@ async modificarDepM() {
       this.listarDependencias();
       this.listarDependenciasAc();
     } else {
-      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
     }
   }
 }

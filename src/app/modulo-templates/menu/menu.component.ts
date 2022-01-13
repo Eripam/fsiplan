@@ -30,6 +30,10 @@ export class MenuComponent implements OnInit {
             router: '/seguridad/dependencia',
           },
           {
+            label: 'Opciones',
+            router: '/seguridad/opciones',
+          },
+          {
             label: 'Asignación de Roles y Permisos',
             router: '/seguridad/rolpersona',
           },

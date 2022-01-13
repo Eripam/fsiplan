@@ -138,7 +138,7 @@ export class UsuariosComponent implements OnInit {
           this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Rol ' + this.mensajesg.IngresadoCorrectamente});
           this.listarRoles();
         } else {
-          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
         }
       }
     }
@@ -236,7 +236,7 @@ export class UsuariosComponent implements OnInit {
           this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Rol ' + this.mensajesg.ModificadoCorrectamente});
           this.listarRoles();
         } else {
-          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
         }
       }
   }

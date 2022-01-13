@@ -6,7 +6,6 @@ import { swDependencia} from '../../ServiciosWeb/Dependencia/swDependencia.servi
 import { swRoles} from '../../ServiciosWeb/Roles/swRoles.service';
 import { swPersona} from '../../ServiciosWeb/Usuarios/swPersona.service';
 import { MensajesGenerales} from '../../../Herramientas/Mensajes/MensajesGenerales.component';
-import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-rolpersona',

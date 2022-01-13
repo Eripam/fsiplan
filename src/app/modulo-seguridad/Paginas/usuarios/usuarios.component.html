@@ -158,20 +158,19 @@
         </span>
     </div>
     <div class="widget-header mt-3"><h3>Listado de Usuarios</h3></div>
-  <p-table #dt1 [value]="listaUsuarios" dataKey="id" [rowHover]="true"
+  <p-table #dt1 [value]="listaUsuarios" dataKey="id" [rowHover]="true" scrollHeight="500px"
       [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
       [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
-      [globalFilterFields]="['per_codigo','per_cedula','per_nombres','per_apellidos', 'per_estado']" responsiveLayout="scroll">
-      
+      [globalFilterFields]="['per_codigo','per_cedula','per_nombres','per_apellidos', 'per_estado_nombre', 'per_email']" responsiveLayout="scroll">
       <ng-template pTemplate="header">
           <tr>
-              <th pSortableColumn="per_codigo" style="width: 8rem">
+              <th pSortableColumn="per_codigo" style="width: 8rem" class="text-center">
                 <div class="p-d-flex p-jc-between p-ai-center">
                   Código
                   <p-sortIcon field="per_codigo"></p-sortIcon>
               </div>
               </th>
-              <th pSortableColumn="per_cedula">
+              <th pSortableColumn="per_cedula" class="text-center">
                 <div class="p-d-flex p-jc-between p-ai-center">
                     Cédula
                     <p-sortIcon field="per_cedula"></p-sortIcon>
@@ -199,7 +198,7 @@
                   <p-columnFilter type="text" field="per_email" display="menu" class="p-ml-auto"></p-columnFilter>
               </div>
             </th>
-              <th>
+              <th class="text-center">
                   <div class="p-d-flex p-jc-between p-ai-center">
                       Estado
                       <p-columnFilter field="per_estado" matchMode="equals" display="menu">
@@ -213,7 +212,7 @@
                     </p-columnFilter>
                   </div>
               </th>
-              <th style="width: 8rem">
+              <th style="width: 8rem" class="text-center">
                   <div class="p-d-flex p-jc-between p-ai-center">
                       Acción
                   </div>
@@ -222,10 +221,10 @@
       </ng-template>
       <ng-template pTemplate="body" let-customer>
           <tr>
-              <td>
+              <td class="text-center">
                   {{customer.per_codigo}}
               </td>
-              <td>
+              <td class="text-center">
                   {{customer.per_cedula}}
               </td>
               <td>
@@ -263,14 +262,13 @@
   </span>
 </div>
 <div class="widget-header mt-3"><h3>Listado de Roles</h3></div>
-<p-table #dt2 [value]="listaRoles" dataKey="id" [rowHover]="true"
+<p-table #dt2 [value]="listaRoles" dataKey="id" [rowHover]="true" scrollHeight="500px"
 [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
 [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
-[globalFilterFields]="['rol_codigo','rol_nombre','rol_descripcion','rol_estado']" responsiveLayout="scroll">
-
+[globalFilterFields]="['rol_codigo','rol_nombre','rol_descripcion','rol_estado_nombre']" responsiveLayout="scroll">
 <ng-template pTemplate="header">
     <tr>
-        <th pSortableColumn="rol_codigo" style="width: 8rem">
+        <th pSortableColumn="rol_codigo" style="width: 8rem" class="text-center">
           <div class="p-d-flex p-jc-between p-ai-center">
             Código
             <p-sortIcon field="rol_codigo"></p-sortIcon>
@@ -290,7 +288,7 @@
             <p-columnFilter type="text" field="rol_descripcion" display="menu" class="p-ml-auto"></p-columnFilter>
         </div>
       </th>
-        <th>
+        <th class="text-center">
             <div class="p-d-flex p-jc-between p-ai-center">
                 Estado
                 <p-columnFilter field="rol_estado" matchMode="equals" display="menu">
@@ -304,7 +302,7 @@
               </p-columnFilter>
             </div>
         </th>
-        <th style="width: 8rem">
+        <th style="width: 8rem" class="text-center">
             <div class="p-d-flex p-jc-between p-ai-center">
                 Acción
             </div>
@@ -313,7 +311,7 @@
 </ng-template>
 <ng-template pTemplate="body" let-customer>
     <tr>
-        <td>
+        <td class="text-center">
             {{customer.rol_codigo}}
         </td>
         <td>
