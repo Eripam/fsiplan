@@ -39,7 +39,8 @@ $(document).ready(function() {
     // checking for minified left sidebar
     checkMinified();
 
-    $('div.js-toggle-minified').on('click', function() {
+    $('.header').on('click', '.row .col-1 div.js-toggle-minified',function() {
+        //alert("ccefcef");
         if (!$('.left-sidebar').hasClass('minified')) {
             $('.left-sidebar').addClass('minified');
             $('.content-wrapper').addClass('expanded');

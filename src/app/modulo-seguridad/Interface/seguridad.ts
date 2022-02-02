@@ -65,3 +65,15 @@ export interface opcion {
 	opc_estado?: number;
 	opc_estado_nombre?: string;
 }
+
+export interface rolopcion {
+	rop_rol?: number;
+	rop_padreop?: number;
+	rop_opcion?: number;
+	rop_insertar?: boolean;
+	rop_modificar?: boolean;
+	rop_eliminar?: boolean;
+	rop_padreop_a?: number;
+	rop_opcion_a?: number;
+	rop_estado?: number;
+}

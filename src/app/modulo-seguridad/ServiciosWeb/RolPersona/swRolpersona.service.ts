@@ -10,8 +10,10 @@ import {listaI, rolpersona} from '../../Interface/seguridad';
 export class swRolpersonaService {
 
   UrlSiplanR : String;
+  UrlSiplanRO: string;
   constructor(private http: HttpClient, server: configServiciosWeb) {
     this.UrlSiplanR=server.urlServiciosSiplanRolP;
+    this.UrlSiplanRO=server.urlServiciosSiplanRolO;
   }
 
   ListaRolesPersona(): Observable<listaI>{
@@ -27,5 +29,20 @@ export class swRolpersonaService {
   ModificarUsuario(rolper: any): Observable<any>{
     let direccion = this.UrlSiplanR+'ModificarRolPersona';
     return this.http.post<any>(direccion, rolper);
+  }
+
+  ListaRolOpcion(): Observable<listaI>{
+    let direccion = this.UrlSiplanRO+'ListaRolOpcion';
+      return this.http.get<listaI>(direccion);
+  }
+
+  IngresarRolOpcion(rolop: any): Observable<any>{
+    let direccion = this.UrlSiplanRO+'IngresarRolOpcion';
+    return this.http.post<any>(direccion, rolop);
+  }
+
+  ModificarRolOpcion(rolop: any): Observable<any>{
+    let direccion = this.UrlSiplanRO+'ModificarRolOpcion';
+    return this.http.post<any>(direccion, rolop);
   }
 }

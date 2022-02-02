@@ -20,6 +20,11 @@ export class swPadreopcionService {
       return this.http.get<listaI>(direccion);
   }
 
+  ListaPadreOpcionAc(): Observable<listaI>{
+    let direccion = this.UrlSiplanPO+'ListaPadreOpcionActivo';
+      return this.http.get<listaI>(direccion);
+  }
+
   IngresarPadreOpcion(tdep: any): Observable<any>{
     let direccion = this.UrlSiplanPO+'IngresarPadreOpcion';
     return this.http.post<any>(direccion, tdep);
@@ -33,6 +38,11 @@ export class swPadreopcionService {
   ListarOpciones(): Observable<listaI>{
     let direccion = this.UrlSiplanOp+'ListaOpcion';
       return this.http.get<listaI>(direccion);
+  }
+
+  ListarOpcionesA(): Observable<listaI>{
+    let direccion= this.UrlSiplanOp+'ListaOpcionActivos';
+    return this.http.get<listaI>(direccion);
   }
 
   IngresarOpcion(tdep: any): Observable<any>{

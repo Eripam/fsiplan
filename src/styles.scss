@@ -109,11 +109,23 @@ body {
   border-radius: 5px;
 }
 
+.status-true{
+  color: #256029;
+  padding: .05em;
+  border-radius: 3px;
+}
+
 .status-0{
   background-color:#FFCDD2;
   color: #c63737;
   padding: .35em;
-  border-radius: 5px;
+  border-radius: 4px;
+}
+
+.status-false{
+  color: #c63737;
+  padding: .05em;
+  border-radius: 4px;
 }
 
 .overlay {
@@ -153,4 +165,22 @@ body {
 
 .p-breadcrumb{
   background: transparent !important;
+}
+
+::-webkit-scrollbar{
+  width: 12px;
+  background-color: #D6D6D6;
+}
+
+::-webkit-scrollbar-track{
+  border-radius: 10px;
+  background-color: #D6D6D6;
+}
+
+::-webkit-scrollbar-thumb{
+  border-radius: 10px;
+  background-color: #CCCCCC;
+  &:hover{
+    background-color: #ADADAD;
+  }
 }

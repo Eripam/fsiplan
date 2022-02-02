@@ -16,6 +16,10 @@ import { DialogModule } from 'primeng/dialog';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToastModule } from 'primeng/toast';
 import { TabViewModule } from 'primeng/tabview';
+import {CheckboxModule} from 'primeng/checkbox';
+import {FileUploadModule} from 'primeng/fileupload';
+import {CalendarModule} from 'primeng/calendar';
+
 //Import de paginas
 import { UsuariosComponent } from './Paginas/usuarios/usuarios.component';
 import { DependenciasComponent } from './Paginas/dependencias/dependencias.component';
@@ -40,7 +44,10 @@ import { OpcionesComponent } from './Paginas/opciones/opciones.component';
     DialogModule,
     SidebarModule,
     ToastModule,
-    TabViewModule
+    TabViewModule,
+    CheckboxModule,
+    FileUploadModule,
+    CalendarModule
   ],
   exports:[UsuariosComponent]
 })

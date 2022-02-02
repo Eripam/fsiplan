@@ -249,6 +249,7 @@ body.focus-mode .left-sidebar {
     padding-bottom: 5em;
     margin-left: 230px;
     position: relative;
+    padding-right: 25px;
 }
 
 .content-wrapper.expanded {
