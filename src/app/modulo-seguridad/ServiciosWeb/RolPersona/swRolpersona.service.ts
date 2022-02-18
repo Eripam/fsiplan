@@ -45,4 +45,9 @@ export class swRolpersonaService {
     let direccion = this.UrlSiplanRO+'ModificarRolOpcion';
     return this.http.post<any>(direccion, rolop);
   }
+
+  ListarOpcionRol(rolop: any): Observable<any>{
+    let direccion = this.UrlSiplanRO+'ListaOpcionRol';
+    return this.http.post<any>(direccion, rolop);
+  }
 }

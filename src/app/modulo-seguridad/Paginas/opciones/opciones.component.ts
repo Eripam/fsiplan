@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { MensajesGenerales } from 'src/app/Herramientas/Mensajes/MensajesGenerales.component';
 import { configServiciosWeb } from '../../ConfigService/configServiciosWeb';
 import { listaI, opcion, PadreOpcion } from '../../Interface/seguridad';
@@ -62,19 +63,22 @@ export class OpcionesComponent implements OnInit {
    reglamento: any =[];
    txtOpcion:string='';
    fechaI: string='';
+   sesionDep: string='';
    
-   constructor(private messageService: MessageService ,private mensajesg: MensajesGenerales, private padreopcionser: swPadreopcionService,  server: configServiciosWeb, private swReglamento: swReglamentoService,private swRegOp: SwReglamentoOpService) {
+   constructor(private messageService: MessageService ,private mensajesg: MensajesGenerales, private padreopcionser: swPadreopcionService,  server: configServiciosWeb, private swReglamento: swReglamentoService,private swRegOp: SwReglamentoOpService, private sesiones: SesionUsuario) {
     this.UrlSiplanReg=server.urlServiciosSiplanRegla;
     this.url= this.UrlSiplanReg+'archivo';
     this.urlM=this.UrlSiplanReg+'archivoM';
    }
  
  
-   ngOnInit(): void {
+   async ngOnInit() {
      this.listarPadreOpcion();
      this.listarOpcion();
      this.listarReglamentos();
      this.listarReglamentosOp();
+     const datosS=await this.sesiones.obtenerDatosLogin();
+     this.sesionDep=datosS.dep_nombre;
      //Menu superio con enlace del home
      this.home = { icon: 'pi pi-home', routerLink: '/' };
  

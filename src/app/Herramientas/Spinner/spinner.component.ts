@@ -4,16 +4,21 @@ import { SpinnerService } from './spinner.service';
 @Component({
   selector: 'app-spinner',
   template: `<div class="overlay" *ngIf="isLoading$|async">
-    <div class="lds-facebook">
-      <div></div>
-      <div></div>
-      <div></div>
+    <div class="container-fluid">
+      <div class="row text-center">
+        <div class="col-12">
+          <img src="../../../assets/imagenes/gif-dtic.gif" alt="">
+        </div>
+      </div>
     </div>
   </div><div class="overlay" *ngIf="isLoadingSS$|async">
-    <div class="lds-facebook">
-      <div></div>
-      <div></div>
-      <div>PRUEBA</div>
+    <div class="container-fluid">
+      <div class="row text-center">
+        <div class="col-12">
+          <img src="../../../assets/imagenes/gif-dtic.gif" alt="">
+          <div>PRUEBA</div>
+        </div>
+      </div>
     </div>
   </div>`,
   styleUrls: ['./spinner.component.scss']

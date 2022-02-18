@@ -29,25 +29,27 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "xml2js-parser"
+            ],
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "src/styles.scss",
-              "node_modules/primeng/resources/themes/siplani/theme.scss",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/primeicons/primeicons.css",
-              "src/assets/css/main.css",
-              "src/assets/css/my-custom-styles.css",
+              "src/assets/css/main.scss",
+              "src/assets/css/my-custom-styles.scss",
               "src/assets/fontawesome/css/all.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/@popperjs/core/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "src/assets/js/king-common.js",
               "src/assets/js/plugins/modernizr/modernizr.js",
               "src/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js",
               "src/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js",
-              "src/assets/js/king-common.js",
               "src/assets/fontawesome/js/all.js"
             ]
           },
@@ -95,6 +97,14 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "fsiplan:build",
+            "port": 4200,
+            "host": "localhost",
+            "ssl": true,
+            "sslKey": "src/assets/Certificados/espoch_sectigo_key_2019.key",
+            "sslCert": "src/assets/Certificados/STAR_espoch_edu_ec.crt"
+          },
           "configurations": {
             "production": {
               "browserTarget": "fSiplan:build:production"

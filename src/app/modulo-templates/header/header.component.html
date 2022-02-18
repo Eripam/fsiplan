@@ -1,11 +1,11 @@
-<header class="header" style="border-bottom: 3px solid #d31a2b;">
+<header class="header" id="header_linea">
     <div class="row p-1 m-0">
       <div class="col-1 d-none d-md-flex d-lg-flex text-center row p-0 m-0 align-self-center">
-        <div class="col-6 align-self-center m-0 p-0 sidebar-minified js-toggle-minified"><i class="fas fa-align-justify fa-2x" (click)="mostrarMenu()"></i></div>
+        <div class="col-6 align-self-center m-0 p-0 sidebar-minified js-toggle-minified"><i class="fas fa-align-justify fa-2x"></i></div>
         <div class="col-6 align-self-center m-0 p-0"><img [src]="'assets/imagenes/icono.png'" width="40"></div>
       </div>
       <div class="col-1 d-block d-md-none d-lg-none text-center row p-0 m-0 align-self-center">
-        <div class="col-6 align-self-center m-0 p-0"><i class="fas fa-align-justify fa-2x sidebar-minified js-toggle-minified" (click)="mostrarMenu()"></i></div>
+        <div class="col-6 align-self-center m-0 p-0 sidebar-minified js-toggle-minified"><i class="fas fa-align-justify fa-2x"></i></div>
       </div>
       <h5 class="titulo d-none d-md-block d-lg-block col-4 col-lg-5 align-self-center p-0">
         Sistema Integral de Planificación Institucional
@@ -16,15 +16,14 @@
       <div class="row col-6 col-sm-6 col-md-4 col-lg-4 align-self-center justify-content-end">
         <label class="col-12 col-lg-4 align-self-center text-center p-0 m-0 titulo-rol">Rol de Usuario:</label>
         <div class="col-12 col-lg-5 m-0 p-0 text-start">
-          <select class="form-select" aria-label="Default select example">
-            <option value="1">Administrador</option>
-            <option value="2">Analista Operativo</option>
-            <option value="3">Director Unidad DTIC</option>
+          <select class="form-select" aria-label="Default select example" [(ngModel)]="selectPerfiles" (ngModelChange)="CambiarPerfil($event)">
+            <option *ngFor="let perfiles of states" [ngValue]="perfiles.rpe_codigo">{{perfiles.rol_nombre}}-{{perfiles.dep_alias}}</option>
           </select>
+         <!--<p-dropdown [options]="states" appendTo="body" [(ngModel)]="selectbaseCarrera" optionValue="rpe_rol" optionLabel="rol_nombre" [showClear]="true" ></p-dropdown>-->
         </div>
       </div>
       <div class="col-2 align-self-center text-end"> 
-      <div (click)="menu.toggle($event)" class="align-self-center header-titulo"><img src="assets/imagenes/user-avatar.png" height="25" class="p-mr-2">erika.arevalo@espoch.edu.ec<i class="fa fa-caret-down fa-2x"></i></div>
+      <div (click)="menu.toggle($event)" class="align-self-center header-titulo"><img src="assets/imagenes/user-avatar.png" height="25" class="p-mr-2">{{correo}}<i class="fa fa-caret-down fa-2x"></i></div>
         <p-menu #menu [popup]="true" [model]="items"></p-menu>
       </div>
     </div>

@@ -140,7 +140,11 @@
   </ng-template>
 </p-dialog>
 
-<p-breadcrumb [model]="items" [home]="home"></p-breadcrumb>
+<div class="row">
+  <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
+  <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
+  <div class="col-11 col-md-9">{{sesionDep}}</div></div>
+</div>
 <div class="navegacion">
   <h2 class="navegacion__titulo">Gestión de Usuarios y Roles</h2>
   <em>Creación de usuarios y roles para el sistema </em>

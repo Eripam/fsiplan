@@ -1,5 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
+import { swRolpersonaService } from 'src/app/modulo-seguridad/ServiciosWeb/RolPersona/swRolpersona.service';
 
 @Component({
   selector: 'app-menu',
@@ -15,9 +17,10 @@ export class MenuComponent implements OnInit {
     this.showMenu.emit(this.mostrarMenu);
   }
 
-  constructor() {}
+  items:any[]=[];
+  constructor(private session: SesionUsuario, private swRolpersona: swRolpersonaService) {}
 
-  items = [{
+  /*items = [{
         label: "Seguridad",
         icon: 'fas fa-user-lock',
         submenu: [
@@ -48,10 +51,24 @@ export class MenuComponent implements OnInit {
           router: '/seguridad/roles',
         }
       ],
-    }];
+    }];*/
 
   ngOnInit() {
     this.mostrarMenu = true;
+    this.listarMenu();
+  }
+
+  async listarMenu(){
+    const datosS=await this.session.obtenerDatosLogin();
+    const valor={
+      rol:datosS.rpe_rol
+    }
+    const datos = await new Promise<any>((resolve)=>this.swRolpersona.ListarOpcionRol(valor).subscribe(translated=>{resolve(translated)}));
+    if(datos.success){
+      this.items=datos.data;
+    }else{
+      this.items=[];
+    }
   }
 
   expandedIndex = 0;

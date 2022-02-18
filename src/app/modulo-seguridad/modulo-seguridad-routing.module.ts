@@ -4,23 +4,32 @@ import { DependenciasComponent } from './Paginas/dependencias/dependencias.compo
 import { UsuariosComponent } from './Paginas/usuarios/usuarios.component';
 import { RolpersonaComponent } from './Paginas/rolpersona/rolpersona.component';
 import { OpcionesComponent } from './Paginas/opciones/opciones.component';
+import { ValidateUserGuard } from '../Herramientas/Validacion/validate-user.guard';
 
 const routes: Routes = [
   {
     path: 'usuario',
-    component: UsuariosComponent
+    component: UsuariosComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:2} 
   },
   {
     path:'dependencia',
-    component:DependenciasComponent
+    component:DependenciasComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:3} 
   },
   {
     path:'rolpersona',
-    component:RolpersonaComponent
+    component:RolpersonaComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:5}
   },
   {
     path:'opciones',
-    component:OpcionesComponent
+    component:OpcionesComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:4}
   }
 ];
 

@@ -68,11 +68,11 @@
   <div class="sidebar-scroll">
     <nav class="main-nav">
       <ul class="main-menu" *ngFor="let menu of items">
-        <li><a class="js-sub-menu-toggle"><i class="{{menu.icon}}"></i><span class="text">{{menu.label}}</span>
+        <li><a class="js-sub-menu-toggle"><i class="{{menu.pop_icono}}"></i><span class="text">{{menu.pop_nombre}}</span>
           <i class="toggle-icon fa fa-angle-left"></i></a>
           <ul class="sub-menu">
-            <div *ngFor="let sub of menu.submenu">
-            <li><a [routerLink]="sub.router"><span class="text">{{sub.label}}</span></a></li>
+            <div *ngFor="let sub of menu.rop_opciones">
+            <li><a [routerLink]="sub.opc_url"><span class="text">{{sub.opc_nombre}}</span></a></li>
           </div>
           </ul>
         </li>

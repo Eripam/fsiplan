@@ -1,12 +1,21 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ErrorAccesoComponent } from './Herramientas/PaginasError/error-acceso/error-acceso.component';
 
-const routes: Routes = [{
+const routes: Routes = [
+  {
   //Página inicial
   path: '',
+  loadChildren:()=>import ('./modulo-inicio/modulo-inicio.module').then((m)=>m.ModuloInicioModule)
+ },
+ {
+  path: '/templa',
   loadChildren:()=>import ('./modulo-templates/modulo-templates.module').then((m)=>m.ModuloTemplatesModule)
-  //component:FullComponent
-},
+ },
+ {
+   path:'error',
+   component: ErrorAccesoComponent
+ }
 // {
 //   path:'Template',
 //   component:FullComponent,

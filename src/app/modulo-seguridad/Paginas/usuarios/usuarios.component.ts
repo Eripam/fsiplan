@@ -5,6 +5,7 @@ import { swRoles } from '../../ServiciosWeb/Roles/swRoles.service';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { MensajesGenerales } from '../../../Herramientas/Mensajes/MensajesGenerales.component';
 import { Usuario, Data, listaI } from '../../Interface/seguridad';
+import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 
 @Component({
   selector: 'app-usuarios',
@@ -45,15 +46,19 @@ export class UsuariosComponent implements OnInit {
   txtCodigoRol: string ='';
   txtNombreRol: string='';
   txtDescripcionRol: string='';
+  sesionDep: string='';
   //Variable de clase usuario y roles
   role: Data={};
 
-  constructor(private PersonaSer: swPersona, private messageService: MessageService,private mensajesg: MensajesGenerales, private RolSer: swRoles) {
+  constructor(private PersonaSer: swPersona, private messageService: MessageService,private mensajesg: MensajesGenerales, private RolSer: swRoles, private sesiones: SesionUsuario) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.listarUsuarios();
     this.listarRoles();
+    const datosS=await this.sesiones.obtenerDatosLogin();
+    this.sesionDep=datosS.dep_nombre;
+
     //Menu superio con enlace del home
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 

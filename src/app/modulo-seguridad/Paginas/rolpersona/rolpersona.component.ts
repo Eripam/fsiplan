@@ -8,6 +8,7 @@ import { swPersona} from '../../ServiciosWeb/Usuarios/swPersona.service';
 import { MensajesGenerales} from '../../../Herramientas/Mensajes/MensajesGenerales.component';
 import { swPadreopcionService } from '../../ServiciosWeb/PadreOpcion/swpadreopcion.service';
 import { ThrowStmt } from '@angular/compiler';
+import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 
 @Component({
   selector: 'app-rolpersona',
@@ -56,14 +57,17 @@ export class RolpersonaComponent implements OnInit {
   txtOpcionM: string='';
   txtNombre:string='';
   txtArchivo:string='';
+  sesionDep:string='';
   
-  constructor(private RolPersonaSer: swRolpersonaService, private swDep: swDependencia, private swRoles: swRoles, private swUsuario: swPersona, private messageService: MessageService ,private mensajesg: MensajesGenerales, private swOpciones: swPadreopcionService) {
+  constructor(private RolPersonaSer: swRolpersonaService, private swDep: swDependencia, private swRoles: swRoles, private swUsuario: swPersona, private messageService: MessageService ,private mensajesg: MensajesGenerales, private swOpciones: swPadreopcionService, private sesiones: SesionUsuario) {
   }
 
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.listarRolPersona();
     this.listaRolOpcion();
+    const datosS=await this.sesiones.obtenerDatosLogin();
+    this.sesionDep=datosS.dep_nombre;
     //Menu superio con enlace del home
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 

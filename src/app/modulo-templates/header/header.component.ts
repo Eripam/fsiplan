@@ -1,12 +1,8 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  Input,
-  HostListener,
-} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter, Input, HostListener} from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { SwLoginService } from 'src/app/modulo-seguridad/ServiciosWeb/Login/swLogin.service';
+import { SesionUsuario} from '../../casClient/SesionUsuario';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -16,32 +12,90 @@ import { MenuItem } from 'primeng/api';
 export class HeaderComponent implements OnInit {
   @Output() toggleSidebarForMe: EventEmitter<any> = new EventEmitter();
   @Output() onShowMenuHeader: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() lstValues:any[]=[];
  
   items!: MenuItem[];
   isShowMenuHeader: boolean = true;
-  states = [
-    { valor: 1, muestraValor: 'Administrador' },
-    { valor: 2, muestraValor: 'Director Unidad DTIC' },
-    { valor: 3, muestraValor: 'Decano FADE' },
-    { valor: 4, muestraValor: 'Planificador FC' },
-  ];
+  correo: string='';
+  rol: string='';
+  dependecia: string='';
+  states:any[] = [];
+  selectPerfiles:any;
+  url: string='';
 
-  mostrarMenu() {
+  /*mostrarMenu() {
     this.onShowMenuHeader.emit(!this.isShowMenuHeader);
-  }
+  }*/
 
-  seleccionada = this.states[1].valor;
+  //seleccionada = this.states[1].valor;
 
-  constructor() {}
+  constructor(private servLogin:SwLoginService, private session: SesionUsuario,  private router: Router) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    const datosS=await this.session.obtenerDatosLogin();
+    this.correo=datosS.per_email;
+    this.selectPerfiles=datosS.rpe_codigo;
+    this.url=datosS.opc_url;
     this.items = [
-            {label: 'Erika Pamela Arévalo Cuadrado', icon: 'pi pi-user'},
-            {label: 'Cerrar Sesión', icon: 'pi pi-power-off', routerLink:'/'}
-        ];
+      {label: datosS.per_nombres+' '+datosS.per_apellidos, icon: 'pi pi-user'},
+      {label: 'Cerrar Sesión', icon: 'pi pi-power-off', routerLink:'/'}
+    ];
+    this.obtenerPerfiles(datosS.rpe_persona);
   }
 
   toggleSidebar() {
     this.toggleSidebarForMe.emit();
+  }
+
+  async obtenerPerfiles(codigo:any){
+    const perid={
+      perid:codigo
+    }
+    const datos = await new Promise<any>((resolve)=>this.servLogin.ListaPerfiles(perid).subscribe(translated=>{resolve(translated)}));
+    if(datos.success){
+      this.states=datos.data;
+    }
+  }
+
+  async CambiarPerfil(event:any){
+    var dat:any;
+    for(let perfiles of  this.states){
+      if(perfiles.rpe_codigo==event){
+        dat={
+          perid:perfiles.rpe_persona,
+          rol:perfiles.rpe_rol,
+          dependencia:perfiles.rpe_dependencia
+        }
+      }
+    }
+    const datos = await new Promise<any>((resolve) => this.servLogin.LoginRolDep(dat).subscribe(translated => { resolve(translated) }));
+    sessionStorage.removeItem("perid");
+    sessionStorage.removeItem("key");
+    if(datos.success){
+        sessionStorage.setItem('key', datos.token);
+        const datosS=await this.session.obtenerDatosLogin();
+        this.correo=datosS.per_email;
+        this.selectPerfiles=datosS.rpe_codigo;
+        this.url=datosS.opc_url;
+        await this.router.navigate([this.url]);
+    }else if(sessionStorage.getItem("loginUser")!=null){
+        const envio={
+            perid:sessionStorage.getItem("loginUser")
+        }
+        const datos = await new Promise<any>((resolve) => this.servLogin.LoginCorreo(envio).subscribe(translated => { resolve(translated) }));
+        if(datos.success){
+            sessionStorage.setItem('key', datos.token);
+            const datosS=await this.session.obtenerDatosLogin();
+            this.correo=datosS.per_email;
+            this.selectPerfiles=datosS.rpe_codigo;
+            this.url=datosS.opc_url;
+            await this.router.navigate([this.url]);
+        }else{
+            await this.router.navigate(['/error']);
+        }
+    }else{
+        await this.router.navigate(['/error']);
+    }
+    location.reload();
   }
 }

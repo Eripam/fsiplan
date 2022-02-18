@@ -3,6 +3,7 @@ import { MenuItem, MessageService, ConfirmationService } from 'primeng/api';
 import { listaI, tipoDep, dependencia} from '../../Interface/seguridad';
 import { swDependencia} from '../../ServiciosWeb/Dependencia/swDependencia.service';
 import { MensajesGenerales} from '../../../Herramientas/Mensajes/MensajesGenerales.component';
+import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 
 @Component({
   selector: 'app-dependencias',
@@ -42,14 +43,17 @@ export class DependenciasComponent implements OnInit {
   //Variable de tipo dependencia
   tipoDep: tipoDep={};
   dependencia : dependencia= {};
+  sesionDep:string='';
 
 
-  constructor(private DependenciaSer: swDependencia, private messageService: MessageService ,private mensajesg: MensajesGenerales) {
+  constructor(private DependenciaSer: swDependencia, private messageService: MessageService ,private mensajesg: MensajesGenerales, private sesiones:SesionUsuario) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.listarTipoDependencias();
     this.listarDependencias();
+    const datosS=await this.sesiones.obtenerDatosLogin();
+    this.sesionDep=datosS.dep_nombre;
     //Menu superio con enlace del home
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 
