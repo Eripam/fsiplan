@@ -5,31 +5,38 @@ import { UsuariosComponent } from './Paginas/usuarios/usuarios.component';
 import { RolpersonaComponent } from './Paginas/rolpersona/rolpersona.component';
 import { OpcionesComponent } from './Paginas/opciones/opciones.component';
 import { ValidateUserGuard } from '../Herramientas/Validacion/validate-user.guard';
+import { UsuarioRolComponent } from './Paginas/usuario-rol/usuario-rol.component';
 
 const routes: Routes = [
   {
-    path: 'usuario',
+    path: 'usuario/:opc/:enc',
     component: UsuariosComponent,
     canActivate:[ValidateUserGuard],
     data:{opcion:2} 
   },
   {
-    path:'dependencia',
+    path:'dependencia/:opc/:enc',
     component:DependenciasComponent,
     canActivate:[ValidateUserGuard],
     data:{opcion:3} 
   },
   {
-    path:'rolpersona',
+    path:'rolpersona/:opc/:enc',
     component:RolpersonaComponent,
     canActivate:[ValidateUserGuard],
     data:{opcion:5}
   },
   {
-    path:'opciones',
+    path:'opciones/:opc/:enc',
     component:OpcionesComponent,
     canActivate:[ValidateUserGuard],
     data:{opcion:4}
+  },
+  {
+    path:'usuariorol/:opc/:enc',
+    component:UsuarioRolComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:9}
   }
 ];
 

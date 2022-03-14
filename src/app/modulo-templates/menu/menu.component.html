@@ -72,7 +72,7 @@
           <i class="toggle-icon fa fa-angle-left"></i></a>
           <ul class="sub-menu">
             <div *ngFor="let sub of menu.rop_opciones">
-            <li><a [routerLink]="sub.opc_url"><span class="text">{{sub.opc_nombre}}</span></a></li>
+            <li><a href="{{sub.opc_url}}/{{menu.pop_codigo}}"><span class="text">{{sub.opc_nombre}}</span></a></li>
           </div>
           </ul>
         </li>

@@ -25,10 +25,11 @@ import { UsuariosComponent } from './Paginas/usuarios/usuarios.component';
 import { DependenciasComponent } from './Paginas/dependencias/dependencias.component';
 import { RolpersonaComponent } from './Paginas/rolpersona/rolpersona.component';
 import { OpcionesComponent } from './Paginas/opciones/opciones.component';
+import { UsuarioRolComponent } from './Paginas/usuario-rol/usuario-rol.component';
 
 
 @NgModule({
-  declarations: [UsuariosComponent, DependenciasComponent, RolpersonaComponent, OpcionesComponent],
+  declarations: [UsuariosComponent, DependenciasComponent, RolpersonaComponent, OpcionesComponent, UsuarioRolComponent],
   imports: [
     CommonModule,
     ModuloSeguridadRoutingModule,

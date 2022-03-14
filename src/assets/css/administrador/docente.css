@@ -5695,3 +5695,7 @@ p-treeselect.ng-invalid.ng-dirty > .p-treeselect {
 }
 
 /* Customizations to the designer theme should be defined here */
+/*Scroll*/
+::-webkit-scrollbar-thumb:hover{
+  background-color: #39923b;
+}

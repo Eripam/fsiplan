@@ -21,6 +21,11 @@ export class swRolpersonaService {
       return this.http.get<listaI>(direccion);
   }
 
+  ListaRolesPersonaDep(codigo: any): Observable<listaI>{
+    let direccion = this.UrlSiplanR+'ListaRolPersonaDep';
+      return this.http.post<listaI>(direccion, codigo);
+  }
+
   IngresarRolPersona(rolper: any): Observable<any>{
     let direccion = this.UrlSiplanR+'IngresarRolPersona';
     return this.http.post<any>(direccion, rolper);
@@ -49,5 +54,10 @@ export class swRolpersonaService {
   ListarOpcionRol(rolop: any): Observable<any>{
     let direccion = this.UrlSiplanRO+'ListaOpcionRol';
     return this.http.post<any>(direccion, rolop);
+  }
+
+  ListarOpcionesUsuario(usuario: any): Observable<any>{
+    let direccion = this.UrlSiplanRO+'ListarOpcionesUsuario';
+    return this.http.post<any>(direccion, usuario);
   }
 }

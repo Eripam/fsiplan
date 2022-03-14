@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
+    <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
+    <div class="col-11 col-md-9">{{sesionDep}}</div></div>
+  </div>
+  <div class="navegacion">
+    <h2 class="navegacion__titulo">Clasificación de Acciones</h2>
+    <em>Selección de acciones para la prospectiva</em>
+  </div>
+  <div class="row col-7 m-2">
+      <div class="col-2 tituloPros align-self-center">Prospectiva:</div>
+      <div class="col-10"><p-dropdown [options]="listaProspectivas" appendTo="body" [(ngModel)]="txtProspectiva" placeholder="Seleccionar Prospectiva" optionValue="pro_id" [filter]="true" filterBy="pro_nombre" optionLabel="pro_nombre" [showClear]="true" (onChange)="obtenerPros($event)"></p-dropdown></div>
+  </div>
+  <div class="row contenedor p-2 align-self-center align-items-center justify-content-center">
+       <div class="row col-12 mb-3">
+        <div class="col-5 align-self-center align-items-center justify-content-center">
+        </div>
+        <div class="col-7 text-end">
+            <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-mr-2 m-1"></button>
+            <button pButton pRipple label="Limpiar" icon="pi pi-times" class="p-mr-2 m-1"></button>
+        </div>
+       </div>
+      <div class="col-12 text-center row mb-2">
+        <div class="col-12 contenedor_caja" *ngFor="let criterios of listaCriterios">
+            <div class="encabezado row">
+                <div class="col">{{criterios.cri_nombre}}</div>
+                <div class="col" *ngIf="criterios.cri_fase==1; else falso">Consecuencias</div>
+                <ng-template #falso><div class="col">Utopías</div></ng-template>
+                <div class="col">Acciones</div>
+            </div>
+            <div class="cuerpo row" *ngFor="let crides of listaCriterioDes">
+                <div class="col text-start" *ngIf="criterios.cri_id==crides.cdes_criterio">{{crides.cdes_descripcion}}</div>
+                <div class="col text-start" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==1"><div *ngFor="let cons of crides.consecuencias">{{cons.con_descripcion}}</div></div>
+                <div class="col text-start" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==2"><div *ngFor="let uto of crides.utopias">{{uto.uto_descripcion}}</div></div>
+                <div class="col text-start" *ngIf="criterios.cri_id==crides.cdes_criterio"><div *ngFor="let acc of crides.acciones" class="row"><div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1"><input type="checkbox" name="" id=""></div></div></div>
+            </div>
+        </div>
+      </div>
+  </div>

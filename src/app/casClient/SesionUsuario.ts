@@ -3,6 +3,7 @@ import { CasClient } from './CasClient';
 import { Location } from '@angular/common';
 import { Router, CanActivate } from '@angular/router';
 import { SwLoginService } from '../modulo-seguridad/ServiciosWeb/Login/swLogin.service';
+import { swRolpersonaService } from '../modulo-seguridad/ServiciosWeb/RolPersona/swRolpersona.service';
 @Injectable()
 
 export class SesionUsuario implements CanActivate {
@@ -10,7 +11,7 @@ export class SesionUsuario implements CanActivate {
     private idUsuario: any;
     private datosL:any; 
     //private lstPerfiles: Array<any>;
-    constructor(private location: Location, private router: Router, private casclient: CasClient, private servLogin: SwLoginService) { }
+    constructor(private location: Location, private router: Router, private casclient: CasClient, private servLogin: SwLoginService, private swRol: swRolpersonaService) { }
 
     async InicioSesion() {
         await this.obtenerTokenKey();
@@ -153,7 +154,7 @@ export class SesionUsuario implements CanActivate {
         if(datos.success){
             sessionStorage.setItem('key', datos.token);
             this.obtenerDatosLogin().then(task=>{
-                this.router.navigate([task.opc_url]);
+                this.router.navigate([task.opc_url+'/'+task.rop_padreop]);
             })
         }else if(sessionStorage.getItem("loginUser")!=null){
             const envio={
@@ -163,7 +164,7 @@ export class SesionUsuario implements CanActivate {
             if(datos.success){
                 sessionStorage.setItem('key', datos.token);
                 this.obtenerDatosLogin().then(task=>{
-                    this.router.navigate([task.opc_url]);
+                    this.router.navigate([task.opc_url+'/'+task.rop_padreop]);
                 })
             }else{
                 await this.router.navigate(['/error']);
@@ -180,5 +181,10 @@ export class SesionUsuario implements CanActivate {
         }
         const datos = await new Promise<any>((resolve)=>this.servLogin.DecodingLogin(array).subscribe(translated=>{resolve(translated)}));
         return datos.data.value[0];
-      }
+    }
+
+    async obtenerOpcionesUsuario(user:any){
+        const datos = await new Promise<any>((resolve)=>this.swRol.ListarOpcionesUsuario(user).subscribe(translated=>{resolve(translated)}));
+        return datos.data[0];
+    }
 }

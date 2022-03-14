@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { MensajesGenerales } from 'src/app/Herramientas/Mensajes/MensajesGenerales.component';
 import { configServiciosWeb } from '../../ConfigService/configServiciosWeb';
 import { listaI, opcion, PadreOpcion } from '../../Interface/seguridad';
+import { SwAuditoriaService } from '../../ServiciosWeb/Auditoria/swAuditoria.service';
 import { swPadreopcionService } from '../../ServiciosWeb/PadreOpcion/swpadreopcion.service';
 import { swReglamentoService } from '../../ServiciosWeb/Reglamento/swReglamento.service';
 import { SwReglamentoOpService } from '../../ServiciosWeb/ReglamentoOpc/swReglamentoOp.service';
@@ -64,8 +66,13 @@ export class OpcionesComponent implements OnInit {
    txtOpcion:string='';
    fechaI: string='';
    sesionDep: string='';
+   sessionUser:string='';
+   sessionRol:string='';
+   sessionDepC:number=0;
+   txtIngresar:boolean=false;
+   txtModificar:boolean=false;
    
-   constructor(private messageService: MessageService ,private mensajesg: MensajesGenerales, private padreopcionser: swPadreopcionService,  server: configServiciosWeb, private swReglamento: swReglamentoService,private swRegOp: SwReglamentoOpService, private sesiones: SesionUsuario) {
+   constructor(private messageService: MessageService ,private mensajesg: MensajesGenerales, private padreopcionser: swPadreopcionService,  server: configServiciosWeb, private swReglamento: swReglamentoService,private swRegOp: SwReglamentoOpService, private sesiones: SesionUsuario, private route: ActivatedRoute, private swAuditoria:SwAuditoriaService) {
     this.UrlSiplanReg=server.urlServiciosSiplanRegla;
     this.url= this.UrlSiplanReg+'archivo';
     this.urlM=this.UrlSiplanReg+'archivoM';
@@ -79,6 +86,17 @@ export class OpcionesComponent implements OnInit {
      this.listarReglamentosOp();
      const datosS=await this.sesiones.obtenerDatosLogin();
      this.sesionDep=datosS.dep_nombre;
+     this.sessionDepC=datosS.rpe_dependencia;
+     this.sessionUser=datosS.rpe_persona;
+     this.sessionRol=datosS.rol_nombre;
+     const valores={
+       rol:datosS.rpe_rol,
+       opcion:this.route.snapshot.paramMap.get('opc'),
+       padreop:this.route.snapshot.paramMap.get('enc')
+     }
+     const datosRol=await this.sesiones.obtenerOpcionesUsuario(valores);
+     this.txtIngresar=datosRol.rop_insertar;
+     this.txtModificar=datosRol.rop_modificar;
      //Menu superio con enlace del home
      this.home = { icon: 'pi pi-home', routerLink: '/' };
  
@@ -156,83 +174,115 @@ export class OpcionesComponent implements OnInit {
   }
  
    openNewPO(){
-     this.tituloModal="Crear Encabezado Opción";
-     this.txtNombre='';
-     this.txtIcono='';
-     this.modalPadreOp=true;
+     if(this.txtIngresar){
+       this.tituloModal="Crear Encabezado Opción";
+       this.txtNombre='';
+       this.txtIcono='';
+       this.modalPadreOp=true;
+     }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
    }
 
    openNewOP(){
-    this.tituloModal="Crear Opción";
-    this.txtNombre='';
-    this.txtDescripcion='';
-    this.txtUrl='';
-    this.modalOpcion=true;
+    if(this.txtIngresar){
+      this.tituloModal="Crear Opción";
+      this.txtNombre='';
+      this.txtDescripcion='';
+      this.txtUrl='';
+      this.modalOpcion=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   openNewRegOp(){
-    this.tituloModal="Asignar Reglamento Opción";
-    this.txtCodigo='';
-    this.txtOpcion='';
-    this.fechaI='';
-    this.listarOpcionActivo();
-    this.listarReglamentosActivos();
-    this.modalReglaOp=true;
+    if(this.txtIngresar){
+      this.tituloModal="Asignar Reglamento Opción";
+      this.txtCodigo='';
+      this.txtOpcion='';
+      this.fechaI='';
+      this.listarOpcionActivo();
+      this.listarReglamentosActivos();
+      this.modalReglaOp=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   async openNewReg(){
-    await this.obtenerCodigo();
-    this.tituloModal='Ingresar Reglamento';
-    this.txtNombreR='';
-    this.archivoNombre=[];
-    this.uploadedFiles=[];
-    this.modalRegla=true;
+    if(this.txtIngresar){
+      await this.obtenerCodigo();
+      this.tituloModal='Ingresar Reglamento';
+      this.txtNombreR='';
+      this.archivoNombre=[];
+      this.uploadedFiles=[];
+      this.modalRegla=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
  
    modificarPadreOp(padreop: any){
-     this.tituloModal="Modificar Encabezado Opción";
-     this.txtCodigo=padreop.pop_codigo;
-     this.txtNombre=padreop.pop_nombre;
-     this.txtIcono=padreop.pop_icono;
-     this.txtEstado=padreop.pop_estado;
-     this.modalPadreOpM=true;
+      if(this.txtModificar){
+      this.tituloModal="Modificar Encabezado Opción";
+       this.txtCodigo=padreop.pop_codigo;
+       this.txtNombre=padreop.pop_nombre;
+       this.txtIcono=padreop.pop_icono;
+       this.txtEstado=padreop.pop_estado;
+       this.modalPadreOpM=true;
+      }else{
+        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+      }
    }
 
    modificarOpcion(opcion: any){
-    this.tituloModal="Modificar Opción";
-    this.txtCodigo=opcion.opc_codigo;
-    this.txtNombre=opcion.opc_nombre;
-    this.txtDescripcion=opcion.opc_descripcion;
-    this.txtUrl=opcion.opc_url
-    this.txtEstado=opcion.opc_estado;
-    this.modalOpcionM=true;
+     if(this.txtModificar){
+      this.tituloModal="Modificar Opción";
+      this.txtCodigo=opcion.opc_codigo;
+      this.txtNombre=opcion.opc_nombre;
+      this.txtDescripcion=opcion.opc_descripcion;
+      this.txtUrl=opcion.opc_url
+      this.txtEstado=opcion.opc_estado;
+      this.modalOpcionM=true;
+     }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   modificarReglamento(reglamento: any){
-    this.tituloModal='Modificar Reglamentos';
-    this.txtCodigo=reglamento.reg_codigo;
-    this.archivoNombre=[];
-    this.archivoNombreM=[];
-    for(var i=0; i<reglamento.reg_archivos.length; i++){
-      this.archivoNombre.push({"rar_nombre":reglamento.reg_archivos[i].rar_nombre, "rar_codigo":reglamento.reg_archivos[i].rar_codigo, "rar_reglamento":reglamento.reg_archivos[i].rar_reglamento});
+    if(this.txtModificar){
+      this.tituloModal='Modificar Reglamentos';
+      this.txtCodigo=reglamento.reg_codigo;
+      this.archivoNombre=[];
+      this.archivoNombreM=[];
+      for(var i=0; i<reglamento.reg_archivos.length; i++){
+        this.archivoNombre.push({"rar_nombre":reglamento.reg_archivos[i].rar_nombre, "rar_codigo":reglamento.reg_archivos[i].rar_codigo, "rar_reglamento":reglamento.reg_archivos[i].rar_reglamento});
+      }
+      this.txtNombreR=reglamento.reg_nombre;
+      this.txtEstado=reglamento.reg_estado;
+      this.modalReglaM=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
     }
-    this.txtNombreR=reglamento.reg_nombre;
-    this.txtEstado=reglamento.reg_estado;
-    this.modalReglaM=true;
   }
 
   modificarReglamentoOp(reglamento:any){
-    this.tituloModal='Modificar asignar reglamento';
-    this.listarOpcionActivo();
-    this.listarReglamentosActivos();
-    this.txtCodigo=reglamento.reop_reglamento;
-    this.txtOpcion=reglamento.reop_opcion;
-    var fechai=new Date(reglamento.reop_fecha_inicio);
-    var mes=fechai.getMonth()+1;
-    this.fechaI=mes + '/' + fechai.getDate() + '/' + fechai.getFullYear();;
-    this.txtEstado=reglamento.reop_estado;
-    this.txtIcono=reglamento.reop_opcion;
-    this.modalReglaOpM=true;
+    if(this.txtModificar){
+      this.tituloModal='Modificar asignar reglamento';
+      this.listarOpcionActivo();
+      this.listarReglamentosActivos();
+      this.txtCodigo=reglamento.reop_reglamento;
+      this.txtOpcion=reglamento.reop_opcion;
+      var fechai=new Date(reglamento.reop_fecha_inicio);
+      var mes=fechai.getMonth()+1;
+      this.fechaI=mes + '/' + fechai.getDate() + '/' + fechai.getFullYear();
+      this.txtEstado=reglamento.reop_estado;
+      this.txtIcono=reglamento.reop_opcion;
+      this.modalReglaOpM=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
  
    hideDialogPO(){
@@ -263,7 +313,7 @@ export class OpcionesComponent implements OnInit {
     this.modalReglaOpM=false;
   }
  
-   async guardarOpcion(){
+  async guardarOpcion(){
      this.opcion={
        opc_nombre:this.txtNombre,
        opc_descripcion:this.txtDescripcion,
@@ -280,6 +330,15 @@ export class OpcionesComponent implements OnInit {
        );
  
        if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar opción con los datos: {Nombre:"+this.txtNombre+", Descripción: "+this.txtDescripcion+", Url: "+this.txtUrl+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
          this.modalOpcion = false;
          this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Opción ' + this.mensajesg.IngresadoCorrectamente});
          this.listarOpcion();
@@ -305,6 +364,15 @@ export class OpcionesComponent implements OnInit {
       );
 
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar padre opción con los datos: {Nombre:"+this.txtNombre+", Icono: "+this.txtIcono+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.modalPadreOp = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Encabezado Opción ' + this.mensajesg.IngresadoCorrectamente});
         this.listarPadreOpcion();
@@ -331,6 +399,15 @@ export class OpcionesComponent implements OnInit {
        );
    
        if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar reglamento con los datos: {Código: "+this.codigoR+", nombre:"+this.txtNombreR+", archivos: "+this.archivoNombre+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
          this.modalRegla = false;
          this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Reglamento ' + this.mensajesg.IngresadoCorrectamente});
          this.listarReglamentos();
@@ -358,6 +435,15 @@ export class OpcionesComponent implements OnInit {
        );
    
        if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Modificar",
+          aud_descripcion:"Modificar Padre opción con los datos: {Código: "+this.txtCodigo+", Nombre:"+this.txtNombre+", Icono: "+this.txtIcono+", Estado: "+this.txtEstado+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
          this.modalPadreOpM = false;
          this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Encabezado Opción ' + this.mensajesg.ModificadoCorrectamente});
          this.listarPadreOpcion();
@@ -386,6 +472,15 @@ export class OpcionesComponent implements OnInit {
       );
   
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Modificar",
+          aud_descripcion:"Modificar opción con los datos: {Código: "+this.txtCodigo+", Nombre:"+this.txtNombre+", Descripción: "+this.txtDescripcion+", Url: "+this.txtUrl+", Estado: "+this.txtEstado+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.modalOpcionM = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Opción ' + this.mensajesg.ModificadoCorrectamente});
         this.listarOpcion();
@@ -413,6 +508,15 @@ export class OpcionesComponent implements OnInit {
        );
    
        if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Modificar",
+          aud_descripcion:"Modificar reglamento con los datos: {Código: "+this.txtCodigo+", Nombre:"+this.txtNombreR+", Archivos: "+this.archivoNombreM+", Estado: "+this.txtEstado+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
          this.modalReglaM = false;
          this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Reglamento ' + this.mensajesg.ModificadoCorrectamente});
          this.listarReglamentosOp();
@@ -439,6 +543,15 @@ export class OpcionesComponent implements OnInit {
        );
    
        if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar reglamento opción con los datos: {Reglamento:"+this.txtCodigo+", Opción: "+this.txtOpcion+", Fecha Inicio: "+this.fechaI+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
          this.modalReglaOp = false;
          this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Reglamento Opción ' + this.mensajesg.IngresadoCorrectamente});
          this.listarReglamentosOp();
@@ -467,6 +580,15 @@ export class OpcionesComponent implements OnInit {
        );
    
        if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Modificar",
+          aud_descripcion:"Modificar Reglamento Opción con los datos: {Reglamento:"+this.txtCodigo+", Opción: "+this.txtOpcion+", Fecha Inicio: "+this.fechaI+", Estado: "+this.txtEstado+", Opción M: "+this.txtIcono+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
          this.modalReglaOpM = false;
          this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Reglamento Opción ' + this.mensajesg.ModificadoCorrectamente});
          this.listarReglamentosOp();
@@ -524,6 +646,15 @@ export class OpcionesComponent implements OnInit {
       );
   
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Eliminar",
+          aud_descripcion:"Eliminar archivo con los datos: {Archivo: "+nombre+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         var index = this.archivoNombre.indexOf(nombre);
         this.archivoNombre.splice(index,1);
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Archivo ' + this.mensajesg.EliminadoCorrectamente});
@@ -545,6 +676,15 @@ export class OpcionesComponent implements OnInit {
     );
 
     if (datos.success) {
+      const datosAudi={
+        aud_usuario:this.sessionUser,
+        aud_proceso:"Eliminar",
+        aud_descripcion:"Eliminar archivo con los datos: {Código: "+file.rar_codigo+", Nombre: "+file.rar_nombre+", Reglamento: "+file.rar_reglamento+"}",
+        aud_rol:this.sessionRol,
+        aud_dependencia:this.sessionDepC
+      }
+      const datosAud = await new Promise<any>((resolve) =>
+      this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
       this.eliminarArchivo(file.rar_nombre);
     } else {
       this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorEliminarArchivos});

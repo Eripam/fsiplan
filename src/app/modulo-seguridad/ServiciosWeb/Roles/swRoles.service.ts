@@ -33,4 +33,9 @@ export class swRoles {
     let direccion = this.UrlSiplanR+'ListaRolesActivos';
       return this.http.get<any>(direccion);
   }
+
+  ListaRolesActivosD(): Observable<any>{
+    let direccion = this.UrlSiplanR+'ListaRolesActivosD';
+      return this.http.get<any>(direccion);
+  }
 }

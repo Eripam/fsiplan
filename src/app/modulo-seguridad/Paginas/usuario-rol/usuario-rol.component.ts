@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem, MessageService, ConfirmationService } from 'primeng/api';
-import { listaI, rolpersona, dependencia, Data, rolopcion, opcion, PadreOpcion} from '../../Interface/seguridad';
+import { listaI, rolpersona, dependencia, Data, rolopcion, opcion, PadreOpcion, Usuario} from '../../Interface/seguridad';
 import { swRolpersonaService} from '../../ServiciosWeb/RolPersona/swRolpersona.service';
 import { swDependencia} from '../../ServiciosWeb/Dependencia/swDependencia.service';
 import { swRoles} from '../../ServiciosWeb/Roles/swRoles.service';
 import { swPersona} from '../../ServiciosWeb/Usuarios/swPersona.service';
 import { MensajesGenerales} from '../../../Herramientas/Mensajes/MensajesGenerales.component';
 import { swPadreopcionService } from '../../ServiciosWeb/PadreOpcion/swpadreopcion.service';
-import { ThrowStmt } from '@angular/compiler';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
-import { ActivatedRoute } from '@angular/router';
 import { SwAuditoriaService } from '../../ServiciosWeb/Auditoria/swAuditoria.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-rolpersona',
-  templateUrl: './rolpersona.component.html',
-  styleUrls: ['./rolpersona.component.scss'],
+  selector: 'app-usuario-rol',
+  templateUrl: './usuario-rol.component.html',
+  styleUrls: ['./usuario-rol.component.scss'],
   providers: [MessageService, ConfirmationService]
 })
-export class RolpersonaComponent implements OnInit {
+export class UsuarioRolComponent implements OnInit {
+
   //Variable para listar
   listaRolP: rolpersona[] = [];
   listaUsuarios: any[]=[];
@@ -65,14 +65,20 @@ export class RolpersonaComponent implements OnInit {
   sessionDepC:number=0;
   txtIngresar:boolean=false;
   txtModificar:boolean=false;
+  txtCheck:boolean=false;
+  txtCodigo: string = '';
+  txtCedula: string = '';
+  txtApellidoP: string = '';
+  txtApellidoS: string = '';
+  txtEmail: string = '';
+  //Variable para mostrar los datos por usuario
+  bsPersona: any | undefined;  
   
-  constructor(private RolPersonaSer: swRolpersonaService, private swDep: swDependencia, private swRoles: swRoles, private swUsuario: swPersona, private messageService: MessageService ,private mensajesg: MensajesGenerales, private swOpciones: swPadreopcionService, private sesiones: SesionUsuario, private route: ActivatedRoute, private swAuditoria:SwAuditoriaService) {
+  constructor(private RolPersonaSer: swRolpersonaService, private swDep: swDependencia, private swRoles: swRoles, private swUsuario: swPersona, private messageService: MessageService ,private mensajesg: MensajesGenerales, private swOpciones: swPadreopcionService, private sesiones: SesionUsuario,  private route: ActivatedRoute, private swAuditoria:SwAuditoriaService, private PersonaSer: swPersona) {
   }
 
 
   async ngOnInit() {
-    this.listarRolPersona();
-    this.listaRolOpcion();
     const datosS=await this.sesiones.obtenerDatosLogin();
     this.sesionDep=datosS.dep_nombre;
     this.sessionDepC=datosS.rpe_dependencia;
@@ -94,11 +100,16 @@ export class RolpersonaComponent implements OnInit {
       { label: 'Activo', value: 1 },
       { label: 'Inactivo', value: 0 },
     ];
+    this.listarRolPersona();
   }
 
   //Función para listar todos los roles de usuarios ingresados
   async listarRolPersona() {
-    const datos:listaI = await new Promise<listaI>((resolve) =>  this.RolPersonaSer.ListaRolesPersona().subscribe((translated) => { resolve(translated); }));
+    console.log(this.sessionDepC);
+    const value={
+      codigo:this.sessionDepC
+    }
+    const datos:listaI = await new Promise<listaI>((resolve) =>  this.RolPersonaSer.ListaRolesPersonaDep(value).subscribe((translated) => { resolve(translated); }));
     if(datos.success){
       this.listaRolP = datos.data;
     }else{
@@ -120,7 +131,10 @@ export class RolpersonaComponent implements OnInit {
 
   //Función para listar todos los usuario activos
   async listarDependencias() {
-    const datos:listaI = await new Promise<listaI>((resolve) =>  this.swDep.ListaDependenciaAc().subscribe((translated) => { resolve(translated); }));
+    const value={
+      codigo: this.sessionDepC
+    }
+    const datos:listaI = await new Promise<listaI>((resolve) =>  this.swDep.ListaDependenciaPert(value).subscribe((translated) => { resolve(translated); }));
     if(datos.success){
       this.listaDependencias = datos.data;
     }else{
@@ -131,22 +145,11 @@ export class RolpersonaComponent implements OnInit {
 
   //Función para listar todos los usuario activos
   async listarRoles() {
-    const datos:listaI = await new Promise<listaI>((resolve) =>  this.swRoles.ListaRolesActivos().subscribe((translated) => { resolve(translated); }));
+    const datos:listaI = await new Promise<listaI>((resolve) =>  this.swRoles.ListaRolesActivosD().subscribe((translated) => { resolve(translated); }));
     if(datos.success){
       this.listaRoles = datos.data;
     }else{
       this.listaRoles =[];
-    }
-    this.loading = false;
-  }
-
-  //Función para listar todoas los roles opciones
-  async listaRolOpcion(){
-    const datos:listaI = await new Promise<listaI>((resolve) =>  this.RolPersonaSer.ListaRolOpcion().subscribe((translated) => { resolve(translated); }));
-    if(datos.success){
-      this.listaRolOp = datos.data;
-    }else{
-      this.listaRolOp =[];
     }
     this.loading = false;
   }
@@ -173,8 +176,36 @@ export class RolpersonaComponent implements OnInit {
     this.loading = false;
   }
 
+  //Función buscar usuario por cédula
+  buscarUsuarioC(cedula: string) {
+      if (cedula === '') {
+        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.CamposVacios});
+      } else {
+        this.PersonaSer.BuscarUsuario(cedula).subscribe((data) => {
+          this.bsPersona = data;
+          if (!data.success) {
+            this.messageService.add({severity: 'error',summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CedulaErronea});
+          } else {
+            this.txtCodigo = data.datos.per_id;
+            this.txtCedula = cedula;
+            this.txtNombre = data.datos.per_nombres;
+            this.txtApellidoP = data.datos.per_primerApellido;
+            this.txtApellidoS = data.datos.per_segundoApellido;
+            this.txtEmail = data.datos.per_email;
+          }
+        });
+      }
+   }
+
   openNew(){
     if(this.txtIngresar){
+      this.txtCheck=false;
+      this.txtNombre='';
+      this.txtApellidoP='';
+      this.txtApellidoS='';
+      this.txtCedula='';
+      this.txtEmail='';
+      this.txtCodigo='';
       this.txtDependencia=0;
       this.txtRol=0;
       this.txtUsuario="";
@@ -207,7 +238,7 @@ export class RolpersonaComponent implements OnInit {
   }
 
   modificarRolPersona(rolper: any){
-    if(this.txtModificar){
+    if(this.txtIngresar){
       this.tituloModal="Modificar Asignación de Rol";
       this.listarUsuarios();
       this.listarDependencias();
@@ -262,65 +293,105 @@ export class RolpersonaComponent implements OnInit {
   }
 
   async guardarRolPersona(){
-    this.rolpersona={
-      rpe_persona:this.txtUsuario,
-      rpe_rol:this.txtRol,
-      rpe_dependencia: this.txtDependencia
-    };
-
-    if (this.txtUsuario == '' || this.txtDependencia == 0 || this.txtRol== 0) {
-      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
-    } else {
-      const datos = await new Promise<any>((resolve) =>
-         this.RolPersonaSer.IngresarRolPersona(this.rolpersona).subscribe((translated) => {
-          resolve(translated);
-        })
+    if(this.txtCheck){
+      //Se crea esta variable porque en la base de datos se ingresa los apellidos juntos, en esta variable se une los dos apellidos que viene de la centralizada
+      var us_apellidos = this.txtApellidoP + ' ' + this.txtApellidoS;
+      let objUsuario = new Usuario(
+        this.txtCodigo,
+        this.txtCedula,
+        this.txtNombre,
+        us_apellidos,
+        this.txtEmail,
+        1
       );
-
-      if (datos.success) {
-        const datosAudi={
-          aud_usuario:this.sessionUser,
-          aud_proceso:"Ingresar",
-          aud_descripcion:"Ingresar rol persona con los datos: {Persona:"+this.txtUsuario+", Rol: "+this.txtRol+", Dependencia: "+this.txtDependencia+"}",
-          aud_rol:this.sessionRol,
-          aud_dependencia:this.sessionDepC
+  
+      if (this.txtCedula == '' || this.txtNombre == '' || this.txtApellidoP == '' || this.txtApellidoS == '' || this.txtEmail == '') {
+        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
+      } else {
+        const datos = await new Promise<any>((resolve) =>
+          this.PersonaSer.IngresarUsuario(objUsuario).subscribe((translated) => {
+            resolve(translated);
+          })
+        );
+  
+        if (datos.success) {
+          const datosAudi={
+            aud_usuario:this.sessionUser,
+            aud_proceso:"Ingresar",
+            aud_descripcion:"Ingresar usuario con los datos: {código: "+this.txtCodigo+", nombre:"+this.txtNombre+", apellidos:: "+us_apellidos+", cédula: "+this.txtCedula+", Email: "+this.txtEmail+"}",
+            aud_rol:this.sessionRol,
+            aud_dependencia:this.sessionDepC
+          }
+          const datosAud = await new Promise<any>((resolve) =>
+          this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
+          this.rolpersona={
+            rpe_persona:this.txtCodigo,
+            rpe_rol:this.txtRol,
+            rpe_dependencia: this.txtDependencia
+          };
+      
+          if (this.txtDependencia == 0 || this.txtRol== 0) {
+            this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
+          } else {
+            const datos = await new Promise<any>((resolve) =>
+               this.RolPersonaSer.IngresarRolPersona(this.rolpersona).subscribe((translated) => {
+                resolve(translated);
+              })
+            );
+      
+            if (datos.success) {
+              const datosAudi={
+                aud_usuario:this.sessionUser,
+                aud_proceso:"Ingresar",
+                aud_descripcion:"Ingresar usuario rol con los datos: {código: "+this.txtCodigo+", Rol: "+this.txtRol+", Dependencia: "+this.txtDependencia+"}",
+                aud_rol:this.sessionRol,
+                aud_dependencia:this.sessionDepC
+              }
+              const datosAud = await new Promise<any>((resolve) =>
+              this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
+              this.modalRolPer = false;
+              this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Usuario registrado ' + this.mensajesg.IngresadoCorrectamente});
+              this.listarRolPersona();
+            } else {
+              this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
+            }
+          }
+        } else {
+          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: "Verifique que el usuario no este ingresado y que los datos ingresados esten correctos."});
         }
-        const datosAud = await new Promise<any>((resolve) =>
-        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
-        this.modalRolPer = false;
-        this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Asignación de usuario ' + this.mensajesg.IngresadoCorrectamente});
-        this.listarRolPersona();
-      } else {
-        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
       }
-    }
-  }
-
-  async guardarRolOpcion(){
-    this.rolopcion={
-      rop_rol: this.txtRol,
-      rop_padreop : parseInt(this.txtPadreOp),
-      rop_opcion: parseInt(this.txtOpcion),
-      rop_insertar: this.insertCheck,
-      rop_modificar:this.updateCheck,
-      rop_eliminar:this.deleteCheck
-    };
-
-    if (this.txtRol == 0 || this.txtPadreOp == '' || this.txtOpcion== '' || this.insertCheck==null || this.updateCheck==null || this.deleteCheck==null) {
-      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
-    } else {
-      const datos = await new Promise<any>((resolve) =>
-         this.RolPersonaSer.IngresarRolOpcion(this.rolopcion).subscribe((translated) => {
-          resolve(translated);
-        })
-      );
-
-      if (datos.success) {
-        this.modalRolOp = false;
-        this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Asignación de opción a rol ' + this.mensajesg.IngresadoCorrectamente});
-        this.listaRolOpcion();
+    }else{
+      this.rolpersona={
+        rpe_persona:this.txtUsuario,
+        rpe_rol:this.txtRol,
+        rpe_dependencia: this.txtDependencia
+      };
+  
+      if (this.txtUsuario == '' || this.txtDependencia == 0 || this.txtRol== 0) {
+        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
       } else {
-        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
+        const datos = await new Promise<any>((resolve) =>
+           this.RolPersonaSer.IngresarRolPersona(this.rolpersona).subscribe((translated) => {
+            resolve(translated);
+          })
+        );
+  
+        if (datos.success) {
+          const datosAudi={
+            aud_usuario:this.sessionUser,
+            aud_proceso:"Ingresar",
+            aud_descripcion:"Ingresar usuario rol con los datos: {código: "+this.txtUsuario+", Rol: "+this.txtRol+", Dependencia: "+this.txtDependencia+"}",
+            aud_rol:this.sessionRol,
+            aud_dependencia:this.sessionDepC
+          }
+          const datosAud = await new Promise<any>((resolve) =>
+          this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
+          this.modalRolPer = false;
+          this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Asignación de usuario ' + this.mensajesg.IngresadoCorrectamente});
+          this.listarRolPersona();
+        } else {
+          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
+        }
       }
     }
   }
@@ -348,38 +419,6 @@ export class RolpersonaComponent implements OnInit {
         this.modalRolPerM = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Asignar Rol a persona ' + this.mensajesg.ModificadoCorrectamente});
         this.listarRolPersona();
-      } else {
-        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
-      }
-    }
-  }
-
-  async guardarRolOpcionM(){
-    this.rolopcion={
-      rop_rol:this.txtRol,
-      rop_padreop:parseInt(this.txtPadreOp),
-      rop_padreop_a:parseInt(this.txtPadreOpM),
-      rop_opcion:parseInt(this.txtOpcion),
-      rop_opcion_a:parseInt(this.txtOpcionM),
-      rop_insertar:this.insertCheck,
-      rop_modificar:this.updateCheck,
-      rop_eliminar:this.deleteCheck,
-      rop_estado:parseInt(this.txtEstado)
-    }
-  
-    if (this.txtPadreOp == '' || this.txtRol == 0 || this.txtOpcion == '' || this.insertCheck == null || this.updateCheck==null || this.deleteCheck==null) {
-      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
-    }  else {
-      const datos = await new Promise<any>((resolve) =>
-        this.RolPersonaSer.ModificarRolOpcion(this.rolopcion).subscribe((translated) => {
-          resolve(translated);
-        })
-      );
-  
-      if (datos.success) {
-        this.modalRolOpM = false;
-        this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Asignar Opción a Rol ' + this.mensajesg.ModificadoCorrectamente});
-        this.listaRolOpcion();
       } else {
         this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
       }

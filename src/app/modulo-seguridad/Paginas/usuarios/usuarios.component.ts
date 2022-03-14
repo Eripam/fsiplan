@@ -6,6 +6,8 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { MensajesGenerales } from '../../../Herramientas/Mensajes/MensajesGenerales.component';
 import { Usuario, Data, listaI } from '../../Interface/seguridad';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
+import { ActivatedRoute } from '@angular/router';
+import { SwAuditoriaService } from '../../ServiciosWeb/Auditoria/swAuditoria.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -49,8 +51,13 @@ export class UsuariosComponent implements OnInit {
   sesionDep: string='';
   //Variable de clase usuario y roles
   role: Data={};
+  txtIngresar:boolean=false;
+  txtModificar:boolean=false;
+  sessionDepC:number=0;
+  sessionUser:string='';
+  sessionRol:string='';
 
-  constructor(private PersonaSer: swPersona, private messageService: MessageService,private mensajesg: MensajesGenerales, private RolSer: swRoles, private sesiones: SesionUsuario) {
+  constructor(private PersonaSer: swPersona, private messageService: MessageService,private mensajesg: MensajesGenerales, private RolSer: swRoles, private sesiones: SesionUsuario, private route: ActivatedRoute, private swAuditoria: SwAuditoriaService) {
   }
 
   async ngOnInit() {
@@ -58,7 +65,17 @@ export class UsuariosComponent implements OnInit {
     this.listarRoles();
     const datosS=await this.sesiones.obtenerDatosLogin();
     this.sesionDep=datosS.dep_nombre;
-
+    this.sessionDepC=datosS.rpe_dependencia;
+    this.sessionUser=datosS.rpe_persona;
+    this.sessionRol=datosS.rol_nombre;
+    const valores={
+      rol:datosS.rpe_rol,
+      opcion:this.route.snapshot.paramMap.get('opc'),
+      padreop:this.route.snapshot.paramMap.get('enc')
+    }
+    const datosRol=await this.sesiones.obtenerOpcionesUsuario(valores);
+    this.txtIngresar=datosRol.rop_insertar;
+    this.txtModificar=datosRol.rop_modificar;
     //Menu superio con enlace del home
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 
@@ -113,6 +130,15 @@ export class UsuariosComponent implements OnInit {
       );
 
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar usuario con los datos: {código: "+this.txtCodigo+", nombre:"+this.txtNombre+", apellidos:: "+us_apellidos+", cédula: "+this.txtCedula+", Email: "+this.txtEmail+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.productDialog = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Usuario ' + this.mensajesg.IngresadoCorrectamente});
         this.listarUsuarios();
@@ -139,6 +165,15 @@ export class UsuariosComponent implements OnInit {
         );
   
         if (datos.success) {
+          const datosAudi={
+            aud_usuario:this.sessionUser,
+            aud_proceso:"Ingresar",
+            aud_descripcion:"Ingresar rol con los datos: {descripción: "+this.txtDescripcionRol+", nombre:"+this.txtNombreRol+"}",
+            aud_rol:this.sessionRol,
+            aud_dependencia:this.sessionDepC
+          }
+          const datosAud = await new Promise<any>((resolve) =>
+          this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
           this.productDialog3 = false;
           this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Rol ' + this.mensajesg.IngresadoCorrectamente});
           this.listarRoles();
@@ -168,14 +203,18 @@ export class UsuariosComponent implements OnInit {
 
   //Función para mostrar los datos en el modal, y posterior modificarlos
   modificarUsuario(usuario: any) {
-    this.tituloModal = 'Modificar Usuario';
-    this.txtCedula = usuario.per_cedula;
-    this.txtCodigo = usuario.per_codigo;
-    this.txtNombre = usuario.per_nombres;
-    this.txtApellidoP = usuario.per_apellidos;
-    this.txtEmail = usuario.per_email;
-    this.txtEstado = usuario.per_estado;
-    this.productDialog2 = true;
+    if(this.txtModificar){
+      this.tituloModal = 'Modificar Usuario';
+      this.txtCedula = usuario.per_cedula;
+      this.txtCodigo = usuario.per_codigo;
+      this.txtNombre = usuario.per_nombres;
+      this.txtApellidoP = usuario.per_apellidos;
+      this.txtEmail = usuario.per_email;
+      this.txtEstado = usuario.per_estado;
+      this.productDialog2 = true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   //Función para guardar datos modificados
@@ -199,6 +238,15 @@ export class UsuariosComponent implements OnInit {
       );
 
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Modificar",
+          aud_descripcion:"Modificar usuario con los datos: {código: "+this.txtCodigo+", nombre:"+this.txtNombre+", apellidos:: "+this.txtApellidoP+", cédula: "+this.txtCedula+", Email: "+this.txtEmail+", Estado:"+this.txtEstado+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.productDialog2 = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Usuario ' + this.mensajesg.ModificadoCorrectamente});
         this.listarUsuarios();
@@ -210,12 +258,16 @@ export class UsuariosComponent implements OnInit {
 
   //Función para mostrar los datos en el modal de roles
   modificarRol(rol: any){
-    this.tituloModal='Modificar Rol';
-    this.txtCodigoRol=rol.rol_codigo;
-    this.txtNombreRol=rol.rol_nombre;
-    this.txtDescripcionRol=rol.rol_descripcion;
-    this.txtEstado=rol.rol_estado;
-    this.productDialog4=true;
+    if(this.txtModificar){
+      this.tituloModal='Modificar Rol';
+      this.txtCodigoRol=rol.rol_codigo;
+      this.txtNombreRol=rol.rol_nombre;
+      this.txtDescripcionRol=rol.rol_descripcion;
+      this.txtEstado=rol.rol_estado;
+      this.productDialog4=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   //Función para guardar datos modificados
@@ -237,6 +289,15 @@ export class UsuariosComponent implements OnInit {
         );
   
         if (datos.success) {
+          const datosAudi={
+            aud_usuario:this.sessionUser,
+            aud_proceso:"Modificar",
+            aud_descripcion:"Modificar rol con los datos: {Código: "+this.txtCodigoRol+", descripción: "+this.txtDescripcionRol+", nombre:"+this.txtNombreRol+", Estado: "+this.txtEstado+"}",
+            aud_rol:this.sessionRol,
+            aud_dependencia:this.sessionDepC
+          }
+          const datosAud = await new Promise<any>((resolve) =>
+          this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
           this.productDialog4 = false;
           this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Rol ' + this.mensajesg.ModificadoCorrectamente});
           this.listarRoles();
@@ -249,21 +310,29 @@ export class UsuariosComponent implements OnInit {
 
   //Función para abrir el modal de ingresar usuario
   openNew() {
-    this.txtCedula='';
-    this.txtNombre='';
-    this.txtApellidoP='';
-    this.txtApellidoS='';
-    this.txtEmail='';
-    this.tituloModal = 'Ingresar Usuario';
-    this.productDialog = true;
+    if(this.txtIngresar){
+      this.txtCedula='';
+      this.txtNombre='';
+      this.txtApellidoP='';
+      this.txtApellidoS='';
+      this.txtEmail='';
+      this.tituloModal = 'Ingresar Usuario';
+      this.productDialog = true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   openNewRol() {
-    this.txtNombreRol='';
-    this.txtDescripcionRol='';
-    this.txtCodigoRol='';
-    this.tituloModal = 'Ingresar Rol';
-    this.productDialog3 = true;
+    if(this.txtIngresar){
+      this.txtNombreRol='';
+      this.txtDescripcionRol='';
+      this.txtCodigoRol='';
+      this.tituloModal = 'Ingresar Rol';
+      this.productDialog3 = true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   //Función para cerrar el modal de ingresar usuario

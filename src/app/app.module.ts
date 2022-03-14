@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import {HttpClient, HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
+import {  HTTP_INTERCEPTORS} from '@angular/common/http';
 import * as $ from 'jquery';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -28,6 +28,7 @@ import { CasClient } from '../app/casClient/CasClient';
 import {HttpService} from "../app/casClient/http.service"
 import { SesionUsuario} from './casClient/SesionUsuario';
 import { ErrorAccesoComponent } from './Herramientas/PaginasError/error-acceso/error-acceso.component';
+import { AuthInterceptorService } from './Herramientas/interceptor.interceptor';
 
 @NgModule({
   declarations: [
@@ -41,13 +42,12 @@ import { ErrorAccesoComponent } from './Herramientas/PaginasError/error-acceso/e
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     SpinnerModule,
     ModuloTemplatesModule,
     ModuloSeguridadModule,
     ModuloProspectivaModule
   ],
-  providers: [configServiciosWeb, MensajesGenerales, {provide: HTTP_INTERCEPTORS, useClass:SpinnerInterceptor, multi: true}, EjecutarScript, CasClient, HttpService, SesionUsuario],
+  providers: [configServiciosWeb, MensajesGenerales, {provide: HTTP_INTERCEPTORS, useClass:SpinnerInterceptor, multi: true}, EjecutarScript, CasClient, HttpService, SesionUsuario, {provide:HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

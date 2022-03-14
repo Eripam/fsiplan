@@ -1,0 +1,13 @@
+.contenedor{
+    &_caja{
+        border: 1px solid black;
+        .encabezado{
+            background-color: gainsboro;
+            font-weight: bold;
+        }
+        .cuerpo{
+            padding: 0em;
+            border-bottom: 1px solid black;
+        }
+    }
+}

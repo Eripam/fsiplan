@@ -4,6 +4,8 @@ import { listaI, tipoDep, dependencia} from '../../Interface/seguridad';
 import { swDependencia} from '../../ServiciosWeb/Dependencia/swDependencia.service';
 import { MensajesGenerales} from '../../../Herramientas/Mensajes/MensajesGenerales.component';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
+import { ActivatedRoute } from '@angular/router';
+import { SwAuditoriaService } from '../../ServiciosWeb/Auditoria/swAuditoria.service';
 
 @Component({
   selector: 'app-dependencias',
@@ -44,9 +46,14 @@ export class DependenciasComponent implements OnInit {
   tipoDep: tipoDep={};
   dependencia : dependencia= {};
   sesionDep:string='';
+  sessionUser:string='';
+  sessionRol:string='';
+  sessionDepC:number=0;
+  txtIngresar:boolean=false;
+  txtModificar:boolean=false;
 
 
-  constructor(private DependenciaSer: swDependencia, private messageService: MessageService ,private mensajesg: MensajesGenerales, private sesiones:SesionUsuario) {
+  constructor(private DependenciaSer: swDependencia, private messageService: MessageService, private mensajesg: MensajesGenerales, private sesiones:SesionUsuario, private route: ActivatedRoute, private swAuditoria:SwAuditoriaService) {
   }
 
   async ngOnInit() {
@@ -54,6 +61,17 @@ export class DependenciasComponent implements OnInit {
     this.listarDependencias();
     const datosS=await this.sesiones.obtenerDatosLogin();
     this.sesionDep=datosS.dep_nombre;
+    this.sessionDepC=datosS.rpe_dependencia;
+    this.sessionUser=datosS.rpe_persona;
+    this.sessionRol=datosS.rol_nombre;
+    const valores={
+      rol:datosS.rpe_rol,
+      opcion:this.route.snapshot.paramMap.get('opc'),
+      padreop:this.route.snapshot.paramMap.get('enc')
+    }
+    const datosRol=await this.sesiones.obtenerOpcionesUsuario(valores);
+    this.txtIngresar=datosRol.rop_insertar;
+    this.txtModificar=datosRol.rop_modificar;
     //Menu superio con enlace del home
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 
@@ -107,22 +125,30 @@ export class DependenciasComponent implements OnInit {
       this.loading = false;
     }
   openNew(){
-    this.txtNombre='';
-    this.txtCodigo='';
-    this.tituloModal = 'Ingresar Tipo Dependencia';
-    this.modalTipoDep = true;
+    if(this.txtIngresar){
+      this.txtNombre='';
+      this.txtCodigo='';
+      this.tituloModal = 'Ingresar Tipo Dependencia';
+      this.modalTipoDep = true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   openNewD(){
-    this.listarTipoDependenciasA();
-    this.listarDependenciasAc();
-    this.txtNombre='',
-    this.txtAlias='',
-    this.txtPertenece=0,
-    this.txtTipo=0,
-    this.txtCodigo='',
-    this.tituloModal= 'Ingresar Dependencia';
-    this.modalDep=true;
+    if(this.txtIngresar){
+      this.listarTipoDependenciasA();
+      this.listarDependenciasAc();
+      this.txtNombre='',
+      this.txtAlias='',
+      this.txtPertenece=0,
+      this.txtTipo=0,
+      this.txtCodigo='',
+      this.tituloModal= 'Ingresar Dependencia';
+      this.modalDep=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   //Función para guardar el tipo dependencia
@@ -141,6 +167,15 @@ export class DependenciasComponent implements OnInit {
       );
 
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar tipo dependencia con los datos: {nombre:"+this.txtNombre+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.modalTipoDep = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Tipo Dependencia ' + this.mensajesg.IngresadoCorrectamente});
         this.listarTipoDependencias();
@@ -170,6 +205,15 @@ export class DependenciasComponent implements OnInit {
       );
 
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar dependencia con los datos: {Nombre:"+this.txtNombre+", Alias:"+this.txtAlias+", Depende: "+this.txtPertenece+", Tipo: "+this.txtTipo+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.modalDep = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Dependencia ' + this.mensajesg.IngresadoCorrectamente});
         this.listarDependencias();
@@ -180,24 +224,32 @@ export class DependenciasComponent implements OnInit {
   }
 
   modificarTipoDep(tipoDep: any){
-    this.tituloModal='Modificar Tipo Dependencia';
-    this.txtCodigo=tipoDep.tde_codigo;
-    this.txtNombre=tipoDep.tde_nombre;
-    this.txtEstado=tipoDep.tde_estado;
-    this.modalTipoDepM=true;
+    if(this.txtModificar){
+      this.tituloModal='Modificar Tipo Dependencia';
+      this.txtCodigo=tipoDep.tde_codigo;
+      this.txtNombre=tipoDep.tde_nombre;
+      this.txtEstado=tipoDep.tde_estado;
+      this.modalTipoDepM=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   modificarDep(dependencia: any){
-    this.listarTipoDependenciasA();
-    this.listarDependenciasAc();
-    this.tituloModal='Modificar Dependencia';
-    this.txtCodigo=dependencia.dep_codigo;
-    this.txtNombre=dependencia.dep_nombre;
-    this.txtTipo=dependencia.dep_tipo;
-    this.txtAlias=dependencia.dep_alias;
-    this.txtPertenece=dependencia.dep_codcodigo;
-    this.txtEstado=dependencia.dep_estado;
-    this.modalDepM=true;
+    if(this.txtModificar){
+      this.listarTipoDependenciasA();
+      this.listarDependenciasAc();
+      this.tituloModal='Modificar Dependencia';
+      this.txtCodigo=dependencia.dep_codigo;
+      this.txtNombre=dependencia.dep_nombre;
+      this.txtTipo=dependencia.dep_tipo;
+      this.txtAlias=dependencia.dep_alias;
+      this.txtPertenece=dependencia.dep_codcodigo;
+      this.txtEstado=dependencia.dep_estado;
+      this.modalDepM=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
   }
 
   //Función para guardar datos modificados
@@ -218,6 +270,15 @@ export class DependenciasComponent implements OnInit {
         );
   
         if (datos.success) {
+          const datosAudi={
+            aud_usuario:this.sessionUser,
+            aud_proceso:"Modificar",
+            aud_descripcion:"Modificar tipo dependencia con los datos: {nombre:"+this.txtNombre+", Código: "+this.txtCodigo+", Estado: "+this.txtEstado+"}",
+            aud_rol:this.sessionRol,
+            aud_dependencia:this.sessionDepC
+          }
+          const datosAud = await new Promise<any>((resolve) =>
+          this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
           this.modalTipoDepM = false;
           this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Tipo Dependencia ' + this.mensajesg.ModificadoCorrectamente});
           this.listarTipoDependencias();
@@ -235,6 +296,7 @@ async modificarDepM() {
     dep_nombre:this.txtNombre,
     dep_alias:this.txtAlias,
     dep_codcodigo:this.txtPertenece,
+    dep_tipo:this.txtTipo,
     dep_estado:parseInt(this.txtEstado)
   }
 
@@ -248,6 +310,15 @@ async modificarDepM() {
     );
 
     if (datos.success) {
+      const datosAudi={
+        aud_usuario:this.sessionUser,
+        aud_proceso:"Modificar",
+        aud_descripcion:"Modificar dependencia con los datos: {Código: "+this.txtCodigo+",Nombre:"+this.txtNombre+", Alias: "+this.txtAlias+", Pertenece: "+this.txtPertenece+", Tipo: "+this.txtTipo+",Estado: "+this.txtEstado+"}",
+        aud_rol:this.sessionRol,
+        aud_dependencia:this.sessionDepC
+      }
+      const datosAud = await new Promise<any>((resolve) =>
+      this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
       this.modalDepM = false;
       this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Dependencia ' + this.mensajesg.ModificadoCorrectamente});
       this.listarDependencias();

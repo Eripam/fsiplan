@@ -1,4 +1,45 @@
-<!-- <p-toast></p-toast>
+<p-toast></p-toast>
+<!--Modal para ingresar prospectiva-->
+<p-dialog [(visible)]="modalProspectiva" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+  <ng-template pTemplate="content">
+      <div class="form-group row m-1" *ngIf="txtCodigo>0">
+        <label for="name" class="col-sm-2 col-form-label">Código:</label>
+        <div class="col-sm-10">
+          <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
+        </div>
+      </div>  
+      <div class="form-group row m-1">
+          <label for="name" class="col-sm-2 col-form-label">Nombre:</label>
+          <div class="col-sm-10">
+            <input type="text" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre">
+          </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label">Fechas:</label>
+        <div class="col-10 row p-0 m-0">
+          <div class="col-sm-6">
+            <p-calendar [(ngModel)]="txtFechaI" appendTo="body" dateFormat="dd/mm/yy" [showIcon]="true" inputId="icon" [hideTransitionOptions]="'1ms'" placeholder="Fecha Inicio"></p-calendar>
+          </div>
+          <div class="col-sm-6">
+            <p-calendar [(ngModel)]="txtFechaF" appendTo="body" dateFormat="dd/mm/yy" [showIcon]="true" inputId="icon" [hideTransitionOptions]="'1ms'" placeholder="Fecha Fin"></p-calendar>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row m-1" *ngIf="txtCodigo>0">
+        <label for="txtEstado" class="col-sm-2 col-form-label">Estado:</label>
+        <div class="col-sm-10">
+          <select name="sltEstado" id="sltEstado" class="form-control" [(ngModel)]="txtEstado">
+            <option [ngValue]='1'>Activo</option>
+            <option [ngValue]='0'>Inactivo</option>
+          </select>
+        </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogP()"></button>
+      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarProspectiva()"></button>
+  </ng-template>
+</p-dialog>
 <div class="row">
   <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
   <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
@@ -6,13 +47,13 @@
 </div>
 <div class="navegacion">
   <h2 class="navegacion__titulo">Gestión de Prospectiva</h2>
-  <em>Creación de prospectivas institucionales </em>
+  <em>Creación de prospectivas institucionales o departamentales</em>
 </div>
 
 <p-tabView styleClass="tabview-custom">
       <div>
         <span class="buscar-crear">
-          <button pButton pRipple label="Crear Tipo Dependencia" icon="pi pi-plus" class="p-mr-2" (click)="openNew()"></button>
+          <button pButton pRipple label="Crear Prospectiva" icon="pi pi-plus" class="p-mr-2" (click)="openNew()"></button>
             <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
         </span>
     </div>
@@ -20,26 +61,47 @@
   <p-table #dt1 [value]="listaProspectivas" dataKey="id" [rowHover]="true" scrollHeight="500px"
       [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
       [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
-      [globalFilterFields]="['tde_codigo','tde_nombre', 'tde_estado_nombre']" responsiveLayout="scroll">
+      [globalFilterFields]="['pro_id','pro_nombre', 'pro_estado_nombre']" responsiveLayout="scroll">
       <ng-template pTemplate="header">
           <tr>
-              <th pSortableColumn="tde_codigo" style="width: 8rem; text-align: center;">
+              <th pSortableColumn="pro_id" style="width: 8rem; text-align: center;">
                 <div class="p-d-flex p-jc-between p-ai-center">
                   Código
-                  <p-sortIcon field="tde_codigo"></p-sortIcon>
+                  <p-sortIcon field="pro_id"></p-sortIcon>
               </div>
               </th>  
-              <th pSortableColumn="tde_nombre">
+              <th pSortableColumn="pro_nombre">
                 <div class="p-d-flex p-jc-between p-ai-center">
                   Nombre
-                  <p-sortIcon field="tde_nombre"></p-sortIcon>
-                  <p-columnFilter type="text" field="tde_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                  <p-sortIcon field="pro_ nombre"></p-sortIcon>
+                  <p-columnFilter type="text" field="pro_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                </div>
+               </th>
+               <th pSortableColumn="pro_fi">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Fecha Inicio
+                  <p-sortIcon field="pro_fi"></p-sortIcon>
+                  <p-columnFilter type="text" field="pro_fi" display="menu" class="p-ml-auto"></p-columnFilter>
+                </div>
+               </th>
+               <th pSortableColumn="pro_ff">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Fecha Fin
+                  <p-sortIcon field="pro_ff"></p-sortIcon>
+                  <p-columnFilter type="text" field="pro_ff" display="menu" class="p-ml-auto"></p-columnFilter>
+                </div>
+               </th>
+               <th pSortableColumn="pro_ff">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Tipo
+                  <p-sortIcon field="pro_ff"></p-sortIcon>
+                  <p-columnFilter type="text" field="pro_ff" display="menu" class="p-ml-auto"></p-columnFilter>
                 </div>
                </th>
                <th class="text-center">
                   <div class="p-d-flex p-jc-between p-ai-center">
                       Estado
-                      <p-columnFilter field="tde_estado" matchMode="equals" display="menu">
+                      <p-columnFilter field="pro_estado" matchMode="equals" display="menu">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                             <p-dropdown [ngModel]="value" placeholder="Any">
                                 <ng-template let-option pTemplate="item">
@@ -57,19 +119,32 @@
                </th>
           </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-tdep>
+      <ng-template pTemplate="body" let-pros>
           <tr>
               <td class="text-center">
-                  {{tdep.tde_codigo}}
+                  {{pros.pro_id}}
               </td>
               <td>
-                  {{tdep.tde_nombre}}
+                  {{pros.pro_nombre}}
+              </td>
+              <td>
+                {{pros.pro_fi|date}}
+              </td>
+              <td>
+                {{pros.pro_ff|date}}
+              </td>
+              <ng-template ngFor let-tipo [ngForOf]="listaTipoD">
+                <td *ngIf="pros.pro_tipo==tipo.tde_codigo">  
+                  {{tipo.tde_nombre}}
+                </td>
+              </ng-template>
+              
+              <td class="text-center">
+                <span [class]="'customer-badge status-' + pros.pro_estado">{{pros.pro_estado_nombre}}</span>
               </td>
               <td class="text-center">
-                <span [class]="'customer-badge status-' + tdep.tde_estado">{{tdep.tde_estado_nombre}}</span>
-              </td>
-              <td class="text-center">
-                  <button pButton pRipple icon="pi pi-pencil" class="p-button p-mr-2" (click)="modificarTipoDep(tdep)"></button>
+                  <button pButton pRipple icon="pi pi-pencil" title="Editar prospectiva" class="p-button-rounded" (click)="modificarProspectiva(pros)"></button>
+                  <button pButton pRipple icon="fas fa-cog" title="Configuración Prospectiva"  class="p-button-rounded" (click)="irpagina(pros)"></button>
               </td>
           </tr>
       </ng-template>
@@ -78,5 +153,4 @@
             <td colspan="7">No se encontrarón registros.</td>
           </tr>
       </ng-template>
-  </p-table> -->
-  <h1>Holiiiiiiiiiiiiiii</h1>
+  </p-table>

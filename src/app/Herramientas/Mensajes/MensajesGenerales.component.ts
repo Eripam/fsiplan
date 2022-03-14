@@ -15,4 +15,5 @@ export class MensajesGenerales {
     ErrorProcesoDu: string = 'Error al ingresar, verifique que los datos no esten duplicados.';
     ErrorNoExisteDatos: string = 'No existe el dato que desea eliminar';
     ErrorEliminarArchivos: string = 'No se puede eliminar, debe tener al menos un archivo ingresado.';
+    NoAutorizado: string='Usted no posee los permisos para realizar esta acción';
 }

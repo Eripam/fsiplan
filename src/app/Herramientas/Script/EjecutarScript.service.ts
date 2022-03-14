@@ -54,23 +54,18 @@ export class EjecutarScript {
 
  //Recargar Color del Rol Logeado
   ColorUsuario(rol:any) {
-    if (rol == 1) {//Administrador
+    if (rol == 1 || rol==5) {//Administrador o super admin
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/administrador.css" type="text/css"/>');
-    }
-    if (rol == 2) {//Docente
+    }else if (rol == 2) {//Docente
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/decano.css" type="text/css"/>');
-    }
-    if (rol == 3) {//Administrador
+    }else if (rol == 3) {//Administrador
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/director.css" type="text/css"/>');
       //return "/planificacion";
-    }
-    if (rol == 4) {//AdminProceso
+    }else if (rol == 4) {//AdminProceso
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/analista.css" type="text/css"/>');
-    }
-    if (rol == 5) {//Analista1
+    }else if (rol == 6) {//Analista1
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/docente.css" type="text/css"/>');
-    }
-    if (rol == 0) {//Color por Defecto
+    }else {//color por defecto
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/estudiantes.css" type="text/css"/>');
     }
   }

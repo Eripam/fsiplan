@@ -1,0 +1,125 @@
+<p-toast></p-toast>
+<!--Modal para ingresar criterios-->
+<p-dialog [(visible)]="modalCriterioDes" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+    <ng-template pTemplate="content"> 
+        <div class="mb-2 subtitulo">{{txtTexto}}</div>
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-2 col-form-label">Descripción:</label>
+            <div class="col-sm-10">
+              <input type="hidden" name="txtCodigoC" [(ngModel)]="txtCodigoC">
+              <input type="hidden" name="txtCodigoCD" [(ngModel)]="txtCodigoCD">
+              <textarea pInputText class="form-control" [disabled]="txtCEliminar" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Ingresar la descripción"></textarea>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="btnCancelar" icon="pi pi-times" class="p-button-text" (click)="hidenModal()"></button>
+        <button pButton pRipple [label]="btnGuardar" icon="pi pi-check" class="p-button-text" (click)="ingresarCrides()"></button>
+    </ng-template>
+  </p-dialog>
+  <div class="row">
+    <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
+    <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
+    <div class="col-11 col-md-9">{{sesionDep}}</div></div>
+  </div>
+  <div class="navegacion">
+    <h2 class="navegacion__titulo">Creación de Prospectiva</h2>
+    <em>Creación de prospectiva instutucional o departamental</em>
+  </div>
+  <div class="row col-7 m-2">
+      <div class="col-2 tituloPros align-self-center">Prospectiva:</div>
+      <div class="col-10"><p-dropdown [options]="listaProspectivas" appendTo="body" [(ngModel)]="txtProspectiva" placeholder="Seleccionar Prospectiva" optionValue="pro_id" [filter]="true" filterBy="pro_nombre" optionLabel="pro_nombre" [showClear]="true" (onChange)="obtenerPros($event)"></p-dropdown></div>
+  </div>
+  <p-tabView>
+      <p-tabPanel [header]="item.fase_nombre" *ngFor="let item of listaFase; let i = index" [selected]="i == 0">
+        <span class="subtitulo">{{item.fase_nombre}}</span>
+        <p-tabView>
+            <ng-container *ngFor="let cri of listaCriterios">
+                <p-tabPanel [header]="cri.cri_nombre" *ngIf="item.fase_id==cri.cri_fase">
+                    <div>
+                        <span class="buscar-crear">
+                        <button pButton pRipple label="Crear {{cri.cri_nombre}}" icon="pi pi-plus" class="p-mr-2" (click)="openNewCD(cri)"></button>
+                            <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+                        </span>
+                    </div>
+                    <div class="widget-header mt-3"><h3>Listado de {{cri.cri_nombre}}</h3></div>
+                    <p-table #dt1 [value]="listaCriterioDes" dataKey="id" [rowHover]="true" scrollHeight="500px"
+                        [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+                        [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+                        [globalFilterFields]="['cri_id','cri_nombre', 'cri_estado_nombre', 'cdes_descripcion']" responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th pSortableColumn="cdes_descripcion">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                    {{cri.cri_nombre}} {{cri.enc_descripcion}}
+                                    <p-sortIcon field="cdes_descripcion"></p-sortIcon>
+                                    <p-columnFilter type="text" field="cdes_descripcion" display="menu" class="p-ml-auto"></p-columnFilter>
+                                </div>
+                                </th>
+                                <th pSortableColumn="con_descripcion" *ngIf="item.fase_id==1">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                    Consecuencia {{cri.enc_consecuencias}}
+                                    </div>
+                                </th>
+                                <th pSortableColumn="uto_descripcion" *ngIf="item.fase_id==2">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                    Utopías
+                                    </div>
+                                </th>
+                                <th pSortableColumn="acc_descripcion">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                    Acciones {{cri.enc_acciones}}
+                                    </div>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-crid>
+                            <tr *ngIf="cri.cri_id==crid.cdes_criterio">
+                                <td>
+                                    <div class="row m-0 p-0">
+                                        <span class="col-9 align-self-center">{{crid.cdes_descripcion}}</span>
+                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="editarCriterioD(crid, cri)"></button>
+                                            <button *ngIf="item.fase_id==1" pButton pRipple icon="fas fa-book-dead" title="Agregar Consecuencia" class="p-button-rounded p-button-text" (click)="agregarCon(crid, cri)"></button>
+                                            <button *ngIf="item.fase_id==2" pButton pRipple icon="fas fa-plus-circle" title="Agregar Utopías" class="p-button-rounded p-button-text" (click)="agregarUtop(crid, cri)"></button>
+                                            <button pButton pRipple icon="fas fa-book-medical" title="Agregar Acciones" class="p-button-rounded p-button-text" (click)="agregarAcc(crid, cri)"></button>
+                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(crid, cri, 1)"></button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td *ngIf="item.fase_id==1">
+                                    <div *ngFor="let cons of crid.consecuencias" class="row m-0 p-0">
+                                        <span class="col-9 align-self-center">{{cons.con_descripcion}}</span>
+                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="modificarConsec(cons, cri)"></button>
+                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(cons, cri, 2)"></button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td *ngIf="item.fase_id==2">
+                                    <div *ngFor="let cons of crid.utopias" class="row m-0 p-0">
+                                        <span class="col-9 align-self-center">{{cons.uto_descripcion}}</span>
+                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="modificarUtopia(cons, cri)"></button>
+                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(cons, cri, 4)"></button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div *ngFor="let acc of crid.acciones" class="row m-0 p-0">
+                                        <span class="col-9 align-self-center">{{acc.acc_descripcion}}</span>
+                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="modificarAccion(acc, cri)"></button>
+                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(acc, cri, 3)"></button>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="7">No se encontrarón registros.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-tabPanel>
+            </ng-container>
+        </p-tabView>
+      </p-tabPanel>
+  </p-tabView>

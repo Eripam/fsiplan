@@ -44,6 +44,11 @@ export class swDependencia {
     return this.http.get<listaI>(direccion);
   }
 
+  ListaDependenciaPert(codigo:any): Observable<listaI>{
+    let direccion = this.UrlSiplanD+ 'ListaDependenciaPertenece';
+    return this.http.post<listaI>(direccion, codigo);
+  }
+
   IngresarDependencia(tdep: any): Observable<any>{
     let direccion = this.UrlSiplanD+'IngresarDependencia';
     return this.http.post<any>(direccion, tdep);
