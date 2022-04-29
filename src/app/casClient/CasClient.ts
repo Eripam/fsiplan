@@ -24,10 +24,8 @@ export class CasClient {
             window.location.href = logout;
         } else {
             logout = CONFIG2.CASLOGOUT + "service=" + encodeURIComponent(CONFIG2.LOGOUT_REDIRECT);
-            console.log(logout)
             window.location.href = logout;
         }
-
     }
     public verificaLogin(): Promise<any> {
         if (!this.isAuthenticated()) {

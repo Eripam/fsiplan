@@ -10,6 +10,8 @@ import { swPadreopcionService } from '../../ServiciosWeb/PadreOpcion/swpadreopci
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { SwAuditoriaService } from '../../ServiciosWeb/Auditoria/swAuditoria.service';
 import { ActivatedRoute } from '@angular/router';
+import { configCorreo } from 'src/app/Herramientas/Correo/configCorreo';
+import { SwCorreoService } from 'src/app/Herramientas/Correo/swCorreo.service';
 
 @Component({
   selector: 'app-usuario-rol',
@@ -28,7 +30,7 @@ export class UsuarioRolComponent implements OnInit {
   listaOpcion: opcion[]=[];
   listaPadreOpcion:PadreOpcion[]=[];
   //Menú del home
-  items: MenuItem[] = [{ label: 'Gestión de Asignación de roles y permisos' }];
+  items: MenuItem[] = [];
   home!: MenuItem;
   //Variable para los estados de usuario
   statuses!: any[];
@@ -74,7 +76,7 @@ export class UsuarioRolComponent implements OnInit {
   //Variable para mostrar los datos por usuario
   bsPersona: any | undefined;  
   
-  constructor(private RolPersonaSer: swRolpersonaService, private swDep: swDependencia, private swRoles: swRoles, private swUsuario: swPersona, private messageService: MessageService ,private mensajesg: MensajesGenerales, private swOpciones: swPadreopcionService, private sesiones: SesionUsuario,  private route: ActivatedRoute, private swAuditoria:SwAuditoriaService, private PersonaSer: swPersona) {
+  constructor(private RolPersonaSer: swRolpersonaService, private swDep: swDependencia, private swRoles: swRoles, private swUsuario: swPersona, private messageService: MessageService ,private mensajesg: MensajesGenerales, private swOpciones: swPadreopcionService, private sesiones: SesionUsuario,  private route: ActivatedRoute, private swAuditoria:SwAuditoriaService, private PersonaSer: swPersona, private configCorreo: configCorreo, private swCorreo: SwCorreoService) {
   }
 
 
@@ -94,6 +96,7 @@ export class UsuarioRolComponent implements OnInit {
      this.txtModificar=datosRol.rop_modificar;
     //Menu superio con enlace del home
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+    this.items=[{label:datosRol.pop_nombre},{ label: datosRol.opc_nombre }]
 
     //Ingreso de los tipos que tiene el estado de usuario
     this.statuses = [
@@ -105,7 +108,6 @@ export class UsuarioRolComponent implements OnInit {
 
   //Función para listar todos los roles de usuarios ingresados
   async listarRolPersona() {
-    console.log(this.sessionDepC);
     const value={
       codigo:this.sessionDepC
     }
@@ -349,9 +351,14 @@ export class UsuarioRolComponent implements OnInit {
               }
               const datosAud = await new Promise<any>((resolve) =>
               this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
+              await this.listarRolPersona();
+              for(let user of this.listaRolP){
+                if(user.per_codigo==this.txtCodigo && user.rpe_rol==this.txtRol && user.rpe_dependencia==this.txtDependencia){
+                  this.enviarCorreo(user);
+                }
+              }
               this.modalRolPer = false;
               this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Usuario registrado ' + this.mensajesg.IngresadoCorrectamente});
-              this.listarRolPersona();
             } else {
               this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
             }
@@ -386,9 +393,14 @@ export class UsuarioRolComponent implements OnInit {
           }
           const datosAud = await new Promise<any>((resolve) =>
           this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
+          await this.listarRolPersona();
+          for(let user of this.listaRolP){
+            if(user.per_codigo==this.txtUsuario && user.rpe_rol==this.txtRol && user.rpe_dependencia==this.txtDependencia){
+              this.enviarCorreo(user);
+            }
+          }
           this.modalRolPer = false;
           this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Asignación de usuario ' + this.mensajesg.IngresadoCorrectamente});
-          this.listarRolPersona();
         } else {
           this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
         }
@@ -423,5 +435,19 @@ export class UsuarioRolComponent implements OnInit {
         this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProcesoDu});
       }
     }
+  }
+
+  async enviarCorreo(user:any){
+    let contenido=this.configCorreo.cuerpoCorreo(1)+'<b>'+user.per_nombres+' '+user.per_apellidos+'</b>'+this.configCorreo.cuerpoCorreo(2)+this.configCorreo.cuerpoCorreo(3)+'<br><br><b>C&eacute;dula: </b>'+user.per_cedula+'<br><b>Rol: </b>'+user.rol_nombre+'<br><b>Dependencia: </b>'+user.dep_nombre+'<br><br>'+this.configCorreo.cuerpoCorreo(4)+this.configCorreo.cuerpoCorreo(5);
+    var dat={
+      asunto:'Creación de usuario',
+      recibe:user.per_email,
+      contenido:btoa(contenido)
+    }
+    const datos = await new Promise<any>((resolve) =>
+      this.swCorreo.envioMail(dat).subscribe((translated) => {
+          resolve(translated);
+        })
+      );
   }
 }

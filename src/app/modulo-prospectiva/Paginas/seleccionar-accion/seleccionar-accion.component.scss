@@ -1,13 +1,29 @@
 .contenedor{
     &_caja{
-        border: 1px solid black;
         .encabezado{
             background-color: gainsboro;
             font-weight: bold;
+            border: 1px solid black;
         }
         .cuerpo{
             padding: 0em;
-            border-bottom: 1px solid black;
+            &_cuerpo{
+                border: 1px solid black;
+            }
         }
+    }
+}
+
+.encabezado{
+    font-weight: bold;
+    &_nombre{
+        background-color: gainsboro;
+        border: 1px solid black;
+    }
+}
+
+.cuerpo{
+    &_nombre{
+        border: 1px solid black;
     }
 }

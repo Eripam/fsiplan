@@ -1,0 +1,62 @@
+.contenedor{
+    background-color: white;
+    &_encabezado{
+        font-weight: bold;
+    }
+}
+
+.titulo{
+    font-weight: bold;
+}
+
+.borde{
+    border: 1px solid black;
+}
+
+.borde2{
+    border-bottom:1px solid #dee2e6!important;
+}
+
+.border3{
+    border-right: 1px solid #dee2e6!important;
+    &:first-child{
+        border-left: none;
+        border-top: none;
+    }
+    &:last-child{
+        border-right: none;
+        border-bottom: none;
+    }
+}
+
+input[type="radio"]{
+    border: 1px solid gray;
+}
+
+.valor-1{
+    background-color: rgba(244, 44, 4, .4);
+    font-weight: bold;
+}
+
+.valor-2{
+    background-color: rgba(255, 165, 0, .4);
+    font-weight: bold;
+}
+
+.valor-3{
+    background-color: rgba(255, 255, 51, .4);
+    font-weight: bold;
+}
+
+.valor-4{
+    background-color: rgba(74, 150, 85, .4);
+    font-weight: bold;
+}
+
+.encabezado{
+    font-weight: bold;
+    &_nombre{
+        background-color: gainsboro;
+        border: 1px solid black;
+    }
+}

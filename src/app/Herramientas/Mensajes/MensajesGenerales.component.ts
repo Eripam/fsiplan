@@ -16,4 +16,6 @@ export class MensajesGenerales {
     ErrorNoExisteDatos: string = 'No existe el dato que desea eliminar';
     ErrorEliminarArchivos: string = 'No se puede eliminar, debe tener al menos un archivo ingresado.';
     NoAutorizado: string='Usted no posee los permisos para realizar esta acción';
+    NoSeleccionado:string='Debe seleccionar al menos 1';
+    SeleccionarTodo:string = 'Se debe llenar todos los campos.';
 }

@@ -28,7 +28,7 @@ export class UsuariosComponent implements OnInit {
   //Titulo del modal
   tituloModal: string = '';
   //Menú del home
-  items: MenuItem[] = [{ label: 'Gestión de Usuarios y Roles' }];
+  items: MenuItem[] = [];
   home!: MenuItem;
   //Variable para los estados de usuario
   statuses!: any[];
@@ -78,6 +78,7 @@ export class UsuariosComponent implements OnInit {
     this.txtModificar=datosRol.rop_modificar;
     //Menu superio con enlace del home
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+    this.items=[{label:datosRol.pop_nombre},{ label: datosRol.opc_nombre }]
 
     //Ingreso de los tipos que tiene el estado de usuario
     this.statuses = [

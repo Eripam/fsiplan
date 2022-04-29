@@ -19,6 +19,21 @@ export class SwCriteriosDesService {
       return this.http.post<listaI>(direccion, codigo);
   }
 
+  LisarAccionesSeleccionadas(codigo:any):Observable<listaI>{
+    let direccion = this.UrlSiplanCriD+'ListaAccionesSeleccionadas';
+    return this.http.post<listaI>(direccion, codigo);
+  }
+
+  ListarAccionesSeleccionadasUsuario(codigo:any):Observable<listaI>{
+    let direccion = this.UrlSiplanCriD+'ListaAccionesSeleccionadasUsuario';
+    return this.http.post<listaI>(direccion, codigo);
+  }
+
+  ListarAccionesResultados(codigo:any):Observable<listaI>{
+    let direccion= this.UrlSiplanCriD+'AccionesResultados';
+    return this.http.post<listaI>(direccion, codigo);
+  }
+
   IngresarCriteriosDes(cri: any): Observable<any>{
     let direccion = this.UrlSiplanCriD+'IngresarCriterioDesc';
     return this.http.post<any>(direccion, cri);
@@ -54,6 +69,11 @@ export class SwCriteriosDesService {
     return this.http.post<any>(direccion, cri);
   }
 
+  SeleccionarAccion(accion:any):Observable<any>{
+    let direccion=this.UrlSiplanCriD+'SeleccionarAccion';
+    return this.http.post<any>(direccion, accion);
+  }
+
   ModificarUtopia(cri: any): Observable<any>{
     let direccion = this.UrlSiplanCriD+'ModificarUtopia';
     return this.http.post<any>(direccion, cri);
@@ -71,6 +91,11 @@ export class SwCriteriosDesService {
 
   ValidacionEliminacionAcc(codigo:any): Observable<any>{
     let direccion = this.UrlSiplanCriD+'ValidacionEliminacionAcc';
+    return this.http.post<any>(direccion, codigo);
+  }
+
+  ValidacionEliminacionUtopia(codigo:any): Observable<any>{
+    let direccion = this.UrlSiplanCriD+'ValidacionEliminacionUtopia';
     return this.http.post<any>(direccion, codigo);
   }
 

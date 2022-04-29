@@ -1,3 +1,51 @@
+<p-toast></p-toast>
+<!--Modal selección-->
+<p-dialog [(visible)]="modalSeleccion" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+    <ng-template pTemplate="content"> 
+        <div class="mb-2 subtitulo">{{txtTexto}}</div>
+        <div class="form-group row m-1">
+            <div class="col-12 row encabezado">
+                <div class="col-11 encabezado_nombre">Acciones</div>
+                <div class="col-1 encabezado_nombre"><i class="fas fa-check"></i></div>
+            </div>
+            <div class="col-12 row cuerpo" *ngFor="let acciones of listaAcciones">
+                <div class="col-11 cuerpo_nombre">{{acciones.acc_descripcion}}</div>
+                <div class="col-1 cuerpo_nombre"><p-checkbox name="accionS" [value]="acciones.acc_id" [(ngModel)]="selectAccionA" inputId="{{acciones.acc_id}}" ></p-checkbox></div>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="btnCancelar" icon="pi pi-times" class="p-button-text" (click)="hidenModal()"></button>
+        <button pButton pRipple [label]="btnGuardar" icon="pi pi-check" class="p-button-text" (click)="ingresarSeleccion()"></button>
+    </ng-template>
+</p-dialog>
+<p-dialog [(visible)]="modalTiempos" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+    <ng-template pTemplate="content"> 
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-2 col-form-label">Nombre:</label>
+            <div class="col-sm-10">
+                <input type="hidden" name="txtCodigoC" id="txtCodigoC" [(ngModel)]="txtCodigoC">
+                <input type="text" pInputText class="form-control" required name="txtNombre" id="txtNombre" [(ngModel)]="txtNombre">
+            </div>
+        </div> 
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-2 col-form-label">Fecha Inicio:</label>
+            <div class="col-sm-10">
+                <input type="datetime-local" class="form-control" name="txtFechaI" id="txtFechaI" placeholder="Fecha Inicio" [(ngModel)]="txtFechaI">
+            </div>
+        </div>  
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-2 col-form-label">Fecha Inicio:</label>
+            <div class="col-sm-10">
+                <input type="datetime-local" class="form-control" name="txtFechaF" id="txtFechaF" placeholder="Fecha Fin" [(ngModel)]="txtFechaF">
+            </div>
+        </div>  
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple [label]="btnCancelar" icon="pi pi-times" class="p-button-text" (click)="hidenModalT()"></button>
+        <button pButton pRipple [label]="btnGuardar" icon="pi pi-check" class="p-button-text" (click)="ingresarTiempo()"></button>
+    </ng-template>
+</p-dialog>
 <div class="row">
     <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
     <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
@@ -11,29 +59,66 @@
       <div class="col-2 tituloPros align-self-center">Prospectiva:</div>
       <div class="col-10"><p-dropdown [options]="listaProspectivas" appendTo="body" [(ngModel)]="txtProspectiva" placeholder="Seleccionar Prospectiva" optionValue="pro_id" [filter]="true" filterBy="pro_nombre" optionLabel="pro_nombre" [showClear]="true" (onChange)="obtenerPros($event)"></p-dropdown></div>
   </div>
-  <div class="row contenedor p-2 align-self-center align-items-center justify-content-center">
-       <div class="row col-12 mb-3">
-        <div class="col-5 align-self-center align-items-center justify-content-center">
-        </div>
-        <div class="col-7 text-end">
-            <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-mr-2 m-1"></button>
-            <button pButton pRipple label="Limpiar" icon="pi pi-times" class="p-mr-2 m-1"></button>
-        </div>
-       </div>
-      <div class="col-12 text-center row mb-2">
-        <div class="col-12 contenedor_caja" *ngFor="let criterios of listaCriterios">
-            <div class="encabezado row">
-                <div class="col">{{criterios.cri_nombre}}</div>
-                <div class="col" *ngIf="criterios.cri_fase==1; else falso">Consecuencias</div>
-                <ng-template #falso><div class="col">Utopías</div></ng-template>
-                <div class="col">Acciones</div>
+  <p-tabView styleClass="tabview-custom">
+    <p-tabPanel>
+        <ng-template pTemplate = "header">
+            <span>Listado de Acciones</span>
+        </ng-template>
+        <div class="row contenedor p-2 align-self-center align-items-center justify-content-center">
+            <div class="row col-12 mb-3">
+                <div class="col-5 align-self-center align-items-center justify-content-center"></div>
+                <div class="col-7 text-end">
+                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-mr-2 m-1" (click)="GuardarSeleccion(1)"></button>
+                    <button pButton pRipple label="Limpiar" icon="fas fa-broom" class="p-mr-2 m-1" (click)="LimpiarSeleccion(1)"></button>
+                </div>
             </div>
-            <div class="cuerpo row" *ngFor="let crides of listaCriterioDes">
-                <div class="col text-start" *ngIf="criterios.cri_id==crides.cdes_criterio">{{crides.cdes_descripcion}}</div>
-                <div class="col text-start" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==1"><div *ngFor="let cons of crides.consecuencias">{{cons.con_descripcion}}</div></div>
-                <div class="col text-start" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==2"><div *ngFor="let uto of crides.utopias">{{uto.uto_descripcion}}</div></div>
-                <div class="col text-start" *ngIf="criterios.cri_id==crides.cdes_criterio"><div *ngFor="let acc of crides.acciones" class="row"><div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1"><input type="checkbox" name="" id=""></div></div></div>
+            <div class="col-12 text-center row mb-2">
+                <div class="col-12 contenedor_caja" *ngFor="let criterios of listaCriterios">
+                    <div class="encabezado row">
+                        <div class="col">{{criterios.cri_nombre}}</div>
+                        <div class="col" *ngIf="criterios.cri_fase==1; else falso">Consecuencias</div>
+                        <ng-template #falso><div class="col">Utopías</div></ng-template>
+                        <div class="col">Acciones</div>
+                    </div>
+                    <div class="cuerpo row" *ngFor="let crides of listaCriterioDes">
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio">{{crides.cdes_descripcion}}</div>
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==1"><div *ngFor="let cons of crides.consecuencias">{{cons.con_descripcion}}</div></div>
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==2"><div *ngFor="let uto of crides.utopias">{{uto.uto_descripcion}}</div></div>
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio"><div *ngFor="let acc of crides.acciones" class="row"><div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1"><p-checkbox name="group1" [value]="acc" [(ngModel)]="selectAccion" inputId="{{acc.acc_id}}"></p-checkbox></div></div></div>
+                    </div>
+                </div>
             </div>
         </div>
-      </div>
-  </div>
+    </p-tabPanel>
+    <p-tabPanel header="Header II">
+        <ng-template pTemplate = "header">
+            <span>Acciones Seleccionadas</span>
+        </ng-template>
+        <div class="row contenedor p-2 align-self-center align-items-center justify-content-center">
+            <div class="row col-12 mb-3">
+                <div class="col-5 align-self-center align-items-center justify-content-center"></div>
+                <div class="col-7 text-end">
+                    <button pButton pRipple label="Eliminar" icon="fas fa-trash-alt" class="p-mr-2 m-1" (click)="GuardarSeleccion(2)"></button>
+                    <button pButton pRipple label="Limpiar" icon="fas fa-broom" class="p-mr-2 m-1" (click)="LimpiarSeleccion(2)"></button>
+                    <button pButton pRipple label="Tiempos"   icon="fas fa-calendar-alt" class="p-mr-2 m-1" (click)="GuardarTiempo()"></button>
+                </div>
+            </div>
+            <div class="col-12 text-center row mb-2">
+                <div class="col-12 contenedor_caja" *ngFor="let criterios of listaCriterios">
+                    <div class="encabezado row">
+                        <div class="col">{{criterios.cri_nombre}}</div>
+                        <div class="col" *ngIf="criterios.cri_fase==1; else falso">Consecuencias</div>
+                        <ng-template #falso><div class="col">Utopías</div></ng-template>
+                        <div class="col">Acciones</div>
+                    </div>
+                    <div class="cuerpo row" *ngFor="let crides of listaCriterioDesA">
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio">{{crides.cdes_descripcion}}</div>
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==1"><div *ngFor="let cons of crides.consecuencias">{{cons.con_descripcion}}</div></div>
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==2"><div *ngFor="let uto of crides.utopias">{{uto.uto_descripcion}}</div></div>
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio"><div *ngFor="let acc of crides.acciones" class="row"><div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1"><p-checkbox name="group1" [value]="acc" [(ngModel)]="selectAccionE" inputId="{{acc.acc_id}}"></p-checkbox></div></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </p-tabPanel>
+  </p-tabView>

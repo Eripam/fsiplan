@@ -51,7 +51,10 @@
               "src/assets/js/plugins/modernizr/modernizr.js",
               "src/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js",
               "src/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js",
-              "src/assets/fontawesome/js/all.js"
+              "src/assets/fontawesome/js/all.js",
+              "src/assets/js/ArchivosNube/adal.js",
+              "src/assets/js/ArchivosNube/config.js",
+              "src/assets/js/ArchivosNube/App.js"
             ]
           },
           "configurations": {

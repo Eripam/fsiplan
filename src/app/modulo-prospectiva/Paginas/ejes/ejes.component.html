@@ -1,0 +1,106 @@
+<p-toast></p-toast>
+<!--Modal para ingresar criterios-->
+<p-dialog [(visible)]="modalEje" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+    <ng-template pTemplate="content">
+        <div class="form-group row m-1" *ngIf="txtCodigo>0">
+          <label for="name" class="col-sm-2 col-form-label">Código:</label>
+          <div class="col-sm-10">
+            <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
+          </div>
+        </div>  
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-2 col-form-label">Descripción:</label>
+            <div class="col-sm-10">
+              <input type="text" [disabled]="eliminar" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Descripción">
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogA()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarDatos()"></button>
+    </ng-template>
+</p-dialog>
+<div class="row">
+    <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
+    <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
+    <div class="col-11 col-md-9">{{sesionDep}}</div></div>
+  </div>
+  <div class="navegacion">
+    <h2 class="navegacion__titulo">Ejes Estartégicos</h2>
+    <em>Creación y listado de los ejes estratégicos</em>
+  </div>
+  <div class="row col-7 m-2">
+      <div class="col-2 tituloPros align-self-center">Prospectiva:</div>
+      <div class="col-10"><p-dropdown [options]="listaProspectivas" appendTo="body" [(ngModel)]="txtProspectiva" placeholder="Seleccionar Prospectiva" optionValue="pro_id" [filter]="true" filterBy="pro_nombre" optionLabel="pro_nombre" [showClear]="true" (onChange)="obtenerPros($event)"></p-dropdown></div>
+  </div>
+  <p-tabView styleClass="tabview-custom">
+    <div>
+      <span class="buscar-crear">
+        <button pButton pRipple label="Crear Eje Estratégico" icon="pi pi-plus" class="p-mr-2" (click)="openNew()"></button>
+          <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+      </span>
+  </div>
+  <div class="widget-header mt-3"><h3>Listado de Ejes Estratégicos</h3></div>
+<p-table #dt1 [value]="listaEjes" dataKey="id" [rowHover]="true" scrollHeight="500px"
+    [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+    [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+    [globalFilterFields]="['pro_id','pro_nombre', 'pro_estado_nombre']" responsiveLayout="scroll">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="eje_descripcion">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Nombre
+                <p-sortIcon field="pro_id"></p-sortIcon>
+            </div>
+            </th>  
+            <th pSortableColumn="pro_nombre">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Descripción
+                <p-sortIcon field="pro_ nombre"></p-sortIcon>
+                <p-columnFilter type="text" field="pro_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+              </div>
+             </th>
+             <th pSortableColumn="pro_fi">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Microescenario
+                <p-sortIcon field="pro_fi"></p-sortIcon>
+                <p-columnFilter type="text" field="pro_fi" display="menu" class="p-ml-auto"></p-columnFilter>
+              </div>
+             </th>
+             <th pSortableColumn="pro_ff">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Tipo de Eje
+                <p-sortIcon field="pro_ff"></p-sortIcon>
+                <p-columnFilter type="text" field="pro_ff" display="menu" class="p-ml-auto"></p-columnFilter>
+              </div>
+             </th>
+             <th style="width: 8rem" class="text-center">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Acción
+                </div>
+             </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-pros>
+        <tr>
+            <td class="text-center">
+                {{pros.pro_id}}
+            </td>
+            <td>
+                {{pros.pro_nombre}}
+            </td>
+            <td>
+              {{pros.pro_fi|date}}
+            </td>
+            <td class="text-center">
+              <span [class]="'customer-badge status-' + pros.pro_estado">{{pros.pro_estado_nombre}}</span>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7">No se encontrarón registros.</td>
+        </tr>
+    </ng-template>
+</p-table>
+</p-tabView>

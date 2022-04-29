@@ -18,7 +18,7 @@ import { SwProspectivaService } from '../../ServiciosWeb/Prospectiva/swProspecti
 export class GenerarProspectivaComponent implements OnInit {
 
   // Menú del home
-  items: MenuItem[] = [{ label: 'Gestión de Prospectiva' }];
+  items: MenuItem[] = [];
   home!: MenuItem;
   //Variable para los estados de usuario
   statuses!: any[];
@@ -70,6 +70,7 @@ export class GenerarProspectivaComponent implements OnInit {
     this.txtModificar=datosRol.rop_modificar;
     this.txtEliminar=datosRol.rop_eliminar;
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+    this.items=[{label:datosRol.pop_nombre},{ label: datosRol.opc_nombre }]
     this.listarProspectivas();
   }
 
@@ -111,7 +112,8 @@ export class GenerarProspectivaComponent implements OnInit {
 
   async listarCriteriosDes(){
     const valores={
-      cri_prospectiva:this.txtProspectiva
+      cri_prospectiva:this.txtProspectiva,
+      tipo:1
     }
     const datos:listaI = await new Promise<listaI>((resolve) =>  this.swCritDes.ListarCriteriosDes(valores).subscribe((translated) => { resolve(translated); }));
     if(datos.success){
@@ -208,7 +210,6 @@ export class GenerarProspectivaComponent implements OnInit {
       }
       const datos = await new Promise<any>((resolve) =>
          this.swCritDes.IngresarConsecuencia(val).subscribe((translated) => {resolve(translated);}));
-
       if (datos.success) {
         const datosAudi={
           aud_usuario:this.sessionUser,
@@ -232,7 +233,6 @@ export class GenerarProspectivaComponent implements OnInit {
       }
       const datos = await new Promise<any>((resolve) =>
          this.swCritDes.IngresarAcciones(val).subscribe((translated) => {resolve(translated);}));
-
       if (datos.success) {
         const datosAudi={
           aud_usuario:this.sessionUser,
@@ -256,7 +256,6 @@ export class GenerarProspectivaComponent implements OnInit {
       }
       const datos = await new Promise<any>((resolve) =>
          this.swCritDes.ModificarConsecuencia(val).subscribe((translated) => {resolve(translated);}));
-
       if (datos.success) {
         const datosAudi={
           aud_usuario:this.sessionUser,
@@ -280,7 +279,6 @@ export class GenerarProspectivaComponent implements OnInit {
       }
       const datos = await new Promise<any>((resolve) =>
          this.swCritDes.ModificarAccion(val).subscribe((translated) => {resolve(translated);}));
-
       if (datos.success) {
         const datosAudi={
           aud_usuario:this.sessionUser,
@@ -389,27 +387,32 @@ export class GenerarProspectivaComponent implements OnInit {
           }
         }
       }else{
-        const val={
-          uto_id:this.txtCodigoCA
-        }
-        const datos = await new Promise<any>((resolve) =>
-           this.swCritDes.EliminarUtopia(val).subscribe((translated) => {resolve(translated);}));
-  
-        if (datos.success) {
-          const datosAudi={
-            aud_usuario:this.sessionUser,
-            aud_proceso:"Eliminar",
-            aud_descripcion:"Eliminar utopía con los datos: {Código:"+this.txtCodigoCA+", Descripción; "+this.txtNombre+"}",
-            aud_rol:this.sessionRol,
-            aud_dependencia:this.sessionDepC
+        validacion = await new Promise<any>((resolve) =>
+         this.swCritDes.ValidacionEliminacionUtopia(val).subscribe((translated) => {resolve(translated);}));
+        if(validacion.data){
+          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: 'No se puede eliminar porque las unidades o dependencia lo estan usando'});
+        }else{
+          const val={
+            uto_id:this.txtCodigoCA
           }
-          const datosAud = await new Promise<any>((resolve) =>
-          this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
-          this.modalCriterioDes = false;
-          this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Utopía ' + this.mensajesg.EliminadoCorrectamente});
-          this.listarCriteriosDes();
-        } else {
-          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+          const datos = await new Promise<any>((resolve) =>
+             this.swCritDes.EliminarUtopia(val).subscribe((translated) => {resolve(translated);}));
+          if (datos.success) {
+            const datosAudi={
+              aud_usuario:this.sessionUser,
+              aud_proceso:"Eliminar",
+              aud_descripcion:"Eliminar utopía con los datos: {Código:"+this.txtCodigoCA+", Descripción; "+this.txtNombre+"}",
+              aud_rol:this.sessionRol,
+              aud_dependencia:this.sessionDepC
+            }
+            const datosAud = await new Promise<any>((resolve) =>
+            this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
+            this.modalCriterioDes = false;
+            this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Utopía ' + this.mensajesg.EliminadoCorrectamente});
+            this.listarCriteriosDes();
+          } else {
+            this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+          }
         }
       }
     }else if(this.txtTipo==8){
@@ -443,7 +446,6 @@ export class GenerarProspectivaComponent implements OnInit {
       }
       const datos = await new Promise<any>((resolve) =>
          this.swCritDes.ModificarUtopia(val).subscribe((translated) => {resolve(translated);}));
-
       if (datos.success) {
         const datosAudi={
           aud_usuario:this.sessionUser,

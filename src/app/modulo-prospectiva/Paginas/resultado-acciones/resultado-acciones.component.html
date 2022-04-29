@@ -1,0 +1,122 @@
+<p-toast></p-toast>
+<p-dialog [(visible)]="modalSeleccion" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+    <ng-template pTemplate="content"> 
+        <div class="mb-2 subtitulo">{{txtTexto}}</div>
+        <div class="form-group row m-1">
+            <div class="col-12 row encabezado m-0 p-0">
+                <div class="col-9 encabezado_nombre">Acciones</div>
+                <div class="col-2 encabezado_nombre text-center">Totales</div>
+                <div class="col-1 encabezado_nombre text-center"><i class="fas fa-check"></i></div>
+            </div>
+            <div *ngIf="banResultado; else falsoRes">
+                <div *ngFor="let resul of listaResultados2" class="row m-0 p-0">
+                    <div class="col-9 border m-0 p-0">{{resul.acc_descripcion}}</div>
+                    <div class="col-2 border m-0 p-0">
+                        <p class="m-0 p-0 text-center">{{resul.total}}</p>
+                    </div>
+                    <div class="col-1 border m-0 p-0 text-center"><p-checkbox name="accionS" [value]="resul" [(ngModel)]="selectAccionA" inputId="{{resul.accid}}" ></p-checkbox></div>
+                </div>
+            </div>
+            <ng-template #falsoRes>
+                <div *ngFor="let resul of selectAccionE" class="row m-0 p-0">
+                    <div class="col-9 border m-0 p-0">{{resul.acc_descripcion}}</div>
+                    <div class="col-2 border m-0 p-0">
+                        <p class="m-0 p-0 text-center">{{resul.tab_valor_total}}</p>
+                    </div>
+                    <div class="col-1 border m-0 p-0 text-center"><p-checkbox name="accionS" [value]="resul.acc_id" [(ngModel)]="selectAccionEA" inputId="{{resul.acc_id}}" ></p-checkbox></div>
+                </div>
+            </ng-template>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div *ngIf="banResultado; else falsoResB">
+            <button pButton pRipple label="NO" icon="pi pi-times" class="p-button-text" (click)="hidenModal()"></button>
+            <button pButton pRipple label="SI" icon="pi pi-check" class="p-button-text" (click)="guardarAcciones()"></button>
+        </div>
+        <ng-template #falsoResB>
+            <button pButton pRipple label="NO" icon="pi pi-times" class="p-button-text" (click)="hidenModal()"></button>
+            <button pButton pRipple label="SI" icon="pi pi-check" class="p-button-text" (click)="quitarAcciones()"></button>
+        </ng-template>
+    </ng-template>
+</p-dialog>
+<div class="row">
+    <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
+    <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
+    <div class="col-11 col-md-9">{{sesionDep}}</div></div>
+  </div>
+  <div class="navegacion">
+    <h2 class="navegacion__titulo">Resultado Acciones</h2>
+    <em>Resultado obtenido de todas las acciones por respuesta</em>
+  </div>
+  <div class="row col-7 m-2">
+      <div class="col-2 tituloPros align-self-center">Prospectiva:</div>
+      <div class="col-10"><p-dropdown [options]="listaProspectivas" appendTo="body" [(ngModel)]="txtProspectiva" placeholder="Seleccionar Prospectiva" optionValue="pro_id" [filter]="true" filterBy="pro_nombre" optionLabel="pro_nombre" [showClear]="true" (onChange)="obtenerPros($event)"></p-dropdown></div>
+  </div>
+<p-tabView styleClass="tabview-custom">
+    <p-tabPanel>
+        <ng-template pTemplate = "header">
+            <span>Resultado general</span>
+        </ng-template>
+        <div class="row contenedor p-2 align-self-center align-items-center justify-content-center">
+            <div class="row align-items-center align-self-center justify-content-center" *ngIf="contUmbral">
+                <div class="col-8 row align-items-center align-self-center">
+                    <div class="col-2 text-end" style="font-weight: bold;">Umbral:</div>
+                    <div class="col-4"><input type="text" name="txtUmbral" id="txtUmbral" class="form-control" [(ngModel)]="txtUmbral"></div>
+                    <div class="col-2"><button pButton pRipple label="GUARDAR" icon="pi pi-check" class="p-mr-2 m-1" (click)="listarSeleccionados()"></button></div>
+                </div>
+            </div>
+            <div class="row contenedor_encabezado pt-3">
+                <div class="row col-8 border align-items-center m-0">Acciones</div>
+                <div class="row col-4 border m-0 align-items-center p-0">
+                  <div class="col-12 align-items-center justify-content-center m-0 p-0 text-center borde2">Evaluación</div>
+                  <div *ngFor="let resp of listaRespuestas" class="col border3 text-center">{{resp.res_nombre}}</div>
+                </div>
+            </div>
+            <div class="row" *ngFor="let crides of listaCriterioDesA">
+                    <div class="col-12 titulo border">{{crides.cri_nombre}}</div>
+                    <div class="row m-0 p-0" *ngFor="let accion of crides.acciones">
+                        <div class="col-8 border m-0">{{accion.acc_descripcion}}</div>
+                        <div class="row col-4 border m-0 p-0">
+                            <div *ngFor="let resp of listaRespuestas" class="col border3 m-0 text-center">
+                                <div *ngFor="let resul of listaResultados">
+                                    <div *ngIf="accion.acc_id==resul.accid && resp.res_id==resul.respuesta">
+                                        <div *ngIf="resul.total>0; else falsoEn" class="m-0 p-0">
+                                            <div *ngIf="resul.mayor; else falsoRes" class="m-0 p-0">
+                                                <p class="valor-{{resp.res_id}} m-0 p-0">{{resul.total}}</p>
+                                            </div>
+                                            <ng-template #falsoRes><p class="m-0 p-0">{{resul.total}}</p></ng-template>
+                                        </div>
+                                        <ng-template #falsoEn><p class="m-0 p-0">0</p></ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="Header II">
+        <ng-template pTemplate = "header">
+            <span>Acciones Seleccionadas</span>
+        </ng-template>
+        <div class="row contenedor p-2 align-self-center align-items-center justify-content-center">
+            <div class="row col-12 mb-3">
+                <div class="col-5 align-self-center align-items-center justify-content-center"></div>
+                <div class="col-7 text-end">
+                    <button pButton pRipple label="Eliminar" icon="fas fa-trash-alt" class="p-mr-2 m-1" (click)="eliminarAcciones()"></button>
+                    <button pButton pRipple label="Limpiar" icon="fas fa-broom" class="p-mr-2 m-1" (click)="limpiar()"></button>
+                </div>
+            </div>
+            <div class="row contenedor_encabezado pt-3">
+                <div class="col-8 border align-items-center m-0">Acciones</div>
+                <div class="col-3 border m-0 align-items-center p-0 text-center">Total</div>
+                <div class="col-1 border text-center"><i class="fas fa-check"></i></div>
+            </div>
+            <div class="row" *ngFor="let resul of listaResultados3">
+                    <div class="col-8 border m-0">{{resul.acc_descripcion}}</div>
+                    <div class="col-3 border m-0 p-0 text-center">{{resul.tab_valor_total}}</div>
+                    <div class="col-1 border m-0 p-0 text-center"><p-checkbox name="accionSA" [value]="resul" [(ngModel)]="selectAccionE" inputId="{{resul.acc_id}}" ></p-checkbox></div>
+            </div>
+        </div>
+    </p-tabPanel>
+  </p-tabView>

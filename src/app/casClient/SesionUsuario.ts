@@ -120,9 +120,7 @@ export class SesionUsuario implements CanActivate {
 
     //Cerrar la sesion del Usuario
     CerrarSessionGeneral() {
-        sessionStorage.removeItem("tokenKey");
-        sessionStorage.removeItem('tokenGeneral');
-        sessionStorage.removeItem('token');
+        this.casclient.Logout();
         sessionStorage.removeItem('clientName');
         sessionStorage.removeItem('loginUser');
         sessionStorage.removeItem('ticketUser');
@@ -158,7 +156,8 @@ export class SesionUsuario implements CanActivate {
             })
         }else if(sessionStorage.getItem("loginUser")!=null){
             const envio={
-                perid:sessionStorage.getItem("loginUser")
+                perid:sessionStorage.getItem("loginUser"),
+                clientName:sessionStorage.getItem("clientName")
             }
             const datos = await new Promise<any>((resolve) => this.servLogin.LoginCorreo(envio).subscribe(translated => { resolve(translated) }));
             if(datos.success){

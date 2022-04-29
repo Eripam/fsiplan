@@ -17,7 +17,7 @@ import { SwProspectivaService } from '../../ServiciosWeb/Prospectiva/swProspecti
 })
 export class ProspectivaComponent implements OnInit {
   // Menú del home
-  items: MenuItem[] = [{ label: 'Gestión de Prospectiva' }];
+  items: MenuItem[] = [];
   home!: MenuItem;
   //Variable para los estados de usuario
   statuses!: any[];
@@ -61,6 +61,7 @@ export class ProspectivaComponent implements OnInit {
     const datosRol=await this.sesiones.obtenerOpcionesUsuario(valores);
     this.txtIngresar=datosRol.rop_insertar;
     this.txtModificar=datosRol.rop_modificar;
+    this.items=[{label:datosRol.pop_nombre},{ label: datosRol.opc_nombre }]
     //Listar prosepctivas
     this.listarTipoDependencias();
     this.listarProspectivas();

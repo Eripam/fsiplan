@@ -1,0 +1,60 @@
+<p-toast></p-toast>
+<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000" rejectButtonStyleClass="p-button-text"></p-confirmDialog>
+<div class="row">
+    <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
+    <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
+    <div class="col-11 col-md-9">{{sesionDep}}</div></div>
+</div>
+  <div class="navegacion">
+    <h2 class="navegacion__titulo">Evaluación de Acciones</h2>
+    <em>Se evalua la acción por medio de colores</em>
+  </div>
+  <div class="row mb-2">
+    <div class="row col-8">
+      <div class="col-2 tituloPros align-self-center">Prospectiva:</div>
+      <div class="col-10"><p-dropdown [options]="listaProspectivas" appendTo="body" [(ngModel)]="txtProspectiva" placeholder="Seleccionar Prospectiva" optionValue="pro_id" [filter]="true" filterBy="pro_nombre" optionLabel="pro_nombre" [showClear]="true" (onChange)="obtenerPros($event)"></p-dropdown></div>
+    </div>
+    <div class="row col-4">
+      <div class="col-2 tituloPros align-self-center">Tiempo:</div>
+      <div class="col-10 align-self-center" style="color:red; font-weight: bold;" *ngIf="this.diasHoy<=0 && this.horasHoy<=1 && this.minutosHoy<=59; else elseP">{{txtTiempo}}</div>
+      <ng-template #elseP><div class="col-10 align-self-center" style="color:black; font-weight: bold;">{{txtTiempo}}</div></ng-template>
+    </div>
+  </div>
+<div class="row contenedor p-2 align-self-center align-items-center justify-content-center">
+      <div class="row contenedor_encabezado pt-3">
+          <div class="row col-8 border align-items-center m-0">Acciones</div>
+          <div class="row col-4 border m-0 align-items-center p-0">
+            <div class="col-12 align-items-center justify-content-center m-0 p-0 text-center borde2">Evaluación</div>
+            <div *ngFor="let resp of listaRespuestas" class="col border3 text-center">{{resp.res_nombre}}</div>
+          </div>
+      </div>
+      <div class="row" *ngFor="let crides of listaCriterioDesA">
+          <div class="col-8 border m-0">{{crides.acc_descripcion}}</div>
+          <div class="row col-4 border m-0 p-0">
+              <div *ngFor="let resp of listaRespuestas" class="col border3 m-0 text-center">
+                <div *ngIf="crides.enc_respuesta>0 && crides.enc_usuario==sessionUser; else falso">
+                  <div *ngIf="crides.enc_respuesta==resp.res_id; else falsoenc">
+                    <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_id}}" checked disabled>
+                  </div>
+                  <ng-template #falsoenc>
+                    <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_id}}" disabled>
+                  </ng-template>
+                </div>
+                <ng-template #falso>
+                  <div *ngIf="banActivarBtn; else falsoRadio">
+                    <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_id}}" [(ngModel)]="crides.enc_respuesta">
+                  </div>
+                  <ng-template #falsoRadio>
+                    <div>
+                      <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_id}}" disabled>
+                    </div>
+                  </ng-template>
+                </ng-template>
+              </div>
+          </div>
+      </div>
+      <div class="row" *ngIf="banActivarBtn; else boton">
+        <div class="col text-center"><button pButton pRipple label="GUARDAR" icon="pi pi-check" class="p-mr-2 m-1" (click)="confirm1()"></button></div>
+      </div>
+      <ng-template #boton><div class="col text-center m-1" style="font-weight: bold;">{{texto2}}{{texto|date:'medium'}}</div></ng-template>
+</div>

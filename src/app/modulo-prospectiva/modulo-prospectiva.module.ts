@@ -20,16 +20,21 @@ import { TabViewModule } from 'primeng/tabview';
 import {CheckboxModule} from 'primeng/checkbox';
 import {FileUploadModule} from 'primeng/fileupload';
 import {CalendarModule} from 'primeng/calendar';
+import {RadioButtonModule} from 'primeng/radiobutton';
 
 //Import de paginas
 import { ProspectivaComponent } from './Paginas/prospectiva/prospectiva.component';
 import { ConfigprospectivaComponent } from './Paginas/configprospectiva/configprospectiva.component';
 import { GenerarProspectivaComponent } from './Paginas/generar-prospectiva/generar-prospectiva.component';
 import { SeleccionrAccionComponent } from './Paginas/seleccionar-accion/seleccionar-accion.component';
+import { EvaluarAccionComponent } from './Paginas/evaluar-accion/evaluar-accion.component';
+import { ResultadoAccionesComponent } from './Paginas/resultado-acciones/resultado-acciones.component';
+import { ArbolComponent } from './Paginas/arbol/arbol.component';
+import { EjesComponent } from './Paginas/ejes/ejes.component';
 
 
 @NgModule({
-  declarations: [ProspectivaComponent, ConfigprospectivaComponent, GenerarProspectivaComponent, SeleccionrAccionComponent],
+  declarations: [ProspectivaComponent, ConfigprospectivaComponent, GenerarProspectivaComponent, SeleccionrAccionComponent, EvaluarAccionComponent, ResultadoAccionesComponent, ArbolComponent, EjesComponent],
   imports: [
     CommonModule,
     ModuloProspectivaRoutingModule,
@@ -48,7 +53,8 @@ import { SeleccionrAccionComponent } from './Paginas/seleccionar-accion/seleccio
     TabViewModule,
     CheckboxModule,
     FileUploadModule,
-    CalendarModule
+    CalendarModule,
+    RadioButtonModule
   ],
   providers:[configServiciosWebPros]
 })

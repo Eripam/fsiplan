@@ -5,6 +5,10 @@ import { ValidateUserGuard } from '../Herramientas/Validacion/validate-user.guar
 import { ConfigprospectivaComponent } from './Paginas/configprospectiva/configprospectiva.component';
 import { GenerarProspectivaComponent } from './Paginas/generar-prospectiva/generar-prospectiva.component';
 import { SeleccionrAccionComponent } from './Paginas/seleccionar-accion/seleccionar-accion.component';
+import { EvaluarAccionComponent } from './Paginas/evaluar-accion/evaluar-accion.component';
+import { ResultadoAccionesComponent } from './Paginas/resultado-acciones/resultado-acciones.component';
+import { ArbolComponent } from './Paginas/arbol/arbol.component';
+import { EjesComponent } from './Paginas/ejes/ejes.component';
 
 const routes: Routes = [
   {
@@ -26,10 +30,34 @@ const routes: Routes = [
     data:{opcion:8} 
   },
   {
-    path: 'selaccion/:opc/:enc',
+    path: 'seleccion/:opc/:enc',
     component: SeleccionrAccionComponent,
     canActivate:[ValidateUserGuard],
     data:{opcion:10} 
+  },
+  {
+    path:'evaluaccion/:opc/:enc',
+    component:EvaluarAccionComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:11}
+  },
+  {
+    path:'resultado/:opc/:enc',
+    component:ResultadoAccionesComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:12}
+  },
+  {
+    path:'arbol/:opc/:enc',
+    component:ArbolComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:13}
+  },
+  {
+    path:'ejes/:opc/:enc',
+    component:EjesComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:14}
   }
 ];
 

@@ -10,4 +10,7 @@ export class configServiciosWebPros {
   urlSerSiplanCriterios: string = environment.urlServiciosSiplan+'criterios/';
   urlSerSiplanAuditoria: string = environment.urlServiciosSiplan+'auditoriaPros/';
   urlSerSiplanCriterioDes: string = environment.urlServiciosSiplan+'criterioDes/';
+  urlSerSiplanRespuesta: string = environment.urlServiciosSiplan+'respuesta/';
+  urlSerSiplanArbol:string = environment.urlServiciosSiplan+'arbol/';
+  urlSerSiplanCorreo: string = environment.urlServiciosSiplan+'correo/';
 }

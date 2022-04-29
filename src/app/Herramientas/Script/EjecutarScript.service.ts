@@ -56,14 +56,13 @@ export class EjecutarScript {
   ColorUsuario(rol:any) {
     if (rol == 1 || rol==5) {//Administrador o super admin
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/administrador.css" type="text/css"/>');
-    }else if (rol == 2) {//Docente
+    }else if (rol == 2) {//Decano
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/decano.css" type="text/css"/>');
-    }else if (rol == 3) {//Administrador
+    }else if (rol == 4) {//Directores o coordinadores
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/director.css" type="text/css"/>');
-      //return "/planificacion";
-    }else if (rol == 4) {//AdminProceso
+    }else if (rol == 3) {//Analistas
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/analista.css" type="text/css"/>');
-    }else if (rol == 6) {//Analista1
+    }else if (rol == 7) {//Docentes
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/docente.css" type="text/css"/>');
     }else {//color por defecto
       $('head').append('<link rel="stylesheet"  href="assets/css/administrador/estudiantes.css" type="text/css"/>');

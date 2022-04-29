@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit {
     this.url=datosS.opc_url;
     this.items = [
       {label: datosS.per_nombres+' '+datosS.per_apellidos, icon: 'pi pi-user'},
-      {label: 'Cerrar Sesión', icon: 'pi pi-power-off', routerLink:'/'}
+      {label: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => {this.session.CerrarSessionGeneral()}}
     ];
     this.obtenerPerfiles(datosS.rpe_persona);
   }
@@ -77,7 +77,7 @@ export class HeaderComponent implements OnInit {
         this.correo=datosS.per_email;
         this.selectPerfiles=datosS.rpe_codigo;
         this.url=datosS.opc_url;
-        await this.router.navigate([this.url]);
+        await this.router.navigate([this.url+'/'+datosS.rop_padreop]);
     }else if(sessionStorage.getItem("loginUser")!=null){
         const envio={
             perid:sessionStorage.getItem("loginUser")
@@ -89,7 +89,7 @@ export class HeaderComponent implements OnInit {
             this.correo=datosS.per_email;
             this.selectPerfiles=datosS.rpe_codigo;
             this.url=datosS.opc_url;
-            await this.router.navigate([this.url]);
+            await this.router.navigate([this.url+'/'+datosS.rop_padreop]);
         }else{
             await this.router.navigate(['/error']);
         }

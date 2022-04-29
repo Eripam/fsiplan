@@ -1,0 +1,46 @@
+.contenedor{
+    background-color: white;
+    &_encabezado{
+        font-weight: bold;
+    }
+}
+
+.borde{
+    border: 1px solid black;
+}
+
+.borde2{
+    border-bottom:1px solid #dee2e6!important;
+}
+
+.border3{
+    border-right: 1px solid #dee2e6!important;
+    &:first-child{
+        border-left: none;
+        border-top: none;
+    }
+    &:last-child{
+        border-right: none;
+        border-bottom: none;
+    }
+}
+
+input[type="radio"]{
+    border: 1px solid gray;
+}
+
+input.color-1[type="radio"]:checked{
+    background-color: #F42C04;
+}
+
+input.color-2[type="radio"]:checked{
+    background-color: orange;
+}
+
+input.color-3[type="radio"]:checked{
+    background-color: yellow;
+}
+
+input.color-4[type="radio"]:checked{
+    background-color: #4A9655;
+}

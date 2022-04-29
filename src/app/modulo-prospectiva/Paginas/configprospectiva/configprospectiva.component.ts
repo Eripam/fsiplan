@@ -4,6 +4,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { MensajesGenerales } from 'src/app/Herramientas/Mensajes/MensajesGenerales.component';
 import { listaI } from '../../Interface/seguridad';
+import { SwAuditoriaService } from '../../ServiciosWeb/Auditoria/swAuditoria.service';
 import { SwCriteriosService } from '../../ServiciosWeb/Criterios/swCriterios.service';
 import { SwProspectivaService } from '../../ServiciosWeb/Prospectiva/swProspectiva.service';
 
@@ -16,7 +17,7 @@ import { SwProspectivaService } from '../../ServiciosWeb/Prospectiva/swProspecti
 export class ConfigprospectivaComponent implements OnInit {
 
   // Menú del home
-  items: MenuItem[] = [{ label: 'Gestión de Prospectiva' }];
+  items: MenuItem[] = [];
   home!: MenuItem;
   //Variable para los estados de usuario
   statuses!: any[];
@@ -43,13 +44,17 @@ export class ConfigprospectivaComponent implements OnInit {
   txtFase:number=0;
   txtIngresar:boolean=false;
   txtModificar:boolean=false;
+  sessionUser:string='';
+  sessionRol:string='';
 
-  constructor(private route: ActivatedRoute, private sesiones:SesionUsuario, private swProspectiva:SwProspectivaService, private swCriterio: SwCriteriosService, private messageService: MessageService, private mensajesg:MensajesGenerales) { }
+  constructor(private route: ActivatedRoute, private sesiones:SesionUsuario, private swProspectiva:SwProspectivaService, private swCriterio: SwCriteriosService, private messageService: MessageService, private mensajesg:MensajesGenerales, private swAuditoria: SwAuditoriaService) { }
 
   async ngOnInit() {
     const datosS=await this.sesiones.obtenerDatosLogin();
     this.sesionDep=datosS.dep_nombre;
     this.sessionDepC=datosS.rpe_dependencia;
+    this.sessionUser=datosS.rpe_persona;
+    this.sessionRol=datosS.rol_nombre;
     var pros=this.route.snapshot.paramMap.get('pros');
     if(pros=="0"){
       this.txtProspectiva="0";
@@ -65,6 +70,7 @@ export class ConfigprospectivaComponent implements OnInit {
     this.txtIngresar=datosRol.rop_insertar;
     this.txtModificar=datosRol.rop_modificar;
     this.home = { icon: 'pi pi-home', routerLink: '/' };
+    this.items=[{label:datosRol.pop_nombre},{ label: datosRol.opc_nombre }]
     this.listarProspectivas();
     this.listarCriterios();
     this.listarFases();
@@ -144,15 +150,24 @@ export class ConfigprospectivaComponent implements OnInit {
      cri_id:this.txtCodigo,
      cri_nombre:this.txtNombre,
      cri_estado:this.txtEstado,
-     cri_prospectiva:this.txtProspectiva
+     cri_prospectiva:this.txtProspectiva,
+     cri_fase:this.txtFase
     };
     if (this.txtNombre == '') {
       this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
     } else if(this.txtCodigo==0){
       const datos = await new Promise<any>((resolve) =>
          this.swCriterio.IngresarCriterios(datoscri).subscribe((translated) => {resolve(translated);}));
-
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar criterios con los datos: {nombre: "+this.txtNombre+", prospectiva: "+this.txtProspectiva+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.modalCriterios = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Criterio ' + this.mensajesg.IngresadoCorrectamente});
         this.listarCriterios();
@@ -162,8 +177,16 @@ export class ConfigprospectivaComponent implements OnInit {
     }else{
       const datos = await new Promise<any>((resolve) =>
          this.swCriterio.ModificarCriterios(datoscri).subscribe((translated) => {resolve(translated);}));
-
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Modificar",
+          aud_descripcion:"Modificar criterios con los datos: {código:"+this.txtCodigo+", nombre: "+this.txtNombre+", prospectiva: "+this.txtProspectiva+", estado: "+this.txtEstado+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.modalCriterios = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Criterio ' + this.mensajesg.ModificadoCorrectamente});
         this.listarCriterios();
@@ -216,8 +239,16 @@ export class ConfigprospectivaComponent implements OnInit {
     } else if(this.txtCodigoE==0){
       const datos = await new Promise<any>((resolve) =>
          this.swCriterio.IngresarEncabezado(datoscri).subscribe((translated) => {resolve(translated);}));
-
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar encabezado con los datos: {código:"+this.txtCodigoE+", nombre: "+this.txtEncabezado+", criterio: "+this.txtCodigo+", encabezado acciones: "+this.txtEncabezadoA+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.modalEncabezados = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Encabezado ' + this.mensajesg.IngresadoCorrectamente});
         this.listarCriterios();
@@ -227,8 +258,16 @@ export class ConfigprospectivaComponent implements OnInit {
     }else{
       const datos = await new Promise<any>((resolve) =>
          this.swCriterio.ModificarEncabezado(datoscri).subscribe((translated) => {resolve(translated);}));
-
       if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Modificar",
+          aud_descripcion:"Modificar encabezado con los datos: {código:"+this.txtCodigoE+", nombre: "+this.txtEncabezado+", criterio: "+this.txtCodigo+", encabezado acciones: "+this.txtEncabezadoA+", estado: "+this.txtEstado+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
         this.modalEncabezados = false;
         this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Encabezado ' + this.mensajesg.ModificadoCorrectamente});
         this.listarCriterios();

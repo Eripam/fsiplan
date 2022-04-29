@@ -26,7 +26,7 @@ export class OpcionesComponent implements OnInit {
    listaRegOp:any[]=[];
    listaReglamentoA:any[]=[];
    //Menú del home
-   items: MenuItem[] = [{ label: 'Gestión de Opciones' }];
+   items: MenuItem[] = [];
    home!: MenuItem;
    //Variable para los estados de usuario
    statuses!: any[];
@@ -99,6 +99,7 @@ export class OpcionesComponent implements OnInit {
      this.txtModificar=datosRol.rop_modificar;
      //Menu superio con enlace del home
      this.home = { icon: 'pi pi-home', routerLink: '/' };
+     this.items=[{label:datosRol.pop_nombre},{ label: datosRol.opc_nombre }]
  
      //Ingreso de los tipos que tiene el estado de usuario
      this.statuses = [
