@@ -34,19 +34,19 @@
               <div *ngFor="let resp of listaRespuestas" class="col border3 m-0 text-center">
                 <div *ngIf="crides.enc_respuesta>0 && crides.enc_usuario==sessionUser; else falso">
                   <div *ngIf="crides.enc_respuesta==resp.res_id; else falsoenc">
-                    <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_id}}" checked disabled>
+                    <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_valor}}" checked disabled>
                   </div>
                   <ng-template #falsoenc>
-                    <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_id}}" disabled>
+                    <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_valor}}" disabled>
                   </ng-template>
                 </div>
                 <ng-template #falso>
                   <div *ngIf="banActivarBtn; else falsoRadio">
-                    <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_id}}" [(ngModel)]="crides.enc_respuesta">
+                    <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_valor}}" [(ngModel)]="crides.enc_respuesta">
                   </div>
                   <ng-template #falsoRadio>
                     <div>
-                      <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_id}}" disabled>
+                      <input type="radio" id="respuesta-{{resp.res_id}}-{{crides.acc_id}}" [name]="respuesta+crides.acc_id" value="{{resp.res_id}}" class="form-check-input color-{{resp.res_valor}}" disabled>
                     </div>
                   </ng-template>
                 </ng-template>

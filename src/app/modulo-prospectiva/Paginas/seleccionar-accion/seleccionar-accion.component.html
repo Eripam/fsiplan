@@ -65,14 +65,14 @@
             <span>Listado de Acciones</span>
         </ng-template>
         <div class="row contenedor p-2 align-self-center align-items-center justify-content-center">
-            <div class="row col-12 mb-3">
+            <div class="row col-12 mb-3" *ngIf="txtProsEstado">
                 <div class="col-5 align-self-center align-items-center justify-content-center"></div>
                 <div class="col-7 text-end">
                     <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-mr-2 m-1" (click)="GuardarSeleccion(1)"></button>
                     <button pButton pRipple label="Limpiar" icon="fas fa-broom" class="p-mr-2 m-1" (click)="LimpiarSeleccion(1)"></button>
                 </div>
             </div>
-            <div class="col-12 text-center row mb-2">
+            <!--<div class="col-12 text-center row mb-2">
                 <div class="col-12 contenedor_caja" *ngFor="let criterios of listaCriterios">
                     <div class="encabezado row">
                         <div class="col">{{criterios.cri_nombre}}</div>
@@ -84,10 +84,40 @@
                         <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio">{{crides.cdes_descripcion}}</div>
                         <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==1"><div *ngFor="let cons of crides.consecuencias">{{cons.con_descripcion}}</div></div>
                         <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==2"><div *ngFor="let uto of crides.utopias">{{uto.uto_descripcion}}</div></div>
-                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio"><div *ngFor="let acc of crides.acciones" class="row"><div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1"><p-checkbox name="group1" [value]="acc" [(ngModel)]="selectAccion" inputId="{{acc.acc_id}}"></p-checkbox></div></div></div>
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio"><div *ngFor="let acc of crides.acciones" class="row"><div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1" *ngIf="txtProsEstado"><p-checkbox name="group1" [value]="acc" [(ngModel)]="selectAccion" inputId="{{acc.acc_id}}"></p-checkbox></div></div></div>
                     </div>
                 </div>
-            </div>
+            </div>-->
+            <p-table [value]="listaCriterioDes" sortField="cri_id" sortMode="single" dataKey="cri_id" rowGroupMode="subheader" groupRowsBy="cri_id" responsiveLayout="scroll"
+            [rows]="5" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+            [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 50rem;">Criterio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="groupheader" let-customer let-rowIndex="rowIndex" let-expanded="expanded">
+                    <tr>
+                        <td colspan="5">
+                            <button type="button" pButton pRipple [pRowToggler]="customer" class="p-button-text p-button-rounded p-button-plain mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                            <span class="font-bold ml-2">{{customer.cri_nombre}}</span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-customer>
+                    <tr>
+                        <td style="text-align: justify;">
+                            {{customer.cdes_descripcion}}
+                        </td>
+                        <td>
+                            <div *ngFor="let acc of customer.acciones" class="row">
+                                <div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1" *ngIf="txtProsEstado"><p-checkbox name="group1" [value]="acc" [(ngModel)]="selectAccion" inputId="{{acc.acc_id}}"></p-checkbox></div>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
     </p-tabPanel>
     <p-tabPanel header="Header II">
@@ -95,7 +125,7 @@
             <span>Acciones Seleccionadas</span>
         </ng-template>
         <div class="row contenedor p-2 align-self-center align-items-center justify-content-center">
-            <div class="row col-12 mb-3">
+            <div class="row col-12 mb-3" *ngIf="txtProsEstado">
                 <div class="col-5 align-self-center align-items-center justify-content-center"></div>
                 <div class="col-7 text-end">
                     <button pButton pRipple label="Eliminar" icon="fas fa-trash-alt" class="p-mr-2 m-1" (click)="GuardarSeleccion(2)"></button>
@@ -103,7 +133,7 @@
                     <button pButton pRipple label="Tiempos"   icon="fas fa-calendar-alt" class="p-mr-2 m-1" (click)="GuardarTiempo()"></button>
                 </div>
             </div>
-            <div class="col-12 text-center row mb-2">
+            <!--<div class="col-12 text-center row mb-2">
                 <div class="col-12 contenedor_caja" *ngFor="let criterios of listaCriterios">
                     <div class="encabezado row">
                         <div class="col">{{criterios.cri_nombre}}</div>
@@ -115,10 +145,40 @@
                         <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio">{{crides.cdes_descripcion}}</div>
                         <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==1"><div *ngFor="let cons of crides.consecuencias">{{cons.con_descripcion}}</div></div>
                         <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio && criterios.cri_fase==2"><div *ngFor="let uto of crides.utopias">{{uto.uto_descripcion}}</div></div>
-                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio"><div *ngFor="let acc of crides.acciones" class="row"><div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1"><p-checkbox name="group1" [value]="acc" [(ngModel)]="selectAccionE" inputId="{{acc.acc_id}}"></p-checkbox></div></div></div>
+                        <div class="col text-start cuerpo_cuerpo" *ngIf="criterios.cri_id==crides.cdes_criterio"><div *ngFor="let acc of crides.acciones" class="row"><div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1" *ngIf="txtProsEstado"><p-checkbox name="group1" [value]="acc" [(ngModel)]="selectAccionE" inputId="{{acc.acc_id}}"></p-checkbox></div></div></div>
                     </div>
                 </div>
-            </div>
+            </div>-->
+            <p-table [value]="listaCriterioDesA" sortField="cri_id" sortMode="single" dataKey="cri_id" rowGroupMode="subheader" groupRowsBy="cri_id" responsiveLayout="scroll"
+            [rows]="5" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+            [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 50rem;">Criterio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="groupheader" let-customer let-rowIndex="rowIndex" let-expanded="expanded">
+                    <tr>
+                        <td colspan="5">
+                            <button type="button" pButton pRipple [pRowToggler]="customer" class="p-button-text p-button-rounded p-button-plain mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                            <span class="font-bold ml-2">{{customer.cri_nombre}}</span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-customer>
+                    <tr>
+                        <td style="text-align: justify;">
+                            {{customer.cdes_descripcion}}
+                        </td>
+                        <td>
+                            <div *ngFor="let acc of customer.acciones" class="row">
+                                <div class="col-11">{{acc.acc_descripcion}}</div><div class="col-1" *ngIf="txtProsEstado"><p-checkbox name="group1" [value]="acc" [(ngModel)]="selectAccionE" inputId="{{acc.acc_id}}"></p-checkbox></div>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
     </p-tabPanel>
   </p-tabView>

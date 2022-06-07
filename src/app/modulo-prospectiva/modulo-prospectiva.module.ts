@@ -21,6 +21,9 @@ import {CheckboxModule} from 'primeng/checkbox';
 import {FileUploadModule} from 'primeng/fileupload';
 import {CalendarModule} from 'primeng/calendar';
 import {RadioButtonModule} from 'primeng/radiobutton';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {PaginatorModule} from 'primeng/paginator';
+import {ImageModule} from 'primeng/image';
 
 //Import de paginas
 import { ProspectivaComponent } from './Paginas/prospectiva/prospectiva.component';
@@ -54,7 +57,10 @@ import { EjesComponent } from './Paginas/ejes/ejes.component';
     CheckboxModule,
     FileUploadModule,
     CalendarModule,
-    RadioButtonModule
+    RadioButtonModule,
+    MultiSelectModule,
+    PaginatorModule,
+    ImageModule
   ],
   providers:[configServiciosWebPros]
 })

@@ -3,11 +3,38 @@
 <p-dialog [(visible)]="modalCriterioDes" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
     <ng-template pTemplate="content"> 
         <div class="mb-2 subtitulo">{{txtTexto}}</div>
-        <div class="form-group row m-1">
+        <input type="hidden" name="txtCodigoC" [(ngModel)]="txtCodigoC">
+        <input type="hidden" name="txtCodigoCD" [(ngModel)]="txtCodigoCD">
+        <div class="form-group row m-1" *ngIf="txtTipoBan && txtBanM">
+            <label for="name" class="col-sm-2 col-form-label">Prospectiva:</label>
+            <div class="col-sm-9">
+                <p-dropdown [options]="listaProspectivasA" appendTo="body" [(ngModel)]="txtSeleccionP" placeholder="Seleccionar..." optionValue="pro_id" optionLabel="pro_nombre" [filter]="true" (onChange)="listaCriteriosD()"></p-dropdown>
+            </div>
+            <div class="col-sm-1">
+                <button pButton pRipple type="button" icon="fas fa-broom" class="p-button-rounded" title="Limpiar selección" (click)="limpiarSeleccion()"></button>
+            </div>
+        </div>
+        <div class="form-group row m-1" *ngIf="txtTipoBan && txtBanM">
+            <p-table [value]="listaCriteriosPadre" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Código</th>
+                        <th style="text-align: justify;">Nombre</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td>{{product.cdes_id}}</td>
+                        <td>{{product.cdes_descripcion}}</td>
+                        <td><p-radioButton name="groupname" [value]="product.cdes_id" [(ngModel)]="txtSeleccion"></p-radioButton></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="form-group row m-1" *ngIf="txtSeleccionP==''">
             <label for="name" class="col-sm-2 col-form-label">Descripción:</label>
             <div class="col-sm-10">
-              <input type="hidden" name="txtCodigoC" [(ngModel)]="txtCodigoC">
-              <input type="hidden" name="txtCodigoCD" [(ngModel)]="txtCodigoCD">
               <textarea pInputText class="form-control" [disabled]="txtCEliminar" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Ingresar la descripción"></textarea>
             </div>
         </div>
@@ -38,7 +65,7 @@
                 <p-tabPanel [header]="cri.cri_nombre" *ngIf="item.fase_id==cri.cri_fase">
                     <div>
                         <span class="buscar-crear">
-                        <button pButton pRipple label="Crear {{cri.cri_nombre}}" icon="pi pi-plus" class="p-mr-2" (click)="openNewCD(cri)"></button>
+                        <button pButton pRipple label="Crear {{cri.cri_nombre}}" icon="pi pi-plus" class="p-mr-2" (click)="openNewCD(cri)" *ngIf="txtProsEstado"></button>
                             <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
                         </span>
                     </div>
@@ -61,14 +88,14 @@
                                     Consecuencia {{cri.enc_consecuencias}}
                                     </div>
                                 </th>
-                                <th pSortableColumn="uto_descripcion" *ngIf="item.fase_id==2">
-                                    <div class="p-d-flex p-jc-between p-ai-center">
-                                    Utopías
-                                    </div>
-                                </th>
                                 <th pSortableColumn="acc_descripcion">
                                     <div class="p-d-flex p-jc-between p-ai-center">
                                     Acciones {{cri.enc_acciones}}
+                                    </div>
+                                </th>
+                                <th pSortableColumn="uto_descripcion" *ngIf="item.fase_id==2">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                    Utopías
                                     </div>
                                 </th>
                             </tr>
@@ -78,35 +105,35 @@
                                 <td>
                                     <div class="row m-0 p-0">
                                         <span class="col-9 align-self-center">{{crid.cdes_descripcion}}</span>
-                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="editarCriterioD(crid, cri)"></button>
-                                            <button *ngIf="item.fase_id==1" pButton pRipple icon="fas fa-book-dead" title="Agregar Consecuencia" class="p-button-rounded p-button-text" (click)="agregarCon(crid, cri)"></button>
-                                            <button *ngIf="item.fase_id==2" pButton pRipple icon="fas fa-plus-circle" title="Agregar Utopías" class="p-button-rounded p-button-text" (click)="agregarUtop(crid, cri)"></button>
-                                            <button pButton pRipple icon="fas fa-book-medical" title="Agregar Acciones" class="p-button-rounded p-button-text" (click)="agregarAcc(crid, cri)"></button>
-                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(crid, cri, 1)"></button>
+                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="editarCriterioD(crid, cri)" *ngIf="txtProsEstado"></button>
+                                            <button *ngIf="item.fase_id==1 && txtProsEstado" pButton pRipple icon="fas fa-book-dead" title="Agregar Consecuencia" class="p-button-rounded p-button-text" (click)="agregarCon(crid, cri)"></button>
+                                            <button *ngIf="item.fase_id==2 && txtProsEstado" pButton pRipple icon="fas fa-plus-circle" title="Agregar Utopías" class="p-button-rounded p-button-text" (click)="agregarUtop(crid, cri)"></button>
+                                            <button pButton pRipple icon="fas fa-book-medical" title="Agregar Acciones" class="p-button-rounded p-button-text" (click)="agregarAcc(crid, cri)" *ngIf="txtProsEstado"></button>
+                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(crid, cri, 1)" *ngIf="txtProsEstado"></button>
                                         </span>
                                     </div>
                                 </td>
                                 <td *ngIf="item.fase_id==1">
                                     <div *ngFor="let cons of crid.consecuencias" class="row m-0 p-0">
                                         <span class="col-9 align-self-center">{{cons.con_descripcion}}</span>
-                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="modificarConsec(cons, cri)"></button>
-                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(cons, cri, 2)"></button>
-                                        </span>
-                                    </div>
-                                </td>
-                                <td *ngIf="item.fase_id==2">
-                                    <div *ngFor="let cons of crid.utopias" class="row m-0 p-0">
-                                        <span class="col-9 align-self-center">{{cons.uto_descripcion}}</span>
-                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="modificarUtopia(cons, cri)"></button>
-                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(cons, cri, 4)"></button>
+                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="modificarConsec(cons, cri)" *ngIf="txtProsEstado"></button>
+                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(cons, cri, 2)" *ngIf="txtProsEstado"></button>
                                         </span>
                                     </div>
                                 </td>
                                 <td>
                                     <div *ngFor="let acc of crid.acciones" class="row m-0 p-0">
                                         <span class="col-9 align-self-center">{{acc.acc_descripcion}}</span>
-                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="modificarAccion(acc, cri)"></button>
-                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(acc, cri, 3)"></button>
+                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="modificarAccion(acc, cri)" *ngIf="txtProsEstado"></button>
+                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(acc, cri, 3)" *ngIf="txtProsEstado"></button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td *ngIf="item.fase_id==2">
+                                    <div *ngFor="let cons of crid.utopias" class="row m-0 p-0">
+                                        <span class="col-9 align-self-center">{{cons.uto_descripcion}}</span>
+                                        <span class="col-3 m-0 p-0 align-self-center"><button pButton pRipple icon="pi pi-pencil" title="Editar" class="p-button-rounded p-button-text" (click)="modificarUtopia(cons, cri)" *ngIf="txtProsEstado"></button>
+                                            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarCriterioD(cons, cri, 4)" *ngIf="txtProsEstado"></button>
                                         </span>
                                     </div>
                                 </td>

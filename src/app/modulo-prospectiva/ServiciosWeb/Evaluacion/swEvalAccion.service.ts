@@ -14,6 +14,11 @@ export class SwEvalAccionService {
     this.UrlSiplanResp=server.urlSerSiplanRespuesta;
   }
 
+  ListarRespuestaC(codigo:any): Observable<listaI>{
+    let direccion = this.UrlSiplanResp+'ListaRespuestaC';
+      return this.http.post<listaI>(direccion, codigo);
+  }
+
   ListarRespuesta(codigo:any): Observable<listaI>{
     let direccion = this.UrlSiplanResp+'ListaRespuesta';
       return this.http.post<listaI>(direccion, codigo);
@@ -31,6 +36,11 @@ export class SwEvalAccionService {
 
   ListaRespuestaE(codigo:any):Observable<listaI>{
     let direccion=this.UrlSiplanResp+'ListaRespuestaEn';
+    return this.http.post<listaI>(direccion, codigo);
+  }
+
+  ListarAccionesEjes(codigo:any):Observable<listaI>{
+    let direccion=this.UrlSiplanResp+'ListarAccionesEjes';
     return this.http.post<listaI>(direccion, codigo);
   }
 

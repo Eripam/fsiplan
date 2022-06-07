@@ -41,6 +41,7 @@ export class ArbolComponent implements OnInit {
    txtNombre:string='';
    txtTipo:number=0;
    eliminar:boolean=false;
+   txtProsEstado:boolean=true;
 
   constructor(private route: ActivatedRoute, private sesiones:SesionUsuario, private swProspectiva:SwProspectivaService, private swRespuesta: SwEvalAccionService, private swArbol: SwArbolService, private mensajesg: MensajesGenerales, private messageService: MessageService, private swAuditoria: SwAuditoriaService) { }
 
@@ -80,6 +81,15 @@ export class ArbolComponent implements OnInit {
 
   async obtenerPros(event:any){
     this.txtProspectiva=event.value;
+    for(let pros of this.listaProspectivas){
+      if(pros.pro_id==this.txtProspectiva){
+        if(pros.pro_estado==2){
+          this.txtProsEstado=false;
+        }else{
+          this.txtProsEstado=true;
+        }
+      }
+    }
     this.listaResultadosE();
     this.listaPartesArbol();
     this.listaEstructuraArbol();

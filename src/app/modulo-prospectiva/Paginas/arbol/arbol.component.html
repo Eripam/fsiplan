@@ -66,7 +66,7 @@
                     <tr>
                         <td>{{acciones.acc_descripcion}}</td>
                         <td>
-                            <select [(ngModel)]="acciones.estr_tipo" class="form-select" (change)="guardarPartes(acciones)">
+                            <select [(ngModel)]="acciones.estr_tipo" class="form-select" (change)="guardarPartes(acciones)" [disabled]="!txtProsEstado">
                                 <option value="0">Ninguno</option>
                                 <option *ngFor="let partes of listaPartes" [value]="partes.tarb_id">{{partes.tarb_nombre}}</option>
                             </select>
@@ -83,7 +83,7 @@
                 <div class="row col-12">
                     <div class="row col encabezado text-center m-0 p-0" *ngFor="let col of listaPartes">
                         <div class="col-10">{{col.tarb_nombre}}</div>
-                        <div class="col-2">
+                        <div class="col-2" *ngIf="txtProsEstado">
                             <button pButton pRipple icon="fas fa-plus" title="Aregar nuevo {{col.tarb_nombre}}" class="p-button-rounded p-button-text" (click)="agregarNuevo(col)"></button>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                         <div class="m-0 p-0" *ngFor="let rowData of listaEstructura">
                             <div class="row col p-0 m-0"*ngIf="col.tarb_id==rowData.estr_tipo">
                                 <div class="col-10">{{rowData.estr_descripcion}}</div>
-                                <div class="row col-2 m-0 p-0">
+                                <div class="row col-2 m-0 p-0" *ngIf="txtProsEstado">
                                     <button pButton pRipple icon="fas fa-edit" title="Modificar" class="p-button-rounded p-button-text" (click)="modificarDato(rowData, col.tarb_nombre)"></button>
                                     <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarDato(rowData, col.tarb_nombre)"></button>
                                 </div>

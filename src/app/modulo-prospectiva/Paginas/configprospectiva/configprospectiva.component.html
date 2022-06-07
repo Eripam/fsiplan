@@ -11,13 +11,19 @@
         <div class="form-group row m-1">
             <label for="name" class="col-sm-2 col-form-label">Nombre:</label>
             <div class="col-sm-10">
-              <input type="text" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre">
+              <input type="text" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre" [disabled]="eliminar">
+            </div>
+        </div>
+        <div class="form-group row m-1" *ngIf="txtFase==4">
+            <label for="name" class="col-sm-2 col-form-label">Valor:</label>
+            <div class="col-sm-10">
+              <input type="text" pInputText class="form-control" required name="txtValor" [(ngModel)]="txtValor" placeholder="Peso de la pregunta" [disabled]="eliminar">
             </div>
         </div>
         <div class="form-group row m-1" *ngIf="txtCodigo>0">
           <label for="txtEstado" class="col-sm-2 col-form-label">Estado:</label>
           <div class="col-sm-10">
-            <select name="sltEstado" id="sltEstado" class="form-control" [(ngModel)]="txtEstado">
+            <select name="sltEstado" id="sltEstado" class="form-control" [(ngModel)]="txtEstado" [disabled]="eliminar">
               <option [ngValue]='1'>Activo</option>
               <option [ngValue]='0'>Inactivo</option>
             </select>
@@ -76,108 +82,266 @@
     <div class="col-2 tituloPros align-self-center">Prospectiva:</div>
     <div class="col-10"><p-dropdown [options]="listaProspectivas" appendTo="body" [(ngModel)]="txtProspectiva" placeholder="Seleccionar Prospectiva" optionValue="pro_id" [filter]="true" filterBy="pro_nombre" optionLabel="pro_nombre" [showClear]="true" (onChange)="obtenerPros($event)"></p-dropdown></div>
 </div>
-<p-tabView>
+<p-tabView styleClass="tabview-custom">
     <p-tabPanel [header]="item.fase_nombre" *ngFor="let item of listaFase; let i = index" [selected]="i == 0">
-        <div>
-            <span class="buscar-crear">
-            <button pButton pRipple label="Crear Criterios" icon="pi pi-plus" class="p-mr-2" (click)="openNew(item.fase_id)"></button>
-                <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
-            </span>
+        <div *ngIf="item.fase_id!=3">
+            <div>
+                <span class="buscar-crear">
+                <button pButton pRipple label="Crear Criterios" icon="pi pi-plus" class="p-mr-2" (click)="openNew(item.fase_id)" *ngIf="txtProsEstado && txtTipoProspectiva==1"></button>
+                    <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+                </span>
+            </div>
+            <div class="widget-header mt-3"><h3>Listado de Criterios</h3></div>
+            <p-table #dt1 [value]="listaCriterios" dataKey="id" [rowHover]="true" scrollHeight="500px"
+                [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+                [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+                [globalFilterFields]="['cri_id','cri_nombre', 'cri_estado_nombre','enc_consecuencias', 'enc_descripcion', 'enc_acciones']" responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="cri_id" style="width: 8rem; text-align: center;">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                            Código
+                            <p-sortIcon field="cri_id"></p-sortIcon>
+                        </div>
+                        </th>  
+                        <th pSortableColumn="cri_nombre">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                            Nombre
+                            <p-sortIcon field="cri_ nombre"></p-sortIcon>
+                            <p-columnFilter type="text" field="cri_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th pSortableColumn="enc_descripcion" *ngIf="item.fase_id==1">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                            Encabezado
+                            <p-sortIcon field="enc_descripcion"></p-sortIcon>
+                            <p-columnFilter type="text" field="enc_descripcion" display="menu" class="p-ml-auto"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th pSortableColumn="enc_consecuencia" *ngIf="item.fase_id==1">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                            Encabezado Consecuencia
+                            <p-sortIcon field="enc_consecuencia"></p-sortIcon>
+                            <p-columnFilter type="text" field="enc_consecuencia" display="menu" class="p-ml-auto"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th pSortableColumn="enc_acciones" *ngIf="item.fase_id==1">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                            Encabezado Acciones
+                            <p-sortIcon field="enc_acciones"></p-sortIcon>
+                            <p-columnFilter type="text" field="enc_acciones" display="menu" class="p-ml-auto"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th class="text-center">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Estado
+                                <p-columnFilter field="cri_estado" matchMode="equals" display="menu">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                            <ng-template let-option pTemplate="item">
+                                                <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                            </ng-template>
+                                        </p-dropdown>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="width: 8rem" class="text-center">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Acción
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-cri>
+                    <tr *ngIf="item.fase_id==cri.cri_fase">
+                        <td class="text-center">
+                            {{cri.cri_id}}
+                        </td>
+                        <td>
+                            {{cri.cri_nombre}}
+                        </td>
+                        <td *ngIf="item.fase_id==1">
+                            {{cri.enc_descripcion}}
+                        </td>
+                        <td *ngIf="item.fase_id==1">
+                            {{cri.enc_consecuencias}}
+                        </td>
+                        <td *ngIf="item.fase_id==1">
+                            {{cri.enc_acciones}}
+                        </td>
+                        <td class="text-center">
+                            <span [class]="'customer-badge status-' + cri.cri_estado">{{cri.cri_estado_nombre}}</span>
+                        </td>
+                        <td class="text-center">
+                            <button pButton pRipple icon="pi pi-pencil" title="Editar criterio" class="p-button-rounded" (click)="modificarCriterio(cri)" *ngIf="txtProsEstado && txtTipoProspectiva==1"></button>
+                            <button pButton pRipple *ngIf="item.fase_id==1 && txtProsEstado" icon="fas fa-plus" title="Agregar lineamientos"  class="p-button-rounded" (click)="agregarEncabezado(cri)"></button>
+                            <button pButton pRipple *ngIf="item.fase_id==1 && txtProsEstado" icon="fas fa-edit" title="Editar encabezados" class="p-button-rounded" (click)="modificarEncabezado(cri)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="7">No se encontrarón registros.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
-        <div class="widget-header mt-3"><h3>Listado de Criterios</h3></div>
-        <p-table #dt1 [value]="listaCriterios" dataKey="id" [rowHover]="true" scrollHeight="500px"
-            [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
-            [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
-            [globalFilterFields]="['cri_id','cri_nombre', 'cri_estado_nombre','enc_consecuencias', 'enc_descripcion', 'enc_acciones']" responsiveLayout="scroll">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th pSortableColumn="cri_id" style="width: 8rem; text-align: center;">
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                        Código
-                        <p-sortIcon field="cri_id"></p-sortIcon>
+        <div *ngIf="item.fase_id==3">
+            <p-tabView>
+                <p-tabPanel header="Respuesta">
+                    <div>
+                        <span class="buscar-crear">
+                        <button pButton pRipple label="Crear Respuestas" icon="pi pi-plus" class="p-mr-2" (click)="openNew(4)" *ngIf="txtProsEstado && txtTipoProspectiva==1"></button>
+                            <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+                        </span>
                     </div>
-                    </th>  
-                    <th pSortableColumn="cri_nombre">
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                        Nombre
-                        <p-sortIcon field="cri_ nombre"></p-sortIcon>
-                        <p-columnFilter type="text" field="cri_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
-                        </div>
-                    </th>
-                    <th pSortableColumn="enc_descripcion" *ngIf="item.fase_id==1">
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                        Encabezado
-                        <p-sortIcon field="enc_descripcion"></p-sortIcon>
-                        <p-columnFilter type="text" field="enc_descripcion" display="menu" class="p-ml-auto"></p-columnFilter>
-                        </div>
-                    </th>
-                    <th pSortableColumn="enc_consecuencia" *ngIf="item.fase_id==1">
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                        Encabezado Consecuencia
-                        <p-sortIcon field="enc_consecuencia"></p-sortIcon>
-                        <p-columnFilter type="text" field="enc_consecuencia" display="menu" class="p-ml-auto"></p-columnFilter>
-                        </div>
-                    </th>
-                    <th pSortableColumn="enc_acciones" *ngIf="item.fase_id==1">
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                        Encabezado Acciones
-                        <p-sortIcon field="enc_acciones"></p-sortIcon>
-                        <p-columnFilter type="text" field="enc_acciones" display="menu" class="p-ml-auto"></p-columnFilter>
-                        </div>
-                    </th>
-                    <th class="text-center">
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                            Estado
-                            <p-columnFilter field="cri_estado" matchMode="equals" display="menu">
-                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-dropdown [ngModel]="value" placeholder="Any">
-                                        <ng-template let-option pTemplate="item">
-                                            <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                    <div class="widget-header mt-3"><h3>Listado de Respuestas</h3></div>
+                    <p-table #dt1 [value]="listaRespuestas" dataKey="id" [rowHover]="true" scrollHeight="500px"
+                        [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+                        [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+                        [globalFilterFields]="['res_id','res_nombre', 'res_valor']" responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th pSortableColumn="res_id" style="width: 8rem; text-align: center;">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                    Código
+                                    <p-sortIcon field="res_id"></p-sortIcon>
+                                </div>
+                                </th>  
+                                <th pSortableColumn="res_nombre">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                    Nombre
+                                    <p-sortIcon field="res_ nombre"></p-sortIcon>
+                                    <p-columnFilter type="text" field="res_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                                    </div>
+                                </th>
+                                <th pSortableColumn="res_valor">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                    Valor
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Estado
+                                        <p-columnFilter field="res_estado" matchMode="equals" display="menu">
+                                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                                <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                                    <ng-template let-option pTemplate="item">
+                                                        <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                                    </ng-template>
+                                                </p-dropdown>
+                                            </ng-template>
+                                        </p-columnFilter>
+                                    </div>
+                                </th>
+                                <th style="width: 8rem" class="text-center">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Acción
+                                    </div>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-respuesta>
+                            <tr>
+                                <td class="text-center">
+                                    {{respuesta.res_id}}
+                                </td>
+                                <td>
+                                    {{respuesta.res_nombre}}
+                                </td>
+                                <td>
+                                    {{respuesta.res_valor}}
+                                </td>
+                                <td class="text-center">
+                                    <span [class]="'customer-badge status-' + respuesta.res_estado">{{respuesta.res_estado_nombre}}</span>
+                                </td>
+                                <td class="text-center">
+                                    <button pButton pRipple icon="pi pi-pencil" title="Editar respuesta" class="p-button-rounded" (click)="modificarRespuesta(respuesta, 4)" *ngIf="txtProsEstado && txtTipoProspectiva==1"></button>
+                                    <button pButton pRipple icon="pi pi-trash" title="Elimiar respuesta" class="p-button-rounded" (click)="eliminarRespuesta(respuesta, 4)" *ngIf="txtProsEstado && txtTipoProspectiva==1"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="7">No se encontrarón registros.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-tabPanel>
+                <p-tabPanel header="Tipo Árbol">
+                    <div>
+                        <span class="buscar-crear">
+                        <button pButton pRipple label="Crear Tipo Árbol" icon="pi pi-plus" class="p-mr-2" (click)="openNew(5)" *ngIf="txtProsEstado && txtTipoProspectiva==1"></button>
+                            <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+                        </span>
+                    </div>
+                    <div class="widget-header mt-3"><h3>Listado de Tipo Árbol</h3></div>
+                    <p-table #dt1 [value]="listaTipoArbol" dataKey="id" [rowHover]="true" scrollHeight="500px"
+                            [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+                            [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+                            [globalFilterFields]="['tarb_id','tarb_nombre', 'tarb_estado_nombre']" responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th pSortableColumn="tarb_id" style="width: 8rem; text-align: center;">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Código
+                                        <p-sortIcon field="tarb_id"></p-sortIcon>
+                                    </div>
+                                </th>  
+                                <th pSortableColumn="tarb_nombre">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Nombre
+                                        <p-sortIcon field="tarb_ nombre"></p-sortIcon>
+                                        <p-columnFilter type="text" field="tarb_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Estado
+                                        <p-columnFilter field="tarb_estado" matchMode="equals" display="menu">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                                <ng-template let-option pTemplate="item">
+                                                    <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                                </ng-template>
+                                            </p-dropdown>
                                         </ng-template>
-                                    </p-dropdown>
-                                </ng-template>
-                            </p-columnFilter>
-                        </div>
-                    </th>
-                    <th style="width: 8rem" class="text-center">
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                            Acción
-                        </div>
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-cri>
-                <tr *ngIf="item.fase_id==cri.cri_fase">
-                    <td class="text-center">
-                        {{cri.cri_id}}
-                    </td>
-                    <td>
-                        {{cri.cri_nombre}}
-                    </td>
-                    <td *ngIf="item.fase_id==1">
-                        {{cri.enc_descripcion}}
-                    </td>
-                    <td *ngIf="item.fase_id==1">
-                        {{cri.enc_consecuencias}}
-                    </td>
-                    <td *ngIf="item.fase_id==1">
-                        {{cri.enc_acciones}}
-                    </td>
-                    <td class="text-center">
-                        <span [class]="'customer-badge status-' + cri.cri_estado">{{cri.cri_estado_nombre}}</span>
-                    </td>
-                    <td class="text-center">
-                        <button pButton pRipple icon="pi pi-pencil" title="Editar criterio" class="p-button-rounded" (click)="modificarCriterio(cri)"></button>
-                        <button pButton pRipple *ngIf="item.fase_id==1" icon="fas fa-plus" title="Agregar lineamientos"  class="p-button-rounded" (click)="agregarEncabezado(cri)"></button>
-                        <button pButton pRipple *ngIf="item.fase_id==1" icon="fas fa-edit" title="Editar encabezados" class="p-button-rounded" (click)="modificarEncabezado(cri)"></button>
-                    </td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td colspan="7">No se encontrarón registros.</td>
-                </tr>
-            </ng-template>
-        </p-table>
+                                        </p-columnFilter>
+                                    </div>
+                                </th>
+                                <th style="width: 8rem" class="text-center">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Acción
+                                    </div>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-respuesta>
+                            <tr>
+                                <td class="text-center">
+                                    {{respuesta.tarb_id}}
+                                </td>
+                                <td>
+                                    {{respuesta.tarb_nombre}}
+                                </td>
+                                <td class="text-center">
+                                    <span [class]="'customer-badge status-' + respuesta.tarb_estado">{{respuesta.tarb_estado_nombre}}</span>
+                                </td>
+                                <td class="text-center">
+                                    <button pButton pRipple icon="pi pi-pencil" title="Editar respuesta" class="p-button-rounded" (click)="modificarRespuesta(respuesta, 5)" *ngIf="txtProsEstado && txtTipoProspectiva==1"></button>
+                                    <button pButton pRipple icon="pi pi-trash" title="Elimiar respuesta" class="p-button-rounded" (click)="eliminarRespuesta(respuesta, 5)" *ngIf="txtProsEstado && txtTipoProspectiva==1"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="7">No se encontrarón registros.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
     </p-tabPanel>
 </p-tabView>

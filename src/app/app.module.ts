@@ -32,6 +32,7 @@ import {HttpService} from "../app/casClient/http.service"
 import { SesionUsuario} from './casClient/SesionUsuario';
 import { ErrorAccesoComponent } from './Herramientas/PaginasError/error-acceso/error-acceso.component';
 import { AuthInterceptorService } from './Herramientas/interceptor.interceptor';
+import { PlanComponent } from './modulo-estrategico/Paginas/plan/plan.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { AuthInterceptorService } from './Herramientas/interceptor.interceptor';
     TablasComponent,
     LoginComponent,
     LogoutComponent,
-    ErrorAccesoComponent
+    ErrorAccesoComponent,
+    PlanComponent
   ],
   imports: [
     BrowserModule,

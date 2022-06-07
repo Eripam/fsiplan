@@ -1,4 +1,38 @@
 <p-toast></p-toast>
+<!--Modal para ingresar tipo jes-->
+<p-dialog [(visible)]="modalTipoEje" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+  <ng-template pTemplate="content">
+      <div class="form-group row m-1" *ngIf="txtCodigo>0">
+        <label for="name" class="col-sm-2 col-form-label">Código:</label>
+        <div class="col-sm-10">
+          <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
+        </div>
+      </div>  
+      <div class="form-group row m-1">
+          <label for="name" class="col-sm-2 col-form-label">Descripción:</label>
+          <div class="col-sm-10">
+            <input type="text" [disabled]="eliminar" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Descripción">
+          </div>
+      </div>
+      <div class="form-group row m-1 mt-3">
+        <div class="row m-0 p-0">
+          <div class="encabezado col-10">Descripción</div>
+          <div class="encabezado col-2 text-center">Acción</div>
+        </div>
+        <div class="row m-0 p-0" *ngFor="let tipoeje of listaTipoEje">
+          <div class="col-10 cuerpo">{{tipoeje.teje_nombre}}</div>
+          <div class="col-2 cuerpo text-center">
+            <button pButton pRipple icon="fas fa-edit" title="Modificar" class="p-button-rounded p-button-text" (click)="modificarTipoEje(tipoeje)"></button>
+            <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarTipoEje(tipoeje)"></button>
+          </div>
+        </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogTE()"></button>
+      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarDatosTE()"></button>
+  </ng-template>
+</p-dialog>
 <!--Modal para ingresar criterios-->
 <p-dialog [(visible)]="modalEje" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
     <ng-template pTemplate="content">
@@ -7,12 +41,36 @@
           <div class="col-sm-10">
             <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
           </div>
-        </div>  
+        </div>
         <div class="form-group row m-1">
-            <label for="name" class="col-sm-2 col-form-label">Descripción:</label>
+          <label for="name" class="col-sm-2 col-form-label">Tipo Eje:</label>
+          <div class="col-sm-10">
+            <p-dropdown [disabled]="eliminar" [options]="listaTipoEje" appendTo="body" [(ngModel)]="txtTipo" placeholder="Seleccionar Tipo" optionValue="teje_id" optionLabel="teje_nombre" [showClear]="true" ></p-dropdown>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-2 col-form-label">Nombre:</label>
             <div class="col-sm-10">
-              <input type="text" [disabled]="eliminar" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Descripción">
+              <input type="text" [disabled]="eliminar" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre">
             </div>
+        </div>
+        <div class="form-group row m-1">
+          <label for="name" class="col-sm-2 col-form-label">Descripción:</label>
+          <div class="col-sm-10">
+            <textarea [disabled]="eliminar" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtDescripcion" placeholder="Descripción"></textarea>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label for="name" class="col-sm-2 col-form-label">Microescenario:</label>
+          <div class="col-sm-10">
+            <textarea [disabled]="eliminar" pInputText class="form-control" required name="txtMicroescenario" [(ngModel)]="txtMicroescenario" placeholder="Microescenario"></textarea>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label for="acciones" class="col-sm-2 col-form-label">Acciones</label>
+          <div class="col-sm-10">
+            <p-multiSelect [disabled]="eliminar" [options]="listaAcciones" optionValue="acc_id" appendTo="body" [(ngModel)]="selectAcciones" defaultLabel="Seleccionar Acciones" optionLabel="acc_descripcion" selectedItemsLabel="{0} acciones seleccionadas" [showTransitionOptions]="'1ms'" [hideTransitionOptions]="'1ms'"></p-multiSelect>
+          </div>
         </div>
     </ng-template>
     <ng-template pTemplate="footer">
@@ -35,8 +93,10 @@
   </div>
   <p-tabView styleClass="tabview-custom">
     <div>
+      <button pButton pRipple label="Crear Tipo Eje" icon="pi pi-plus" class="p-mr-2 boton" (click)="openNewTE()" *ngIf="txtDependencia==1 && txtProsEstado"></button>
+      <button pButton pRipple label="Crear Eje Estratégico" icon="pi pi-plus" class="p-mr-2" (click)="openNew()" *ngIf="listaTipoEje.length>0 && txtProsEstado"></button>
       <span class="buscar-crear">
-        <button pButton pRipple label="Crear Eje Estratégico" icon="pi pi-plus" class="p-mr-2" (click)="openNew()"></button>
+        <div></div>
           <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
       </span>
   </div>
@@ -44,34 +104,40 @@
 <p-table #dt1 [value]="listaEjes" dataKey="id" [rowHover]="true" scrollHeight="500px"
     [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
     [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
-    [globalFilterFields]="['pro_id','pro_nombre', 'pro_estado_nombre']" responsiveLayout="scroll">
+    [globalFilterFields]="['eje_id','eje_nombre', 'eje_descripcion', 'teje_nombre', 'eje_microescenario']" responsiveLayout="scroll">
     <ng-template pTemplate="header">
         <tr>
-            <th pSortableColumn="eje_descripcion">
+            <th pSortableColumn="eje_nombre">
               <div class="p-d-flex p-jc-between p-ai-center">
                 Nombre
-                <p-sortIcon field="pro_id"></p-sortIcon>
+                <p-sortIcon field="eje_nombre"></p-sortIcon>
+                <p-columnFilter type="text" field="eje_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
             </div>
             </th>  
-            <th pSortableColumn="pro_nombre">
+            <th pSortableColumn="eje_descripcion">
               <div class="p-d-flex p-jc-between p-ai-center">
                 Descripción
-                <p-sortIcon field="pro_ nombre"></p-sortIcon>
-                <p-columnFilter type="text" field="pro_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                <p-sortIcon field="eje_descripcion"></p-sortIcon>
+                <p-columnFilter type="text" field="eje_descripcion" display="menu" class="p-ml-auto"></p-columnFilter>
               </div>
              </th>
-             <th pSortableColumn="pro_fi">
+             <th pSortableColumn="eje_microescenario">
               <div class="p-d-flex p-jc-between p-ai-center">
                 Microescenario
                 <p-sortIcon field="pro_fi"></p-sortIcon>
-                <p-columnFilter type="text" field="pro_fi" display="menu" class="p-ml-auto"></p-columnFilter>
+                <p-columnFilter type="text" field="eje_microescenario" display="menu" class="p-ml-auto"></p-columnFilter>
               </div>
              </th>
-             <th pSortableColumn="pro_ff">
+             <th pSortableColumn="teje_nombre">
               <div class="p-d-flex p-jc-between p-ai-center">
                 Tipo de Eje
-                <p-sortIcon field="pro_ff"></p-sortIcon>
-                <p-columnFilter type="text" field="pro_ff" display="menu" class="p-ml-auto"></p-columnFilter>
+                <p-sortIcon field="teje_nombre"></p-sortIcon>
+                <p-columnFilter type="text" field="teje_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+              </div>
+             </th>
+             <th>
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Acciones
               </div>
              </th>
              <th style="width: 8rem" class="text-center">
@@ -83,17 +149,26 @@
     </ng-template>
     <ng-template pTemplate="body" let-pros>
         <tr>
-            <td class="text-center">
-                {{pros.pro_id}}
+            <td>
+                {{pros.eje_nombre}}
             </td>
             <td>
-                {{pros.pro_nombre}}
+                {{pros.eje_descripcion}}
             </td>
             <td>
-              {{pros.pro_fi|date}}
+              {{pros.eje_microescenario}}
+            </td>
+            <td>
+              {{pros.teje_nombre}}
+            </td>
+            <td>
+              <div *ngFor="let acciones of pros.acciones">
+                - {{acciones.acc_descripcion}}
+              </div>
             </td>
             <td class="text-center">
-              <span [class]="'customer-badge status-' + pros.pro_estado">{{pros.pro_estado_nombre}}</span>
+              <button pButton pRipple icon="fas fa-edit" title="Modificar" class="p-button-rounded p-button-text" (click)="modificarEje(pros)" *ngIf="txtProsEstado"></button>
+              <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarEje(pros)" *ngIf="txtProsEstado"></button>
             </td>
         </tr>
     </ng-template>

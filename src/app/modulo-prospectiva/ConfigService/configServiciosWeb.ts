@@ -13,4 +13,5 @@ export class configServiciosWebPros {
   urlSerSiplanRespuesta: string = environment.urlServiciosSiplan+'respuesta/';
   urlSerSiplanArbol:string = environment.urlServiciosSiplan+'arbol/';
   urlSerSiplanCorreo: string = environment.urlServiciosSiplan+'correo/';
+  urlSerSiplanEje: string = environment.urlServiciosSiplan+'eje/';
 }

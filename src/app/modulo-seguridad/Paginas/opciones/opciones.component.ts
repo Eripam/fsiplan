@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { exit } from 'process';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { MensajesGenerales } from 'src/app/Herramientas/Mensajes/MensajesGenerales.component';
 import { configServiciosWeb } from '../../ConfigService/configServiciosWeb';
@@ -71,6 +72,11 @@ export class OpcionesComponent implements OnInit {
    sessionDepC:number=0;
    txtIngresar:boolean=false;
    txtModificar:boolean=false;
+   files: any[]=[];
+   filesname: string='';
+   direccion: string='';
+   archivobase64:string='';
+   cont:number=0;
    
    constructor(private messageService: MessageService ,private mensajesg: MensajesGenerales, private padreopcionser: swPadreopcionService,  server: configServiciosWeb, private swReglamento: swReglamentoService,private swRegOp: SwReglamentoOpService, private sesiones: SesionUsuario, private route: ActivatedRoute, private swAuditoria:SwAuditoriaService) {
     this.UrlSiplanReg=server.urlServiciosSiplanRegla;
@@ -638,7 +644,9 @@ export class OpcionesComponent implements OnInit {
   }
 
   async eliminarArchivo(nombre:any){
-    this.elimArchivos={
+    var index = this.uploadedFiles.indexOf(nombre);
+    this.uploadedFiles.splice(index,1);
+    /*this.elimArchivos={
       archivo:nombre
     }
     const datos = await new Promise<any>((resolve) =>this.swReglamento.EliminarArchivo(this.elimArchivos).subscribe((translated) => {
@@ -662,7 +670,7 @@ export class OpcionesComponent implements OnInit {
 
       } else {
         this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorNoExisteDatos});
-      }
+      }*/
   }
 
   async eliminarArchivoM(file:any){
@@ -691,6 +699,33 @@ export class OpcionesComponent implements OnInit {
       this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorEliminarArchivos});
     }
     this.listarReglamentos();
+  }
+
+  guardarFile(evento:any){
+    this.files=evento;
+  }
+
+  subirArchivo(){
+    this.cont=0;
+    if(this.files==null || this.files==[]){
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ArchivoVacio});
+    }else if(this.files[0].type=='application/pdf'){
+      this.filesname=this.codigoR+'-'+this.files[0].name;
+      this.direccion='SIPLANI/Prospectiva/Seguridad/Reglamentos/'+this.filesname;
+      for(let files of this.uploadedFiles){
+        if(files==this.filesname){
+          this.cont++;
+        }
+      }
+      if(this.cont>0){
+        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: 'Archivo ya subido'});
+      }else{
+        this.uploadedFiles.push(this.filesname);
+        this.archivobase64=this.files[0].base64;
+      }
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ExtensionErronea+' pdf'});
+    }
   }
  }
  

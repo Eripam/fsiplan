@@ -18,4 +18,7 @@ export class MensajesGenerales {
     NoAutorizado: string='Usted no posee los permisos para realizar esta acción';
     NoSeleccionado:string='Debe seleccionar al menos 1';
     SeleccionarTodo:string = 'Se debe llenar todos los campos.';
+    ArchivoVacio:string='Se debe seleccionar el archivo.';
+    ExtensionErronea:string='Solo se puede subir archivo de tipo ';
+    ErrorFechas: string='La fecha final debe ser mayor a la inicial.';
 }

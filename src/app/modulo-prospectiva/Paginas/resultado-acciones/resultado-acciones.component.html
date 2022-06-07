@@ -82,7 +82,7 @@
                                     <div *ngIf="accion.acc_id==resul.accid && resp.res_id==resul.respuesta">
                                         <div *ngIf="resul.total>0; else falsoEn" class="m-0 p-0">
                                             <div *ngIf="resul.mayor; else falsoRes" class="m-0 p-0">
-                                                <p class="valor-{{resp.res_id}} m-0 p-0">{{resul.total}}</p>
+                                                <p class="valor-{{resp.res_valor}} m-0 p-0">{{resul.total}}</p>
                                             </div>
                                             <ng-template #falsoRes><p class="m-0 p-0">{{resul.total}}</p></ng-template>
                                         </div>

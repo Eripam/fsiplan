@@ -19,6 +19,11 @@ export class SwProspectivaService {
       return this.http.post<listaI>(direccion, codigo);
   }
 
+  ListarProspectivaApro(): Observable<listaI>{
+    let direccion = this.UrlSiplanPros+'ListaProspectivaAprobada';
+      return this.http.get<listaI>(direccion);
+  }
+
   ListaProspectivaExiste():Observable<any>{
     let direccion=this.UrlSiplanPros+'ListaProspectivaExiste';
     return this.http.get<any>(direccion);
@@ -31,6 +36,16 @@ export class SwProspectivaService {
 
   ModificarProspectiva(pros: any): Observable<any>{
     let direccion = this.UrlSiplanPros+'ModificarProspectiva';
+    return this.http.post<any>(direccion, pros);
+  }
+
+  IngresarVisionMision(pros: any): Observable<any>{
+    let direccion = this.UrlSiplanPros+'IngresarVisionMision';
+    return this.http.post<any>(direccion, pros);
+  }
+
+  ModificarVisionMision(pros: any): Observable<any>{
+    let direccion = this.UrlSiplanPros+'ModificarVisionMision';
     return this.http.post<any>(direccion, pros);
   }
 }

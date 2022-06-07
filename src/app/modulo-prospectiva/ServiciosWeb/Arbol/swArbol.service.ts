@@ -17,6 +17,11 @@ export class SwArbolService {
     return this.http.post<any>(direccion, codigo);
   }
 
+  ListaPartesC(codigo: any): Observable<any>{
+    let direccion = this.UrlSiplanArbol+'ListarTipoArbolC';
+    return this.http.post<any>(direccion, codigo);
+  }
+
   ListaEstructura(codigo:any):Observable<any>{
     let direccion = this.UrlSiplanArbol+'ListarEstructuraArbol';
     return this.http.post<any>(direccion, codigo);
@@ -26,14 +31,29 @@ export class SwArbolService {
     let direccion = this.UrlSiplanArbol+'IngresarArbol';
     return this.http.post<any>(direccion, datos);
   }
+
+  IngresarTipoArbol(datos: any): Observable<any>{
+    let direccion = this.UrlSiplanArbol+'IngresarTipoArbol';
+    return this.http.post<any>(direccion, datos);
+  }
   
   ModificarArbol(datos: any): Observable<any>{
     let direccion = this.UrlSiplanArbol+'ModificarArbol';
     return this.http.post<any>(direccion, datos);
   }
 
+  ModificarTipoArbol(datos: any): Observable<any>{
+    let direccion = this.UrlSiplanArbol+'ModificarTipoArbol';
+    return this.http.post<any>(direccion, datos);
+  }
+
   EliminarArbol(datos: any): Observable<any>{
     let direccion = this.UrlSiplanArbol+'EliminarArbol';
+    return this.http.post<any>(direccion, datos);
+  }
+
+  EliminarTipoArbol(datos: any): Observable<any>{
+    let direccion = this.UrlSiplanArbol+'EliminarTipoArbol';
     return this.http.post<any>(direccion, datos);
   }
 

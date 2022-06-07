@@ -155,7 +155,8 @@ export class EvaluarAccionComponent implements OnInit, OnDestroy {
     if(datos.success){
       this.listaCriterioDesA = datos.data;
       const dat={
-        codigo:this.sessionUser
+        codigo:this.sessionUser,
+        prospectiva:this.txtProspectiva
       }
       const datosE:listaI = await new Promise<listaI>((resolve) =>  this.swRespuesta.ValidacionEncuesta(dat).subscribe((translated) => { resolve(translated); }));
       if(datosE.success){
@@ -210,7 +211,8 @@ export class EvaluarAccionComponent implements OnInit, OnDestroy {
         const dat={
           esen_usuario:this.sessionUser,
           esen_rol:this.sessionRolId,
-          esen_estado:1
+          esen_estado:1,
+          esen_prospectiva:this.txtProspectiva
         }
         const dato = await new Promise<any>((resolve) =>
         this.swRespuesta.IngresarEncuestaEstado(dat).subscribe((translated) => {resolve(translated);}));

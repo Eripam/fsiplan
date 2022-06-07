@@ -7,7 +7,13 @@
         <div class="col-sm-10">
           <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
         </div>
-      </div>  
+      </div> 
+      <div class="form-group row m-1" *ngIf="banProspectiva">
+        <label for="name" class="col-sm-2 col-form-label">Alinear con:</label>
+        <div class="col-sm-10">
+          <p-dropdown [options]="listaProspectivasSelect" appendTo="body" [(ngModel)]="txtAlineacion" placeholder="Seleccionar Pertenece" optionValue="pro_id" [filter]="true" filterBy="pro_nombre" optionLabel="pro_nombre" [showClear]="true" ></p-dropdown>
+        </div>
+      </div> 
       <div class="form-group row m-1">
           <label for="name" class="col-sm-2 col-form-label">Nombre:</label>
           <div class="col-sm-10">
@@ -40,6 +46,88 @@
       <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarProspectiva()"></button>
   </ng-template>
 </p-dialog>
+<!--Modal para ingresar galeria o aprobación-->
+<p-dialog [(visible)]="modalGaleria" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+  <ng-template pTemplate="content">
+      <div class="form-group row m-1">
+          <label for="name" class="col-sm-2 col-form-label">Nombre:</label>
+          <div class="col-sm-10">
+            <input type="text" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre">
+          </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label" *ngIf="!txtArchivo; else archivot">Imágen:</label>
+        <ng-template #archivot>
+          <label for="name" class="col-sm-2 col-form-label">Archivo:</label>
+        </ng-template>
+        <div class="col-sm-10">
+          <input type="file" name="txtArchivo" id="txtArchivo" class="form-control">
+        </div>
+      </div>
+      <div class="form-group row m-1" *ngIf="!txtArchivo && txtCodigo==1;">
+        <label for="name" class="col-sm-12 col-form-label text-center" style="font-weight: bold;">Imágen:</label>
+        <div class="row col-sm-12">
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/bird.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/cafe.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/chair.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/desk.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/desk2.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/desk2.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/desk2.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/desk2.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/desk2.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/desk2.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/fence.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/hand.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+          <div class="row col mb-1"><div class="col-12 text-center"><p-image src="assets/images/gallery/mac.jpg" alt="Image" width="200" [preview]="true"></p-image></div><div class="col-12 text-center" (click)="eliminarGal()"><i class="fas fa-trash"></i></div></div>
+        </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogG()"></button>
+      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarProspectiva()"></button>
+  </ng-template>
+</p-dialog>
+<!--Modal para ingresar visión y misión-->
+<p-dialog [(visible)]="modalVisionMision" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+  <ng-template pTemplate="content">
+      <div class="form-group row m-1" *ngIf="txtCodigo>0">
+        <label for="name" class="col-sm-2 col-form-label">Código:</label>
+        <div class="col-sm-10">
+          <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
+          <input type="hidden" name="txtProspectiva" [(ngModel)]="txtProspectiva">
+        </div>
+      </div>  
+      <div class="form-group row m-1">
+          <label for="name" class="col-sm-2 col-form-label">Visión:</label>
+          <div class="col-sm-10">
+            <textarea pInputText class="form-control" required name="txtVision" [(ngModel)]="txtVision" placeholder="Visión de la prospectiva"></textarea>
+          </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label">Misión:</label>
+        <div class="col-sm-10">
+          <textarea pInputText class="form-control" required name="txtMision" [(ngModel)]="txtMision" placeholder="Misión de la prospectiva"></textarea>
+        </div>
+      </div>
+      
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label">Microescenario (opcional):</label>
+        <div class="col-sm-10">
+          <textarea pInputText class="form-control" required name="txtMicroescenario" [(ngModel)]="txtMicroescenario" placeholder="Microescenario es opcional"></textarea>
+        </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogVM()"></button>
+      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarVisionM()"></button>
+  </ng-template>
+</p-dialog>
+<p-dialog [(visible)]="modalReporte" header="REPORTE PDF" [modal]="true" styleClass="p-fluid" position="top" [style]="{width:'60vw', height:'60vw'}">
+  <iframe width="100%" height="100%" frameBorder="0" [src]="url"></iframe>
+</p-dialog>
+<!--Modal de eliminación imagen-->
+<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000" rejectButtonStyleClass="p-button-text"></p-confirmDialog>
 <div class="row">
   <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
   <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
@@ -57,6 +145,7 @@
             <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
         </span>
     </div>
+    <button (click)="pruebaPdf()">PDF</button>
     <div class="widget-header mt-3"><h3>Listado de Prospectivas</h3></div>
   <p-table #dt1 [value]="listaProspectivas" dataKey="id" [rowHover]="true" scrollHeight="500px"
       [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
@@ -64,7 +153,7 @@
       [globalFilterFields]="['pro_id','pro_nombre', 'pro_estado_nombre']" responsiveLayout="scroll">
       <ng-template pTemplate="header">
           <tr>
-              <th pSortableColumn="pro_id" style="width: 8rem; text-align: center;">
+              <th pSortableColumn="pro_id" style="width: 5rem; text-align: center;">
                 <div class="p-d-flex p-jc-between p-ai-center">
                   Código
                   <p-sortIcon field="pro_id"></p-sortIcon>
@@ -91,6 +180,11 @@
                   <p-columnFilter type="text" field="pro_ff" display="menu" class="p-ml-auto"></p-columnFilter>
                 </div>
                </th>
+               <th pSortableColumn="vmp_vision">
+                <div class="p-d-flex p-jc-between p-ai-center text-center">
+                  Visión
+                </div>
+               </th>
                <th pSortableColumn="pro_ff">
                 <div class="p-d-flex p-jc-between p-ai-center">
                   Tipo
@@ -100,16 +194,16 @@
                </th>
                <th class="text-center">
                   <div class="p-d-flex p-jc-between p-ai-center">
-                      Estado
-                      <p-columnFilter field="pro_estado" matchMode="equals" display="menu">
-                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <p-dropdown [ngModel]="value" placeholder="Any">
-                                <ng-template let-option pTemplate="item">
-                                    <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
-                                </ng-template>
-                            </p-dropdown>
-                        </ng-template>
-                    </p-columnFilter>
+                    Estado
+                    <p-columnFilter field="pro_estado" matchMode="equals" display="menu">
+                      <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                          <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                              <ng-template let-option pTemplate="item">
+                                  <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                              </ng-template>
+                          </p-dropdown>
+                      </ng-template>
+                  </p-columnFilter>
                   </div>
                </th>
                <th style="width: 8rem" class="text-center">
@@ -133,6 +227,7 @@
               <td>
                 {{pros.pro_ff|date}}
               </td>
+              <td style="text-align: justify;">{{pros.vmp_vision}}</td>
               <ng-template ngFor let-tipo [ngForOf]="listaTipoD">
                 <td *ngIf="pros.pro_tipo==tipo.tde_codigo">  
                   {{tipo.tde_nombre}}
@@ -143,8 +238,11 @@
                 <span [class]="'customer-badge status-' + pros.pro_estado">{{pros.pro_estado_nombre}}</span>
               </td>
               <td class="text-center">
-                  <button pButton pRipple icon="pi pi-pencil" title="Editar prospectiva" class="p-button-rounded" (click)="modificarProspectiva(pros)"></button>
+                  <button pButton pRipple icon="pi pi-pencil" title="Editar prospectiva" class="p-button-rounded" (click)="modificarProspectiva(pros)" *ngIf="pros.pro_estado!=2"></button>
                   <button pButton pRipple icon="fas fa-cog" title="Configuración Prospectiva"  class="p-button-rounded" (click)="irpagina(pros)"></button>
+                  <button pButton pRipple icon="far fa-images" title="Subir Galería"  class="p-button-rounded" (click)="ingresarGaleria(pros)"></button>
+                  <button pButton pRipple icon="far fa-eye" title="Agregar/Modificar Visión"  class="p-button-rounded" (click)="agregarVision(pros)" *ngIf="pros.ejes && pros.pro_estado!=2"></button>
+                  <button pButton pRipple icon="fas fa-clipboard-check" title="Aprobar Prospectiva"  class="p-button-rounded" (click)="aprobarProspectiva(pros)" *ngIf="pros.vm && pros.pro_estado!=2"></button>
               </td>
           </tr>
       </ng-template>

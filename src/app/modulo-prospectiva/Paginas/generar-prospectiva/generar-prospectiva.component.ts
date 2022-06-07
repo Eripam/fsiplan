@@ -34,6 +34,7 @@ export class GenerarProspectivaComponent implements OnInit {
   listaI:listaI[]=[];
   listaFase:any[]=[];
   listaCriterioDes:any[]=[];
+  listaCriteriosPadre:any[]=[];
   //Modal
   modalCriterioDes:boolean=false;
   tituloModal:string='';
@@ -51,6 +52,16 @@ export class GenerarProspectivaComponent implements OnInit {
   sessionRol:string='';
   btnGuardar:string='Guardar';
   btnCancelar:string='Cancelar';
+  txtProsEstado:boolean=true;
+  txtTipoBan: boolean =false;
+  txtTitulo:string='';
+  txtProspectivaPadre:number=0;
+  txtSeleccion:string='';
+  listaProspectivasA:any[]=[];
+  txtSeleccionP:string='';
+  txtCodigoCri:number=0;
+  txtTipoP:number=0;
+  txtBanM:boolean=false;
 
   constructor(private route: ActivatedRoute, private sesiones:SesionUsuario, private swProspectiva:SwProspectivaService, private swCriterio: SwCriteriosService, private mensajesg:MensajesGenerales, private messageService: MessageService, private swCritDes: SwCriteriosDesService, private swAuditoria: SwAuditoriaService) { }
 
@@ -87,6 +98,16 @@ export class GenerarProspectivaComponent implements OnInit {
     this.loading = false;
   }
 
+  async listarProspectivasA(){
+    const dato:listaI = await new Promise<listaI>((resolve)=> this.swProspectiva.ListarProspectivaApro().subscribe((translated)=> {resolve(translated);}));
+    if(dato.success){
+      this.listaProspectivasA=dato.data;
+    }else{
+      this.listaProspectivasA=[];
+    }
+    this.loading=false;
+  }
+
   async listarCriterios(){
     const dat={
       codigo:this.txtProspectiva
@@ -100,8 +121,23 @@ export class GenerarProspectivaComponent implements OnInit {
     this.loading = false;
   }
 
+  async listarCriteriosPadre(criterio:any){
+    const valores={
+      cri_prospectiva:this.txtSeleccionP,
+      tipo:4,
+      codigo:criterio
+    }
+    const datos:listaI = await new Promise<listaI>((resolve) =>  this.swCritDes.ListarCriteriosDes(valores).subscribe((translated) => { resolve(translated); }));
+    if(datos.success){
+      this.listaCriteriosPadre = datos.data;
+    }else{
+      this.listaCriteriosPadre =[];
+    }
+    this.loading = false;
+  }
+
   async listarFases(){
-    const datos:listaI = await new Promise<listaI>((resolve) =>  this.swCriterio.ListarFases().subscribe((translated) => { resolve(translated); }));
+    const datos:listaI = await new Promise<listaI>((resolve) =>  this.swCriterio.ListarFasesGenerar().subscribe((translated) => { resolve(translated); }));
     if(datos.success){
       this.listaFase = datos.data;
     }else{
@@ -126,6 +162,23 @@ export class GenerarProspectivaComponent implements OnInit {
 
   obtenerPros(event:any){
     this.txtProspectiva=event.value;
+    for(let pros of this.listaProspectivas){
+      if(pros.pro_id==this.txtProspectiva){
+        this.txtTipoP=pros.pros_tipo;
+        if(pros.pro_estado==2){
+          this.txtProsEstado=false;
+        }else{
+          this.txtProsEstado=true;
+        }
+        if(pros.pro_tipo==1){
+          this.txtTipoBan=false;
+          this.txtProspectivaPadre=pros.pro_id;
+        }else{
+          this.txtTipoBan=true;
+          this.txtProspectivaPadre=pros.pro_proid;
+        }
+      }
+    }
     this.listarCriterios();
     this.listarFases();
     this.listarCriteriosDes();
@@ -136,9 +189,11 @@ export class GenerarProspectivaComponent implements OnInit {
   }
 
   openNewCD(cri:any){
+    this.listaCriteriosPadre=[];
     if(this.txtIngresar){
       this.txtTipo=1;
       this.tituloModal='Ingresar '+cri.cri_nombre;
+      this.txtTitulo=cri.cri_nombre;
       this.txtCriterioD=cri.cri_nombre;
       this.txtTexto=cri.enc_descripcion;
       this.txtNombre='';
@@ -146,9 +201,17 @@ export class GenerarProspectivaComponent implements OnInit {
       this.txtCodigoCD=0;
       this.txtCodigoCA=0;
       this.modalCriterioDes=true;
+      this.txtSeleccionP='';
       this.txtCEliminar=false;
       this.btnGuardar='Guardar';
       this.btnCancelar='Cancelar';
+      this.txtSeleccion='';
+      this.txtCodigoCri=cri.cri_cri_id;
+      this.txtBanM=true;
+      if(this.txtProsEstado && this.txtTipoP!=1){
+        this.txtTipoBan=true;
+        this.listarProspectivasA();
+      }
     }else{
       this.txtTipo=0;
       this.messageService.add({severity:'error', summary:this.mensajesg.CabeceraError, detail: this.mensajesg.NoAutorizado});
@@ -159,9 +222,10 @@ export class GenerarProspectivaComponent implements OnInit {
     const valores={
       cdes_criterio:this.txtCodigoC,
       cdes_descripcion:this.txtNombre,
-      cdes_id:this.txtCodigoCD
+      cdes_id:this.txtCodigoCD,
+      cdes_cdesid:this.txtSeleccion
     }
-    if (this.txtNombre == '') {
+    if (this.txtNombre == '' && this.txtSeleccion=='') {
       this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
     } else if(this.txtTipo==1){
       const datos = await new Promise<any>((resolve) =>
@@ -479,6 +543,8 @@ export class GenerarProspectivaComponent implements OnInit {
       this.txtCEliminar=false;
       this.btnGuardar='Guardar';
       this.btnCancelar='Cancelar';
+      this.txtBanM=false;
+      this.txtSeleccionP='';
     }else{
       this.txtTipo=0;
       this.messageService.add({severity:'error', summary:this.mensajesg.CabeceraError, detail: this.mensajesg.NoAutorizado});
@@ -499,6 +565,7 @@ export class GenerarProspectivaComponent implements OnInit {
       this.txtCEliminar=false;
       this.btnGuardar='Guardar';
       this.btnCancelar='Cancelar';
+      this.txtTipoBan=false;
     }else{
       this.messageService.add({severity:'error', summary:this.mensajesg.CabeceraError, detail: this.mensajesg.NoAutorizado});
     }
@@ -537,6 +604,7 @@ export class GenerarProspectivaComponent implements OnInit {
       this.txtCEliminar=false;
       this.btnGuardar='Guardar';
       this.btnCancelar='Cancelar';
+      this.txtTipoBan=false;
     }else{
       this.messageService.add({severity:'error', summary:this.mensajesg.CabeceraError, detail: this.mensajesg.NoAutorizado});
     }
@@ -630,5 +698,13 @@ export class GenerarProspectivaComponent implements OnInit {
     }else{
       this.messageService.add({severity:'error', summary:this.mensajesg.CabeceraError, detail: this.mensajesg.NoAutorizado});
     }
+  }
+
+  limpiarSeleccion(){
+    this.txtSeleccionP='';
+  }
+
+  listaCriteriosD(){
+    this.listarCriteriosPadre(this.txtCodigoCri);
   }
 }

@@ -106,7 +106,7 @@
             "port": 4200,
             "host": "localhost",
             "ssl": true,
-            "sslKey": "src/assets/Certificados/espoch_sectigo_key_2019.key",
+            "sslKey": "src/assets/Certificados/STAR_espoch_edu_ec.key",
             "sslCert": "src/assets/Certificados/STAR_espoch_edu_ec.crt"
           },
           "configurations": {

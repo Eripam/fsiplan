@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, ConfirmEventType, MenuItem, MessageService } from 'primeng/api';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { MensajesGenerales } from 'src/app/Herramientas/Mensajes/MensajesGenerales.component';
 import { swDependencia } from 'src/app/modulo-seguridad/ServiciosWeb/Dependencia/swDependencia.service';
@@ -23,6 +24,7 @@ export class ProspectivaComponent implements OnInit {
   statuses!: any[];
   //Lista prospectiva
   listaProspectivas: any[]=[];
+  listaProspectivasSelect:any[]=[];
   //lista tipo dependencia
   listaTipoD: any []=[];
   sesionDep:string='';
@@ -41,10 +43,22 @@ export class ProspectivaComponent implements OnInit {
   sessionRol:string='';
   txtIngresar:boolean=false;
   txtModificar:boolean=false;
+  modalVisionMision:boolean=false;
+  modalGaleria:boolean=false;
+  txtVision:string='';
+  txtMision:string='';
+  txtMicroescenario:string='';
+  txtProspectiva:number=0;
+  txtCodigoV:number=0;
+  banProspectiva:boolean=false;
+  urlP='http://localhost:3000/pdf/pruebapdf';
+  url?:SafeResourceUrl;
+  modalReporte:boolean=false;
+  txtArchivo:boolean=false;
   
   //Variable para mostrar el loading en la tabla
   loading: boolean = true;
-  constructor(private sesiones:SesionUsuario, private swProspectiva: SwProspectivaService, private messageService: MessageService, private mensajesg:MensajesGenerales, private DependenciaSer:swDependencia, private router: Router, private swAuditoria: SwAuditoriaService, private route: ActivatedRoute) { }
+  constructor(private sesiones:SesionUsuario, private swProspectiva: SwProspectivaService, private messageService: MessageService, private mensajesg:MensajesGenerales, private DependenciaSer:swDependencia, private router: Router, private swAuditoria: SwAuditoriaService, private route: ActivatedRoute, public sanitizer: DomSanitizer, private confirmationService: ConfirmationService) { }
 
   async ngOnInit(){
     const datosS=await this.sesiones.obtenerDatosLogin();
@@ -65,6 +79,7 @@ export class ProspectivaComponent implements OnInit {
     //Listar prosepctivas
     this.listarTipoDependencias();
     this.listarProspectivas();
+    this.url=this.sanitizer.bypassSecurityTrustResourceUrl(this.urlP);
     //Menu superio con enlace del home
     this.home = { icon: 'pi pi-home', routerLink: '/' };
 
@@ -72,6 +87,7 @@ export class ProspectivaComponent implements OnInit {
     this.statuses = [
       { label: 'Activo', value: 1 },
       { label: 'Inactivo', value: 0 },
+      { label: 'Aprobado', value: 2 }
     ];
   }
 
@@ -98,6 +114,19 @@ export class ProspectivaComponent implements OnInit {
      this.loading = false;
    }
 
+   async listarProspectivasUni(){
+    const dat={
+      codigo:1
+    }
+    const datos:listaI = await new Promise<listaI>((resolve) =>  this.swProspectiva.ListarProspectiva(dat).subscribe((translated) => { resolve(translated); }));
+    if(datos.success){
+      this.listaProspectivasSelect = datos.data;
+    }else{
+      this.listaProspectivasSelect =[];
+    }
+    this.loading = false;
+  }
+
   async openNew(){
     if(this.txtIngresar){
       const valor = await new Promise<any>((resolve) =>this.swProspectiva.ListaProspectivaExiste().subscribe((translated) => {resolve(translated);}));
@@ -110,7 +139,9 @@ export class ProspectivaComponent implements OnInit {
             this.txtFechaF='';
             this.txtEstado='';
             this.txtCodigo=0;
+            this.banProspectiva=true;
             this.modalProspectiva=true;
+            this.listarProspectivasUni();
           }else{
             this.messageService.add({severity:'error', summary: this.mensajesg.CabeceraError, detail: "No se puede crear una prospectiva, mientras no existe una prospectiva institucional."})
           }
@@ -124,6 +155,7 @@ export class ProspectivaComponent implements OnInit {
           this.txtFechaF='';
           this.txtEstado='';
           this.txtCodigo=0;
+          this.banProspectiva=false;
           this.modalProspectiva=true;
         }
     }else{
@@ -217,5 +249,129 @@ export class ProspectivaComponent implements OnInit {
 
   irpagina(pros:any){
     this.router.navigate(['prospectiva/configpros/7/'+pros.pro_id+'/'+this.route.snapshot.paramMap.get('enc')]);
+  }
+
+  agregarVision(pros:any){
+    if(this.txtIngresar){
+      this.txtCodigo=pros.vmp_id;
+      if(pros.vmp_id == null){        
+        this.tituloModal='Ingresar Visión-Misión';
+      }else{
+        this.tituloModal='Modificar Visión-Misión';
+      }
+      this.txtVision=pros.vmp_vision;
+      this.txtMicroescenario=pros.vmp_microescenario;
+      this.txtMision=pros.vmp_mision;
+      this.txtProspectiva=pros.pro_id;
+      this.modalVisionMision=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
+  }
+
+  aprobarProspectiva(pros:any){
+    if(this.txtIngresar){
+      this.txtCodigo=pros.pros_id;
+      this.tituloModal='Aprobar Prospectiva';
+      this.modalGaleria=true;
+      this.txtArchivo=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
+  }
+
+  async guardarVisionM(){
+    const datosvismis={
+      vmp_id:this.txtCodigo,
+      vmp_vision:this.txtVision,
+      vmp_mision:this.txtMision,
+      vmp_microescenario:this.txtMicroescenario,
+      vmp_prospectiva:this.txtProspectiva
+    };
+    if (this.txtVision == '' || this.txtMision=='' || this.txtProspectiva==0) {
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
+    } else if(this.txtCodigo==0 || this.txtCodigo==null){
+      const datos = await new Promise<any>((resolve) =>
+         this.swProspectiva.IngresarVisionMision(datosvismis).subscribe((translated) => {resolve(translated);}));
+      if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Ingresar",
+          aud_descripcion:"Ingresar vision-mision con los datos: {vision:"+this.txtVision+", mision: "+this.txtMision+", microescenario: "+this.txtMicroescenario+", prospectiva:"+this.txtProspectiva+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
+        this.modalProspectiva = false;
+        this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Prospectiva ' + this.mensajesg.IngresadoCorrectamente});
+        this.listarProspectivas();
+        this.modalVisionMision=false;
+      } else {
+        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+      }
+    }else{
+      const datos = await new Promise<any>((resolve) =>
+         this.swProspectiva.ModificarVisionMision(datosvismis).subscribe((translated) => {resolve(translated);}));
+
+      if (datos.success) {
+        const datosAudi={
+          aud_usuario:this.sessionUser,
+          aud_proceso:"Modificar",
+          aud_descripcion:"Modificar visión-misión con los datos: {código: "+this.txtCodigo+", visión:"+this.txtVision+", mision: "+this.txtMision+", microescenario: "+this.txtMicroescenario+", prospectiva: "+this.txtProspectiva+"}",
+          aud_rol:this.sessionRol,
+          aud_dependencia:this.sessionDepC
+        }
+        const datosAud = await new Promise<any>((resolve) =>
+        this.swAuditoria.IngresarAuditoria(datosAudi).subscribe((translated) => {resolve(translated);}));
+        this.modalProspectiva = false;
+        this.messageService.add({severity: 'success', summary: this.mensajesg.CabeceraExitoso, detail: 'Prospectiva ' + this.mensajesg.ModificadoCorrectamente});
+        this.listarProspectivas();
+        this.modalVisionMision=false;
+      } else {
+        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ErrorProceso});
+      }
+    }
+  }
+
+  hideDialogVM(){
+    this.modalVisionMision=false;
+  }
+
+  pruebaPdf(){
+    this.modalReporte=true;
+  }
+
+  ingresarGaleria(pros:any){
+    if(this.txtIngresar){
+      this.txtArchivo=false;
+      this.tituloModal='Agregar Imagen';
+      this.modalGaleria=true;
+      this.txtCodigo=pros.pro_id;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
+    }
+  }
+
+  hideDialogG(){
+    this.modalGaleria=false;
+  }
+
+  eliminarGal(){
+    this.confirmationService.confirm({
+      message: 'Una vez eliminado no se podrá recuperar, ¿Esta seguro que desea eliminar?',
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        //this.guardarEvaluacion();
+      },
+      reject: (type:any) => {
+          switch(type) {
+              case ConfirmEventType.REJECT:
+                this.messageService.add({severity:'warn', summary:'Cancelado', detail:'Se cancelo la eliminación'});
+              break;
+          }
+      }
+  });
   }
 }

@@ -45,4 +45,9 @@ envioMail(datos:any) {
   let direccion = this.UrlSiplanCorreo+'/envioCorreo';
   return this.http.post(direccion, content);
 }
+
+IngresarEnviarE(email: any): Observable<any>{
+  let direccion = this.UrlSiplanCorreo+'IngresarEnviarE';
+  return this.http.post<any>(direccion, email);
+}
 }

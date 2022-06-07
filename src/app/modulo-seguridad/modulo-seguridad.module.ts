@@ -19,6 +19,7 @@ import { TabViewModule } from 'primeng/tabview';
 import {CheckboxModule} from 'primeng/checkbox';
 import {FileUploadModule} from 'primeng/fileupload';
 import {CalendarModule} from 'primeng/calendar';
+import { AlifeFileToBase64Module } from 'alife-file-to-base64';
 
 //Import de paginas
 import { UsuariosComponent } from './Paginas/usuarios/usuarios.component';
@@ -48,7 +49,8 @@ import { UsuarioRolComponent } from './Paginas/usuario-rol/usuario-rol.component
     TabViewModule,
     CheckboxModule,
     FileUploadModule,
-    CalendarModule
+    CalendarModule,
+    AlifeFileToBase64Module
   ],
   exports:[UsuariosComponent]
 })
