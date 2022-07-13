@@ -7,7 +7,7 @@ export class MensajesGenerales {
     ModificadoCorrectamente: string = 'modificado correctamente.';
     EliminadoCorrectamente:string = 'eliminado correctamente';
     ExitoProceso: string = 'Ingresado correctamente';
-    ErrorProceso: string = 'Error al ingresar';
+    ErrorProceso: string = 'Error en al tratar de ejecutar la acción';
     CamposVacios: string = 'Verifique que los campos esten ingresados correctamente y no esten vacios.';
     CedulaErronea: string = 'Cédula mal ingresada o no existe.';
     CabeceraExitoso: string = 'Consulta Exitosa';
@@ -21,4 +21,6 @@ export class MensajesGenerales {
     ArchivoVacio:string='Se debe seleccionar el archivo.';
     ExtensionErronea:string='Solo se puede subir archivo de tipo ';
     ErrorFechas: string='La fecha final debe ser mayor a la inicial.';
+    SeleccionarPlan: string ='Debe seleccionar el plan estrategico';
+    Loestanusando:string='No se puede eliminar porque lo estan usando.';
 }

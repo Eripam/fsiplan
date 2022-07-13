@@ -21,6 +21,13 @@ const routes: Routes = [
           import('../modulo-prospectiva/modulo-prospectiva.module').then(
             (m)=>m.ModuloProspectivaModule
           )
+      },
+      {
+        path:'estrategico',
+        loadChildren:()=>
+          import('../modulo-estrategico/modulo-estrategico.module').then(
+            (m)=>m.ModuloEstrategicoModule
+          )
       }
     ],
   },

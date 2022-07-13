@@ -164,7 +164,7 @@ export class GenerarProspectivaComponent implements OnInit {
     this.txtProspectiva=event.value;
     for(let pros of this.listaProspectivas){
       if(pros.pro_id==this.txtProspectiva){
-        this.txtTipoP=pros.pros_tipo;
+        this.txtTipoP=pros.pro_tipo;
         if(pros.pro_estado==2){
           this.txtProsEstado=false;
         }else{
@@ -208,6 +208,7 @@ export class GenerarProspectivaComponent implements OnInit {
       this.txtSeleccion='';
       this.txtCodigoCri=cri.cri_cri_id;
       this.txtBanM=true;
+      console.log(this.txtTipoP);
       if(this.txtProsEstado && this.txtTipoP!=1){
         this.txtTipoBan=true;
         this.listarProspectivasA();
@@ -368,7 +369,7 @@ export class GenerarProspectivaComponent implements OnInit {
         validacion = await new Promise<any>((resolve) =>
         this.swCritDes.ValidacionEliminacion(val).subscribe((translated) => {resolve(translated);}));
         if(validacion.data){
-          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: 'No se puede eliminar porque las unidades o dependencia lo estan usando'});
+          this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.Loestanusando});
         }else{
           values={
              codigo:this.txtCodigoCD,
