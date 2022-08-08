@@ -13,6 +13,7 @@ import { MenuComponent } from './menu/menu.component';
 import { PanelModule } from 'primeng/panel';
 import { MenuModule } from 'primeng/menu';
 import { PanelMenuModule } from 'primeng/panelmenu';
+import {TieredMenuModule} from 'primeng/tieredmenu';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import { PanelMenuModule } from 'primeng/panelmenu';
     MenuComponent
   ],
   imports: [CommonModule, ModuloTemplatesRoutingModule, SpinnerModule, PanelModule, MenuModule,
-    PanelMenuModule, FormsModule],
+    PanelMenuModule, FormsModule, TieredMenuModule],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerInterceptor, multi: true },
   ],

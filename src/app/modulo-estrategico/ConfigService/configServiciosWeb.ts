@@ -10,4 +10,5 @@ export class configServiciosWebEst {
   urlSerSiplanEstructura: string = environment.urlServiciosSiplan+'estructura/';
   urlSerSiplanEstrPlan: string = environment.urlServiciosSiplan+'estructurap/';
   urlSerSiplanEje: string = environment.urlServiciosSiplan+'ejeE/';
+  urlSerSiplanCronograma: string = environment.urlServiciosSiplan+'cronograma/';
 }

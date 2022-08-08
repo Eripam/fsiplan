@@ -54,7 +54,8 @@
               "src/assets/fontawesome/js/all.js",
               "src/assets/js/ArchivosNube/adal.js",
               "src/assets/js/ArchivosNube/config.js",
-              "src/assets/js/ArchivosNube/App.js"
+              "src/assets/js/ArchivosNube/App.js",
+              "node_modules/chart.js/dist/chart.js"
             ]
           },
           "configurations": {

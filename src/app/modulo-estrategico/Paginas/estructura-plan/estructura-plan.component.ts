@@ -4,10 +4,12 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { MensajesGenerales } from 'src/app/Herramientas/Mensajes/MensajesGenerales.component';
 import { listaI } from '../../Interface/planEstrategico';
+import { SwCronogramaService } from '../../ServiciosWeb/Cronograma/swCronograma.service';
 import { SwEjesService } from '../../ServiciosWeb/EjeEstrategico/swEjes.service';
 import { SwEstructuraService } from '../../ServiciosWeb/Estructura/swEstructura.service';
 import { SwEstructuraPlanService } from '../../ServiciosWeb/EstructuraPlan/swEstructuraPlan.service';
 import { SwPlanService } from '../../ServiciosWeb/Plan/swPlan.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-estructura-plan',
@@ -52,10 +54,17 @@ listaEje:any=[];
 listaEstructuraSelect:any=[];
 txtEje:string="";
 Eje:boolean=false;
+maximo:number=0;
+anio:number=0;
+fechai:string='';
+fechaf:string='';
+displayModal:boolean=false;
+txtSubtitulo:string='';
+txtCronograma:any[]=[];
 
 //Variable para mostrar el loading en la tabla
 loading: boolean = true;
-constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEsPlan: SwEstructuraPlanService, private swEje: SwEjesService) { }
+constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEsPlan: SwEstructuraPlanService, private swEje: SwEjesService, private swCronograma: SwCronogramaService) { }
 
 async ngOnInit(){
   const datosS=await this.sesiones.obtenerDatosLogin();
@@ -103,12 +112,26 @@ async listarPlanEstrategico(){
 async listarEstructura(){
   const dat={
     codigo:this.txtPlan,
+    tipo:2
   }
   const datos:listaI=await new Promise<listaI>((resolve)=> this.swEstructura.ListaEstructura(dat).subscribe((translated)=> { resolve(translated)}));
   if(datos.success){
     this.listaEstructura=datos.data;
   }else{
     this.listaEstructura=[];
+  }
+  this.loading = false;
+}
+
+async listarMaximo(){
+  const dat={
+    codigo:this.txtPlan,
+  }
+  const datos:listaI=await new Promise<listaI>((resolve)=> this.swEstructura.ListarMaximo(dat).subscribe((translated)=> { resolve(translated)}));
+  if(datos.success){
+    this.maximo=datos.data[0].max;
+  }else{
+    this.maximo=0;
   }
   this.loading = false;
 }
@@ -187,6 +210,9 @@ obtenerEst(event:any){
   this.txtPlan=event.value;
     for(let plan of this.listaPlanE){
       if(plan.plan_id==this.txtPlan){
+        this.anio=plan.plan_anio;
+        this.fechai=moment(plan.plan_fecha_inicio).format('YYYY');
+        this.fechaf=moment(plan.plan_fecha_fin).format('YYYY');
         if(plan.plan_estado==2){
           this.txtPlanEstado=false;
         }else{
@@ -198,6 +224,7 @@ obtenerEst(event:any){
   this.listarEstructuraPlan(1);
   this.listarEstructuraPlanD();
   this.listarEjes();
+  this.listarMaximo();
 }
 
 async listarEstructuraSelect(event:any){
@@ -529,8 +556,106 @@ irPagina(){
   this.router.navigate(['estrategico/mapa/18/'+this.txtPlan+'/'+this.route.snapshot.paramMap.get('enc')]);
 }
 
+irPaginaCronograma(){
+  this.router.navigate(['estrategico/cronograma/19/'+this.txtPlan+'/'+this.route.snapshot.paramMap.get('enc')]);
+}
+
 listar(e:any){
   this.listarEstructuraPlan(this.listaEstructura[e.index].est_id);
 }
 
+async agregarCronograma(eplan:any){
+  const dat={
+    codigo:eplan.eplan_id
+  }
+  const datos:listaI=await new Promise<listaI>((resolve)=> this.swCronograma.ListarCronograma(dat).subscribe((translated)=> { resolve(translated)}));
+  if(datos.success){
+    this.tituloModal='Modificar cronograma';
+    this.txtSubtitulo=eplan.codigo+'. '+eplan.eplan_nombre;
+    this.txtCodigo=eplan.eplan_id;
+    this.displayModal=true;
+    var i=0;
+    for(let cron of datos.data){
+      if(i<this.anio){
+        this.txtCronograma[i]=cron.cro_valor;
+        i++;
+      }
+    }
+  }else{
+    this.tituloModal='Agregar cronograma';
+    this.txtSubtitulo=eplan.codigo+'. '+eplan.eplan_nombre;
+    this.txtCodigo=eplan.eplan_id;
+    this.displayModal=true;
+    this.txtCronograma=[];
+  }
+}
+
+counter(i: number) {
+  return new Array(i);
+}
+
+async guardarCronograma(){
+  console.log(this.txtCronograma.length);
+  if(this.txtCronograma.length!=this.anio){
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.CamposVacios
+    });
+  }else{
+    var sum:number=0;
+    for(let cro of this.txtCronograma){
+      sum=sum+Number(cro);
+    }
+    if(sum!=100){
+      this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.ErrorProceso,
+        detail: 'Verifique los valores ingresados ya que la suma del cronograma debe dar el 100%, su valor es de: '+sum+'%',
+      });
+    }else{
+      const datosAudi = {
+        aud_usuario: this.sessionUser,
+        aud_proceso: 'Ingresar',
+        aud_descripcion:
+          'Ingresar cronograma con los datos: {Código Plan: ' +
+          this.txtCodigo +
+          ', Valores:' +
+          this.txtCronograma +
+          ', Fecha Inicio: '+
+          this.fechai+
+          ', Fecha Fin: '+
+          this.fechaf+
+          '}',
+        aud_rol: this.sessionRol,
+        aud_dependencia: this.sessionDepC,
+      };
+      const dato:any={
+        codigo:this.txtCodigo,
+        valores:this.txtCronograma,
+        fechainicio:this.fechai,
+        fechafin:this.fechaf,
+        auditoria:datosAudi
+      }
+      const datos = await new Promise<any>((resolve) =>
+      this.swCronograma.IngresarCronograma(dato).subscribe((translated) => {
+          resolve(translated);})
+      );
+      if (datos.success) {
+        this.messageService.add({
+        severity: 'success',
+        summary: this.mensajesg.CabeceraExitoso,
+        detail: this.mensajesg.IngresadoCorrectamente,
+      });
+      this.displayModal=false;
+      } else {
+        this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.CabeceraError,
+        detail: this.mensajesg.ErrorProceso,
+        });
+      }
+    }
+  }
+}
 }

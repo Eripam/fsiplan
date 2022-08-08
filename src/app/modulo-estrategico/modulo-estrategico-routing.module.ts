@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ValidateUserGuard } from '../Herramientas/Validacion/validate-user.guard';
+import { CronogramaComponent } from './Paginas/cronograma/cronograma.component';
 import { EstructuraPlanComponent } from './Paginas/estructura-plan/estructura-plan.component';
 import { EstructuraComponent } from './Paginas/estructura/estructura.component';
 import { MapaEstrategicoComponent } from './Paginas/mapa-estrategico/mapa-estrategico.component';
@@ -30,6 +31,12 @@ const routes: Routes = [
     component: MapaEstrategicoComponent,
     canActivate:[ValidateUserGuard],
     data:{opcion:18} 
+  },
+  {
+    path: 'cronograma/:opc/:plan/:enc',
+    component: CronogramaComponent,
+    canActivate:[ValidateUserGuard],
+    data:{opcion:19} 
   }
 ];
 

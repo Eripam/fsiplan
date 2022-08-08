@@ -52,6 +52,20 @@
       <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarEstructura()"></button>
   </ng-template>
 </p-dialog>
+<p-dialog header="{{tituloModal}}" [(visible)]="displayModal" [modal]="true" [style]="{width: '60vw'}"
+[draggable]="false" [resizable]="false">
+  <p>{{txtSubtitulo}}</p>
+  <div class="p-fluid grid row mb-2">
+    <input type="hidden" [(ngModel)]="txtCodigo">
+    <div class="field col" *ngFor="let in of counter(anio);let i = index">
+      <p-inputNumber [(ngModel)]="txtCronograma[i]" placeholder="Año {{i+1}}" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="3"></p-inputNumber>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-times" (click)="displayModal=false" label="Cancelar" styleClass="p-button-text"></p-button>
+    <p-button icon="pi pi-check" (click)="guardarCronograma()" label="Guardar" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>
 <div class="row">
   <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
   <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
@@ -64,9 +78,13 @@
 <div class="row">
   <div class="row col-8 m-2">
       <div class="col-3 tituloPros align-self-center">Plan Estratégico:</div>
-      <div class="col-9"><p-dropdown [options]="listaPlanE" appendTo="body" [(ngModel)]="txtPlan" placeholder="Seleccionar Plan Estartégico" optionValue="plan_id" [filter]="true" filterBy="plan_nombre" optionLabel="plan_nombre" [showClear]="true" (onChange)="obtenerEst($event)"></p-dropdown></div>
+      <div class="col-9"><p-dropdown [options]="listaPlanE" appendTo="body" [(ngModel)]="txtPlan" placeholder="Seleccionar Plan Estratégico" optionValue="plan_id" [filter]="true" filterBy="plan_nombre" optionLabel="plan_nombre" [showClear]="true" (onChange)="obtenerEst($event)"></p-dropdown></div>
   </div>
-  <div class="row col-4 text-end" *ngIf="txtPlan!='0' && txtPlan!=''"><div><button pButton pRipple label="Ver Mapa" icon="pi pi-sitemap" class="p-mr-2" (click)="irPagina()"></button></div></div>
+  <div class="row col-4 text-end" *ngIf="txtPlan!='0' && txtPlan!=''">
+    <div>
+      <button pButton pRipple type="button" icon="pi pi-sitemap" class="p-button-rounded" title="Ver mapa" (click)="irPagina()"></button>
+      <button pButton pRipple type="button" icon="far fa-calendar-alt" title="Ver cronograma" class="p-button-rounded" (click)="irPaginaCronograma()"></button></div>
+  </div>
 </div>
 <p-tabView (onChange)="listar($event)">
   <p-tabPanel [header]="item.est_nombre" *ngFor="let item of listaEstructura; let i = index" [selected]="i == 0" [disabled]="!item.existe">
@@ -142,6 +160,7 @@
               <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarEstructura(crid)"></button>
               <button pButton pRipple icon="fas fa-cubes" title="Componentes" class="p-button-rounded p-button-text" *ngIf="item.est_componente"></button>
               <button pButton pRipple icon="fas fa-window-restore" title="Políticas" class="p-button-rounded p-button-text" *ngIf="item.est_politicas"></button>
+              <button pButton pRipple icon="fas fa-calendar-plus" title="Cronograma" class="p-button-rounded p-button-text" (click)="agregarCronograma(crid)" *ngIf="item.est_orden==maximo"></button>
             </td>
           </tr>
         </ng-template>

@@ -28,6 +28,11 @@ import {RippleModule} from 'primeng/ripple';
 import {InputSwitchModule} from 'primeng/inputswitch';
 import {CardModule} from 'primeng/card';
 import {OrganizationChartModule} from 'primeng/organizationchart';
+import {ChartModule} from 'primeng/chart';
+import {InputNumberModule} from 'primeng/inputnumber';
+import {PanelModule} from 'primeng/panel';
+import {ScrollPanelModule} from 'primeng/scrollpanel';
+import {TreeTableModule} from 'primeng/treetable';
 
 //Paginas
 import { PlanComponent } from './Paginas/plan/plan.component';
@@ -35,6 +40,7 @@ import { EstructuraComponent } from './Paginas/estructura/estructura.component';
 import { configServiciosWebEst } from './ConfigService/configServiciosWeb';
 import { EstructuraPlanComponent } from './Paginas/estructura-plan/estructura-plan.component';
 import { MapaEstrategicoComponent } from './Paginas/mapa-estrategico/mapa-estrategico.component';
+import { CronogramaComponent } from './Paginas/cronograma/cronograma.component';
 
 
 @NgModule({
@@ -42,7 +48,8 @@ import { MapaEstrategicoComponent } from './Paginas/mapa-estrategico/mapa-estrat
     PlanComponent,
     EstructuraComponent,
     EstructuraPlanComponent,
-    MapaEstrategicoComponent
+    MapaEstrategicoComponent,
+    CronogramaComponent
   ],
   imports: [
     CommonModule,
@@ -72,7 +79,12 @@ import { MapaEstrategicoComponent } from './Paginas/mapa-estrategico/mapa-estrat
     RippleModule,
     InputSwitchModule,
     CardModule,
-    OrganizationChartModule
+    OrganizationChartModule,
+    ChartModule,
+    InputNumberModule,
+    PanelModule,
+    ScrollPanelModule,
+    TreeTableModule
   ],
   providers:[configServiciosWebEst]
 })

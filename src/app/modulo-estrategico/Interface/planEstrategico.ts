@@ -11,7 +11,7 @@ export interface plan_estrategico {
     plan_vision:       string;
     plan_mision:       string;
     plan_dependencia:  number;
-    plan_anio:         string;
+    plan_anio:         number;
     plan_clon?:         number;
     plan_cambio?:       number;
     plan_estado:       string;

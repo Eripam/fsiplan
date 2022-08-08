@@ -1,13 +1,12 @@
-<p-dialog header="{{tituloModal}}" [(visible)]="displayModal" [modal]="true"
+<p-dialog header="{{tituloModal}}" [(visible)]="displayModal" [modal]="true" [style]="{width: '70vw'}"
     [draggable]="false" [resizable]="false">
-    <p class="m-0">
-      <p-organizationChart [value]="data1" selectionMode="single" [(selection)]="selectedNode" (onNodeSelect)="onNodeSelect($event)"
-        styleClass="company">
+    <p class="m-0" *ngIf="dato.length>0; else arbol">
+      <p-organizationChart [value]="estructura" selectionMode="single" styleClass="company" [(selection)]="selectedNode" (onNodeSelect)="onNodeSelect($event)">
         <ng-template let-node pTemplate="person">
-            <div class="node-header">{{node.label}}</div>
-            <div class="node-content">
-              <div>{{node.data.name}}</div>
-              <i class="fas fa-ellipsis-h fa-2x" style="color: red;"></i>
+            <div class="node-header" style="font-weight:bold">{{node.data.eplan_codigo}}</div>
+            <div class="node-content" style="width: 180px; height: 120px; overflow: auto;">
+              <div>{{node.data.eplan_nombre}}</div>
+              <i class="pi pi-ellipsis-h icono" (click)="mostrarResultados(node)" [style]="{color:'red'}"></i>
             </div>
         </ng-template>
         <ng-template let-node pTemplate="department">
@@ -15,9 +14,19 @@
         </ng-template>
       </p-organizationChart>
     </p>
+    <ng-template #arbol><p class="m-0">No existen registros</p></ng-template>
         <ng-template pTemplate="footer">
         <p-button icon="pi pi-check" (click)="displayModal=false" label="Ok" styleClass="p-button-text"></p-button>
-        </ng-template>
+    </ng-template>
+</p-dialog>
+<p-dialog header="{{tituloModal2}}" [(visible)]="displayModal2" [modal]="true" [style]="{width: '60vw'}"
+[draggable]="false" [resizable]="false">
+    <div class="card">
+      <p-chart type="bar" [data]="basicData" [options]="basicOptions" [responsive]="true"></p-chart>
+    </div>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-check" (click)="displayModal2=false" label="Ok" styleClass="p-button-text"></p-button>
+  </ng-template>
 </p-dialog>
 <div class="row">
   <div class="col-12 col-lg-7">
@@ -35,17 +44,25 @@
 <div class="row col-8 m-2">
   <div class="col-3 tituloPros align-self-center">Plan Estratégico:</div>
   <div class="col-9">
-    <p-dropdown [options]="listaPlanE" appendTo="body" [(ngModel)]="txtPlan" placeholder="Seleccionar Plan Estartégico" optionValue="plan_id" [filter]="true" filterBy="plan_nombre" optionLabel="plan_nombre" [showClear]="true" (onChange)="obtenerEst($event)"></p-dropdown>
+    <p-dropdown [options]="listaPlanE" appendTo="body" [(ngModel)]="txtPlan" placeholder="Seleccionar Plan Estratégico" optionValue="plan_id" [filter]="true" filterBy="plan_nombre" optionLabel="plan_nombre" [showClear]="true" (onChange)="obtenerEst($event)"></p-dropdown>
   </div>
 </div>
 <p-accordion [multiple]="true">
-    <p-accordionTab *ngFor="let estructura of listaEstructuraPlan"  header="{{estructura.est_codigo}}-{{estructura.eplan_codigo}}.{{estructura.eplan_nombre}}" [selected]="true">
-      <div class="row mb-2">
-        <div class="col" *ngFor="let est of estructura.pertenece">
+    <p-accordionTab *ngFor="let estructura of listaEstructuraPlan" [selected]="true">
+      <ng-template pTemplate="header">
+        <div class="row col-12">
+          <div class="col-10">{{estructura.est_codigo}}-{{estructura.eplan_codigo}}.{{estructura.eplan_nombre}}</div>
+          <div class="col-2 text-end" (click)="mostrarResultados(estructura.est_codigo-estructura.eplan_codigo)"><i class="fas fa-ellipsis-h" style="color: red;"></i></div>
+        </div>
+      </ng-template>
+      <div class="contenedor m-0 p-0">
+        <div class="p-3" *ngFor="let est of estructura.pertenece">
           <p-card header="{{est.est_codigo}}-{{est.eplan_codigo}}" subheader="{{est.est_nombre}}" [style]="{width: '300px'}" styleClass="p-card-shadow">
-            <p style="text-align: justify;">{{est.eplan_nombre}}</p>
+            <p-scrollPanel [style]="{width: '100%', height: '130px'}">
+              <p style="text-align: justify; cursor: pointer;" (click)="abrirModal(est)">{{est.eplan_nombre}}</p>
+            </p-scrollPanel>
             <ng-template pTemplate="footer">
-              <div class="text-center" (click)="abrirModal(est)"><i class="fas fa-ellipsis-h fa-2x" style="color: red;"></i></div>
+              <div class="text-center" (click)="mostrarResultados(est.est_codigo-est.eplan_codigo)"><i class="fas fa-ellipsis-h fa-2x" style="color: red;"></i></div>
             </ng-template>
           </p-card>
         </div>

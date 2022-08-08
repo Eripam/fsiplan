@@ -144,6 +144,9 @@ export class PlanComponent implements OnInit {
       });
     }else{
       if(this.txtCodigo===0){
+        var anio1=moment(this.txtFechaF).format('YYYY');
+        var anio2=moment(this.txtFechaI).format('YYYY');
+        var anio=Number(anio1)-Number(anio2)+1;
         const datosAudi = {
           aud_usuario: this.sessionUser,
           aud_proceso: 'Ingresar',
@@ -177,7 +180,7 @@ export class PlanComponent implements OnInit {
           plan_fecha_fin: this.txtFechaF,
           plan_dependencia: this.sessionDepC,
           auditoria: datosAudi,
-          plan_anio: moment(this.txtFechaF).format('YYYY'),
+          plan_anio: anio,
           plan_estado:this.txtEstado
         };
         const datos = await new Promise<any>((resolve) =>
@@ -226,6 +229,10 @@ export class PlanComponent implements OnInit {
           aud_dependencia: this.sessionDepC,
         };
         var fechaf=new Date(this.txtFechaF);
+        var fechai=new Date(this.txtFechaI);
+        var anio1=fechaf.getFullYear().toPrecision();
+        var anio2=fechai.getFullYear().toPrecision();
+        var anio=Number(anio1)-Number(anio2)+1;
         const dat:plan_estrategico= {
           plan_id:this.txtCodigo,
           plan_nombre: this.txtNombre,
@@ -235,7 +242,7 @@ export class PlanComponent implements OnInit {
           plan_fecha_fin: this.txtFechaF,
           plan_dependencia: this.sessionDepC,
           auditoria: datosAudi,
-          plan_anio: fechaf.getFullYear().toPrecision(),
+          plan_anio: anio,
           plan_estado:this.txtEstado
         };
         const datos = await new Promise<any>((resolve) =>
@@ -294,6 +301,9 @@ export class PlanComponent implements OnInit {
             aud_rol: this.sessionRol,
             aud_dependencia: this.sessionDepC,
           };
+          var anio1=moment(this.txtFechaF).format('YYYY');
+          var anio2=moment(this.txtFechaI).format('YYYY');
+          var anio=Number(anio1)-Number(anio2)+1;
           const dat:plan_estrategico= {
             plan_id:this.txtCodigo,
             plan_nombre: this.txtNombre,
@@ -303,7 +313,7 @@ export class PlanComponent implements OnInit {
             plan_fecha_fin: this.txtFechaF,
             plan_dependencia: this.sessionDepC,
             auditoria: datosAudi,
-            plan_anio: moment(this.txtFechaF).format('YYYY'),
+            plan_anio: anio,
             plan_estado:this.txtEstado
           };
           const datos = await new Promise<any>((resolve) =>

@@ -38,3 +38,19 @@
         }
     }
 }
+
+.icono{
+    font-size: 2rem;
+}
+
+.contenedor{
+    display: inline-flex;
+    height: 100%; 
+    width: 100%;
+    overflow-x: scroll;
+    justify-content: space-between;
+    gap: 10px;
+    gap: 10px 20px; /* row-gap column gap */
+    row-gap: 10px;
+    column-gap: 20px;
+}

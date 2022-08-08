@@ -17,6 +17,11 @@ export class SwEstructuraService {
     return this.http.post<any>(direccion, tipo);
   }
 
+  ListarMaximo(codigo:any):Observable<any>{
+    let direccion=this.UrlSiplanEst+'ListarMaximo';
+    return this.http.post<any>(direccion,codigo);
+  }
+
   IngresarEstructura(datos:any): Observable<any>{
     let direccion = this.UrlSiplanEst+'IngresarEstructura';
     return this.http.post<any>(direccion, datos);

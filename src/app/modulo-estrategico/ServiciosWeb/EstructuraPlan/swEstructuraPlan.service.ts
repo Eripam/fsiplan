@@ -28,6 +28,11 @@ export class SwEstructuraPlanService {
     return this.http.post<any>(direccion, codigo);
   }
 
+  ListaEstructuraPlanMapaHijos(codigo:any):Observable<any>{
+    let direccion = this.urlSiplanEstructuraP+'ListarEstructuraPlanHijosMapa';
+    return this.http.post<any>(direccion, codigo);
+  }
+
   IngresarEstructuraPlanes(datos:any): Observable<any>{
     let direccion = this.urlSiplanEstructuraP+'IngresarEstructuraPlanes';
     return this.http.post<any>(direccion, datos);

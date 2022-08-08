@@ -26,10 +26,16 @@ export class MapaEstrategicoComponent implements OnInit {
   txtPlan:string="";
   listaPlanE:any=[];
   listaEstructuraPlan:any=[];
-  data1: TreeNode[]=[];
+  estructura: TreeNode[]=[];
   selectedNode!: TreeNode;
   displayModal:boolean=false;
+  displayModal2:boolean=false;
   tituloModal:string="";
+  tituloModal2:string="";
+  dato:any=[];
+  //Datos barras
+  basicData: any;
+  basicOptions: any;
 
 constructor(private sesiones:SesionUsuario, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEsPlan: SwEstructuraPlanService) { }
 
@@ -57,74 +63,6 @@ async ngOnInit(){
   this.items=[{label:datosRol.pop_nombre},{ label: datosRol.opc_nombre }]
   //Menu superio con enlace del home
   this.home = { icon: 'pi pi-home', routerLink: '/' };
-
-  this.data1 = [{
-    label: 'CEO',
-    type: 'person',
-    styleClass: 'p-person',
-    expanded: false,
-    data: {name:'Walter White', 'icono': 'walter.jpg'},
-    children: [
-        {
-            label: 'CFO',
-            type: 'person',
-            styleClass: 'p-person',
-            expanded: false,
-            data: {name:'Saul Goodman', 'avatar': 'saul.jpg'},
-            children:[{
-                label: 'Tax',
-                styleClass: 'department-cfo'
-            },
-            {
-                label: 'Legal',
-                styleClass: 'department-cfo'
-            }],
-        },
-        {
-            label: 'COO',
-            type: 'person',
-            styleClass: 'p-person',
-            expanded: false,
-            data: {name:'Mike E.', 'avatar': 'mike.jpg'},
-            children:[{
-                label: 'Operations',
-                styleClass: 'department-coo'
-            }]
-        },
-        {
-            label: 'CTO',
-            type: 'person',
-            styleClass: 'p-person',
-            expanded: false,
-            data: {name:'Jesse Pinkman', 'avatar': 'jesse.jpg'},
-            children:[{
-                label: 'Development',
-                styleClass: 'department-cto',
-                expanded: false,
-                children:[{
-                    label: 'Analysis',
-                    styleClass: 'department-cto'
-                },
-                {
-                    label: 'Front End',
-                    styleClass: 'department-cto'
-                },
-                {
-                    label: 'Back End',
-                    styleClass: 'department-cto'
-                }]
-            },
-            {
-                label: 'QA',
-                styleClass: 'department-cto'
-            },
-            {
-                label: 'R&D',
-                styleClass: 'department-cto'
-            }]
-        }
-    ]
-}];
 }
 
 async listarPlanEstrategico(){
@@ -143,6 +81,8 @@ async listarPlanEstrategico(){
 
 obtenerEst(event:any){
   this.txtPlan=event.value;
+  this.listarPlanEstrategico();
+  this.listarEstructuraPlan();
 }
 
 async listarEstructuraPlan(){
@@ -156,15 +96,53 @@ async listarEstructuraPlan(){
     this.listaEstructuraPlan=[];
   }
   this.loading = false;
-  console.log(this.listaEstructuraPlan);
 }
 
-  onNodeSelect(event:any) {
-    this.messageService.add({severity: 'success', summary: 'Node Selected', detail: event.node.label});
+  onNodeSelect(event:Event) {
+    console.log(event);
+    this.messageService.add({severity: 'success', summary: 'Node Selected', detail: 'Prueba'});
   }
 
-  abrirModal(est:any){
+  async abrirModal(est:any){
+    this.estructura=[];
     this.tituloModal=est.est_codigo+'-'+est.eplan_codigo;
+    const dat={
+      codigo:est.eplan_id
+    }
+    const datos:listaI=await new Promise<listaI>((resolve)=> this.swEsPlan.ListaEstructuraPlanMapaHijos(dat).subscribe((translated)=> { resolve(translated)}));
+    if(datos.success){
+      this.estructura=datos.data; 
+      this.dato=datos.data;
+    }else{
+      this.dato=[];
+      this.estructura=[];
+    }
     this.displayModal=true;
+  }
+
+  mostrarResultados(est:any){
+    console.log(est);
+    this.tituloModal2="Resultados";
+    this.displayModal2=true;
+    this.basicData = {
+      labels: ['I cuatrimestre', 'II cuatrimestre', 'III cuatrimestre'],
+      datasets: [
+          {
+              label: 'Eficacia',
+              backgroundColor: ['rgba(0,128,0, 0.4)','rgba(247,255,0, 0.4)','rgba(0,128,0, 0.4)'],
+              data: [75, 50, 80]
+          },
+          {
+              label: 'Eficiencia',
+              backgroundColor: ['rgba(255,0,0, 0.4)', 'rgba(247,255,0, 0.4)', 'rgba(0,128,0, 0.4)'],
+              data: [10, 40, 70]
+          },
+          {
+            label: 'Efectividad',
+            backgroundColor: ['rgba(247,255,0, 0.4)', 'rgba(247,255,0, 0.4)', 'rgba(0,128,0, 0.4)'],
+            data: [42.5, 45, 75]
+        }
+      ]
+  };
   }
 }
