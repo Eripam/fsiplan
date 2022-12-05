@@ -42,6 +42,12 @@
             <input type="text" pInputText class="form-control" required name="txtUrl" [(ngModel)]="txtUrl" placeholder="Url">
         </div>
       </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label">Orden:</label>
+        <div class="col-sm-10">
+            <input type="text" pInputText class="form-control" required name="txtOrden" [(ngModel)]="txtOrden" placeholder="Orden">
+        </div>
+      </div>
     </ng-template>
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogOP()"></button>
@@ -141,6 +147,12 @@
         <label for="name" class="col-sm-2 col-form-label">Url:</label>
         <div class="col-sm-10">
           <input type="text" pInputText class="form-control" required name="txtUrl" [(ngModel)]="txtUrl" placeholder="Url">
+        </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label">Orden:</label>
+        <div class="col-sm-10">
+          <input type="text" pInputText class="form-control" required name="txtOrden" [(ngModel)]="txtOrden" placeholder="Orden">
         </div>
       </div>
       <div class="form-group row m-1">
@@ -404,6 +416,13 @@
                 <p-columnFilter type="text" field="opc_url" display="menu" class="p-ml-auto"></p-columnFilter>
             </div>
           </th>
+          <th pSortableColumn="opc_url" class="text-center">
+            <div class="p-d-flex p-jc-between p-ai-center">
+                Orden
+                <p-sortIcon field="opc_orden"></p-sortIcon>
+                <p-columnFilter type="text" field="opc_orden" display="menu" class="p-ml-auto"></p-columnFilter>
+            </div>
+          </th>
           <th class="text-center">
               <div class="p-d-flex p-jc-between p-ai-center">
                   Estado
@@ -438,6 +457,9 @@
           </td>
           <td class="text-center">
             {{opcion.opc_url}}
+          </td>
+          <td class="text-center">
+            {{opcion.opc_orden}}
           </td>
           <td class="text-center">
             <span [class]="'customer-badge status-' + opcion.opc_estado">{{opcion.opc_estado_nombre}}</span>

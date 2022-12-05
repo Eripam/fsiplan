@@ -15,41 +15,49 @@ export class SwEjesService {
   }
 
   ListarTipoEje(codigo:any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEje+'ListarTipoEjes';
       return this.http.post<listaI>(direccion, codigo);
   }
 
   ListarEjes(codigo:any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEje+'ListarEjes';
       return this.http.post<listaI>(direccion, codigo);
   }
 
   IngresarTipoEjes(eje: tipo_eje): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEje+'IngresarTipoEjes';
     return this.http.post<any>(direccion, eje);
   }
 
   IngresarEjes(eje: eje_estrategico): Observable<eje_estrategico>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEje+'IngresarEjes';
     return this.http.post<eje_estrategico>(direccion, eje);
   }
 
   ModificarEjes(eje: eje_estrategico): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEje+'ModificarEjes';
     return this.http.post<any>(direccion, eje);
   }
 
   ModificarTipoEjes(eje: tipo_eje): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEje+'ModificarTipoEjes';
     return this.http.post<any>(direccion, eje);
   }
 
   EliminarEjes(eje: any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEje+'EliminarEjes';
     return this.http.post<any>(direccion, eje);
   }
 
   EliminarTipoEjes(eje: any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEje+'EliminarTipoEjes';
     return this.http.post<any>(direccion, eje);
   }

@@ -64,6 +64,7 @@ export interface opcion {
 	opc_url?: string;
 	opc_estado?: number;
 	opc_estado_nombre?: string;
+	opc_orden?: string;
 }
 
 export interface rolopcion {

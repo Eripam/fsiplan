@@ -10,19 +10,29 @@ export class AuthInterceptorService implements HttpInterceptor {
   constructor() {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-  
-    const token = sessionStorage.getItem("key");
-
     let request = req;
 
-    if (token) {
-      request = req.clone({
-        setHeaders: {
-          authorization: `Bearer ${ token }`
-        }
-      });
+    const archivo = sessionStorage.getItem("archivo");
+    if(archivo=="true"){
+      const token = sessionStorage.getItem("tokena");
+      if (token) {
+        request = req.clone({
+          headers:req.headers.set('Authorization', `Bearer ${ token }`)
+          .set('idaplicacion', '1').set('jwtsecret', 'Pru3ba5Arch1v05').set('activo', 'true')
+        });
+      }
+    }else{
+      const token = sessionStorage.getItem("key");
+      if (token) {
+        request = req.clone({
+          headers:req.headers.set('Authorization', `Bearer ${ token }`)
+          /*setHeaders: {
+            Authorization: `Bearer ${ token }`
+          }*/
+        });
+      }
+  
     }
-
     return next.handle(request);
   }
 

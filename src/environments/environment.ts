@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   urlServiciosSiplanC :'http://localhost:3000/rutaCentalizada/',
-  urlServiciosSiplan:'http://localhost:3000/'
+  urlServiciosSiplan:'http://localhost:3000/',
+  urlServiciosArchivos: 'https://pruebas.espoch.edu.ec/',
 };
 
 /*

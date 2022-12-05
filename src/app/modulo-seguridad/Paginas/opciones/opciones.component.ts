@@ -55,6 +55,7 @@ export class OpcionesComponent implements OnInit {
    txtDescripcion: string='';
    txtCodigoArchivo: number=0;
    txtNombreR: string='';
+   txtOrden: string='';
    uploadedFiles: any[] = [];
    url: string;
    urlM: string;
@@ -251,6 +252,7 @@ export class OpcionesComponent implements OnInit {
       this.txtDescripcion=opcion.opc_descripcion;
       this.txtUrl=opcion.opc_url
       this.txtEstado=opcion.opc_estado;
+      this.txtOrden=opcion.opc_orden;
       this.modalOpcionM=true;
      }else{
       this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.NoAutorizado});
@@ -324,10 +326,11 @@ export class OpcionesComponent implements OnInit {
      this.opcion={
        opc_nombre:this.txtNombre,
        opc_descripcion:this.txtDescripcion,
-       opc_url:this.txtUrl
+       opc_url:this.txtUrl,
+       opc_orden: this.txtOrden
      };
  
-     if (this.txtNombre == '' || this.txtDescripcion == '' || this.txtUrl=='') {
+     if (this.txtNombre == '' || this.txtDescripcion == '' || this.txtUrl=='' || this.txtOrden=='') {
        this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
      } else {
        const datos = await new Promise<any>((resolve) =>
@@ -340,7 +343,7 @@ export class OpcionesComponent implements OnInit {
         const datosAudi={
           aud_usuario:this.sessionUser,
           aud_proceso:"Ingresar",
-          aud_descripcion:"Ingresar opción con los datos: {Nombre:"+this.txtNombre+", Descripción: "+this.txtDescripcion+", Url: "+this.txtUrl+"}",
+          aud_descripcion:"Ingresar opción con los datos: {Nombre:"+this.txtNombre+", Descripción: "+this.txtDescripcion+", Url: "+this.txtUrl+", Opción: "+this.txtOrden+"}",
           aud_rol:this.sessionRol,
           aud_dependencia:this.sessionDepC
         }
@@ -466,10 +469,11 @@ export class OpcionesComponent implements OnInit {
       opc_nombre:this.txtNombre,
       opc_descripcion:this.txtDescripcion,
       opc_url:this.txtUrl,
+      opc_orden:this.txtOrden,
       opc_estado:parseInt(this.txtEstado)
     }
   
-    if (this.txtCodigo == '' || this.txtNombre == '' || this.txtDescripcion == '' || this.txtUrl == '') {
+    if (this.txtCodigo == '' || this.txtNombre == '' || this.txtDescripcion == '' || this.txtUrl == '' || this.txtOrden == '') {
       this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError,detail: this.mensajesg.CamposVacios});
     }  else {
       const datos = await new Promise<any>((resolve) =>
@@ -482,7 +486,7 @@ export class OpcionesComponent implements OnInit {
         const datosAudi={
           aud_usuario:this.sessionUser,
           aud_proceso:"Modificar",
-          aud_descripcion:"Modificar opción con los datos: {Código: "+this.txtCodigo+", Nombre:"+this.txtNombre+", Descripción: "+this.txtDescripcion+", Url: "+this.txtUrl+", Estado: "+this.txtEstado+"}",
+          aud_descripcion:"Modificar opción con los datos: {Código: "+this.txtCodigo+", Nombre:"+this.txtNombre+", Descripción: "+this.txtDescripcion+", Url: "+this.txtUrl+", Opción: "+this.txtOrden+",Estado: "+this.txtEstado+"}",
           aud_rol:this.sessionRol,
           aud_dependencia:this.sessionDepC
         }
@@ -707,7 +711,8 @@ export class OpcionesComponent implements OnInit {
 
   subirArchivo(){
     this.cont=0;
-    if(this.files==null || this.files==[]){
+    //if(this.files==null || this.files==[]){
+      if(this.files==null){
       this.messageService.add({severity: 'error', summary: this.mensajesg.CabeceraError, detail: this.mensajesg.ArchivoVacio});
     }else if(this.files[0].type=='application/pdf'){
       this.filesname=this.codigoR+'-'+this.files[0].name;

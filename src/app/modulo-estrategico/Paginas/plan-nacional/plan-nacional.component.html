@@ -1,0 +1,498 @@
+<p-toast></p-toast>
+<p-dialog [(visible)]="modalPlanN" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+    <ng-template pTemplate="content">
+        <div class="form-group row m-1" *ngIf="txtCodigo>0">
+          <label for="name" class="col-sm-3 col-form-label">Código:</label>
+          <div class="col-sm-9">
+            <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
+          </div>
+        </div> 
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-3 col-form-label">Nombre:</label>
+            <div class="col-sm-9">
+              <textarea pInputText class="form-control" [disabled]="eliminar" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre"></textarea>
+            </div>
+        </div>
+        <ng-element [ngSwitch]="txtTipo">
+            <div class="form-group row m-1" *ngSwitchCase="2">
+                <label for="name" class="col-sm-3 col-form-label">Objetivo:</label>
+                <div class="col-sm-9">
+                    <p-dropdown [options]="listaObjetivos2" [disabled]="eliminar" appendTo="body" [(ngModel)]="txtObjetivo" placeholder="Seleccionar Objetivo" optionValue="objpn_id" [filter]="true" filterBy="objpn_nombre" optionLabel="objpn_nombre" [showClear]="true"></p-dropdown>
+                </div>
+            </div>
+            <div class="form-group row m-1" *ngSwitchCase="3">
+                <label for="name" class="col-sm-3 col-form-label">Política:</label>
+                <div class="col-sm-9">
+                    <p-dropdown [options]="listaPoliticas2" [disabled]="eliminar" appendTo="body" [(ngModel)]="txtPolitica" placeholder="Seleccionar Política" optionValue="polpn_id" [filter]="true" filterBy="polpn_nombre" optionLabel="polpn_nombre" [showClear]="true"></p-dropdown>
+                </div>
+            </div>
+        </ng-element>
+        <div class="form-group row m-1" *ngIf="txtCodigo>0">
+          <label for="txtEstado" class="col-sm-3 col-form-label">Estado:</label>
+          <div class="col-sm-9">
+            <select name="sltEstado" id="sltEstado" class="form-control" [disabled]="eliminar" [(ngModel)]="txtEstado">
+              <option [ngValue]='1'>Activo</option>
+              <option [ngValue]='0'>Inactivo</option>
+            </select>
+          </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{label2}}" icon="pi pi-times" class="p-button-text" (click)="hideDialogPlan()"></button>
+        <button pButton pRipple label="{{label1}}" icon="pi pi-check" class="p-button-text" (click)="guardarPlanN()"></button>
+    </ng-template>
+</p-dialog>
+<p-dialog [(visible)]="modalInd" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+    <ng-template pTemplate="content">
+        <div class="form-group row m-1" *ngIf="txtCodigo>0">
+          <label for="name" class="col-sm-3 col-form-label">Código:</label>
+          <div class="col-sm-9">
+            <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
+          </div>
+        </div> 
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-3 col-form-label">Nombre:</label>
+            <div class="col-sm-9">
+              <textarea pInputText class="form-control" [disabled]="eliminar" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre"></textarea>
+            </div>
+        </div>
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-3 col-form-label">Descripción:</label>
+            <div class="col-sm-9">
+              <textarea pInputText class="form-control" [disabled]="eliminar" required name="txtDescripcion" [(ngModel)]="txtDescripcion" placeholder="Descripción"></textarea>
+            </div>
+        </div>
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-3 col-form-label">Meta:</label>
+            <div class="col-sm-9">
+                <p-dropdown [options]="listaMeta2" [disabled]="eliminar" appendTo="body" [(ngModel)]="txtMeta" placeholder="Seleccionar Meta" optionValue="metapn_id" [filter]="true" filterBy="metapn_nombre" optionLabel="metapn_nombre" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-3 col-form-label">Expresión:</label>
+            <div class="col-sm-9 row">
+              <div class="field-radiobutton col-4">
+                <p-radioButton name="city" value="1" [(ngModel)]="txtExpresion" inputId="city1" [disabled]="eliminar"></p-radioButton>
+                <label for="city1">Númerico</label>
+              </div>
+              <div class="field-radiobutton col-4">
+                <p-radioButton name="city" value="0" [(ngModel)]="txtExpresion" inputId="city2" [disabled]="eliminar"></p-radioButton>
+                <label for="city2">Porcentaje</label>
+              </div>
+            </div>
+        </div>
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-3 col-form-label">Valor Inicial:</label>
+            <div class="col-sm-9">
+                <p-inputNumber class="form-control p-0" [disabled]="eliminar" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" name="txtVInicial" [(ngModel)]="txtVInicial" placeholder="Valor Inicial (#)"></p-inputNumber>
+            </div>
+        </div>
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-3 col-form-label">Valor Absoluto:</label>
+            <div class="col-sm-9">
+                <p-inputNumber class="form-control p-0" [disabled]="eliminar" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" name="txtVAbsoluto" [(ngModel)]="txtVAbsoluto" placeholder="Valor Absoluto (#)"></p-inputNumber>
+            </div>
+        </div>
+        <div class="form-group row m-1">
+            <label for="name" class="col-sm-3 col-form-label">Valor Meta:</label>
+            <div class="col-sm-9">
+                <p-inputNumber class="form-control p-0" [disabled]="eliminar" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" name="txtVMeta" [(ngModel)]="txtVMeta" placeholder="Valor Meta (#)"></p-inputNumber>
+            </div>
+        </div>
+        <div class="form-group row m-1" *ngIf="txtCodigo>0">
+          <label for="txtEstado" class="col-sm-3 col-form-label">Estado:</label>
+          <div class="col-sm-9">
+            <select name="sltEstado" id="sltEstado" class="form-control" [disabled]="eliminar" [(ngModel)]="txtEstado">
+              <option [ngValue]='1'>Activo</option>
+              <option [ngValue]='0'>Inactivo</option>
+            </select>
+          </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="{{label2}}" icon="pi pi-times" class="p-button-text" (click)="hideDialogPlanInd()"></button>
+        <button pButton pRipple label="{{label1}}" icon="pi pi-check" class="p-button-text" (click)="guardarIndicador()"></button>
+    </ng-template>
+</p-dialog>
+<p-tabView styleClass="tabview-custom">
+    <p-tabPanel>
+      <ng-template pTemplate = "header">
+          <span>Objetivos</span>
+      </ng-template>
+      <div>
+        <span class="buscar-crear">
+          <button pButton pRipple label="Crear Objetivo" icon="pi pi-plus" class="p-mr-2" (click)="openNewOb('Ingresar Objetivo', 1)"></button>
+            <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+        </span>
+      </div>
+      <div class="widget-header mt-3"><h3>Listado de Objetivos</h3></div>
+      <p-table #dt1 [value]="listaObjetivos" dataKey="id" [rowHover]="true" scrollHeight="500px"
+          [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+          [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+          [globalFilterFields]="['objpn_id','objpn_nombre', 'estadonombre']" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+              <tr>
+                  <th pSortableColumn="objpn_id" style="width: 5rem; text-align: center;">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      Código
+                      <p-sortIcon field="objpn_id"></p-sortIcon>
+                  </div>
+                  </th>  
+                  <th pSortableColumn="objpn_nombre">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      Nombre
+                      <p-sortIcon field="objpn_nombre"></p-sortIcon>
+                      <p-columnFilter type="text" field="objpn_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                    </div>
+                  </th>
+                  <th class="text-center">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                        Estado
+                        <p-columnFilter field="est_estado" matchMode="equals" display="menu">
+                          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                              <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                  <ng-template let-option pTemplate="item">
+                                      <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                  </ng-template>
+                              </p-dropdown>
+                          </ng-template>
+                      </p-columnFilter>
+                      </div>
+                  </th>
+                  <th style="width: 8rem" class="text-center">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                          Acción
+                      </div>
+                  </th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-plan>
+              <tr>
+                <td class="text-center">
+                  {{plan.objpn_id}}
+                </td>
+                <td>
+                  {{plan.objpn_nombre}}
+                </td>
+                <td class="text-center">
+                  <span [class]="'customer-badge status-' + plan.objpn_estado">{{plan.estadonombre}}</span>
+                </td>
+                <td class="text-center">
+                  <button pButton pRipple icon="pi pi-pencil" title="Editar Objetivo" class="p-button-rounded" (click)="modificarObjetivo(plan, 'Editar Objetivo', 1)"></button>
+                  <button pButton pRipple icon="pi pi-trash" title="Eliminar Objetivo" class="p-button-rounded" (click)="eliminarObjetivo(plan, '¿Está seguro que desea eliminar el objetivo?', 1)"></button>
+                </td>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7">No se encontrarón registros.</td>
+              </tr>
+          </ng-template>
+      </p-table>
+    </p-tabPanel>
+    <p-tabPanel header="Header II">
+      <ng-template pTemplate = "header">
+          <span>Política</span>
+      </ng-template>
+      <div>
+        <span class="buscar-crear">
+          <button pButton pRipple label="Crear Política" icon="pi pi-plus" (click)="openNewOb('Ingresar Política', 2)" class="p-mr-2"></button>
+            <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+        </span>
+      </div>
+      <div class="widget-header mt-3"><h3>Listado de Políticas</h3></div>
+      <p-table #dt1 [value]="listaPoliticas" dataKey="id" [rowHover]="true" scrollHeight="500px"
+          [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+          [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+          [globalFilterFields]="['polpn_id','polpn_nombre', 'estadonombre', 'objpn_nombre']" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+              <tr>
+                  <th pSortableColumn="polpn_id" style="width: 5rem; text-align: center;">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      Código
+                      <p-sortIcon field="polpn_id"></p-sortIcon>
+                  </div>
+                  </th>  
+                  <th pSortableColumn="polpn_nombre">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      Nombre
+                      <p-sortIcon field="polpn_nombre"></p-sortIcon>
+                      <p-columnFilter type="text" field="polpn_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                    </div>
+                  </th>
+                  <th pSortableColumn="objpn_nombre">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      Objetivo
+                      <p-sortIcon field="objpn_nombre"></p-sortIcon>
+                      <p-columnFilter type="text" field="objpn_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                    </div>
+                  </th>
+                  <th class="text-center">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                        Estado
+                        <p-columnFilter field="polpn_estado" matchMode="equals" display="menu">
+                          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                              <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                  <ng-template let-option pTemplate="item">
+                                      <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                  </ng-template>
+                              </p-dropdown>
+                          </ng-template>
+                      </p-columnFilter>
+                      </div>
+                  </th>
+                  <th style="width: 8rem" class="text-center">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                          Acción
+                      </div>
+                  </th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-pol>
+              <tr>
+                <td class="text-center">
+                  {{pol.polpn_id}}
+                </td>
+                <td>
+                  {{pol.polpn_nombre}}
+                </td>
+                <td>
+                    {{pol.objpn_nombre}}
+                  </td>
+                <td class="text-center">
+                  <span [class]="'customer-badge status-' + pol.polpn_estado">{{pol.estadonombre}}</span>
+                </td>
+                <td class="text-center">
+                  <button pButton pRipple icon="pi pi-pencil" title="Editar Política" class="p-button-rounded" (click)="modificarObjetivo(pol, 'Modificar Política', 2)"></button>
+                  <button pButton pRipple icon="pi pi-trash" title="Eliminar Política" class="p-button-rounded" (click)="eliminarObjetivo(pol, '¿Está seguro que desea eliminar la política?', 2)"></button>
+                </td>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7">No se encontrarón registros.</td>
+              </tr>
+          </ng-template>
+      </p-table>
+    </p-tabPanel>
+    <p-tabPanel header="Header III">
+        <ng-template pTemplate = "header">
+            <span>Metas</span>
+        </ng-template>
+        <div>
+          <span class="buscar-crear">
+            <button pButton pRipple label="Crear Meta" icon="pi pi-plus" (click)="openNewOb('Ingresar Meta', 3)" class="p-mr-2"></button>
+              <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+          </span>
+        </div>
+        <div class="widget-header mt-3"><h3>Listado de Metas</h3></div>
+        <p-table #dt1 [value]="listaMeta" dataKey="id" [rowHover]="true" scrollHeight="500px"
+            [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+            [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+            [globalFilterFields]="['metapn_id','metapn_nombre', 'estadonombre', 'polpn_nombre']" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="metapn_id" style="width: 5rem; text-align: center;">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                        Código
+                        <p-sortIcon field="metapn_id"></p-sortIcon>
+                    </div>
+                    </th>  
+                    <th pSortableColumn="metapn_nombre">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                        Nombre
+                        <p-sortIcon field="metapn_nombre"></p-sortIcon>
+                        <p-columnFilter type="text" field="metapn_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                      </div>
+                    </th>
+                    <th pSortableColumn="polpn_nombre">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                        Política
+                        <p-sortIcon field="polpn_nombre"></p-sortIcon>
+                        <p-columnFilter type="text" field="polpn_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                      </div>
+                    </th>
+                    <th class="text-center">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                          Estado
+                          <p-columnFilter field="metapn_estado" matchMode="equals" display="menu">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                    <ng-template let-option pTemplate="item">
+                                        <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                    </ng-template>
+                                </p-dropdown>
+                            </ng-template>
+                        </p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="width: 8rem" class="text-center">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Acción
+                        </div>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-meta>
+                <tr>
+                  <td class="text-center">
+                    {{meta.metapn_id}}
+                  </td>
+                  <td>
+                    {{meta.metapn_nombre}}
+                  </td>
+                  <td>
+                      {{meta.polpn_nombre}}
+                    </td>
+                  <td class="text-center">
+                    <span [class]="'customer-badge status-' + meta.metapn_estado">{{meta.estadonombre}}</span>
+                  </td>
+                  <td class="text-center">
+                    <button pButton pRipple icon="pi pi-pencil" title="Editar Meta" class="p-button-rounded" (click)="modificarObjetivo(meta, 'Modificar Meta', 3)"></button>
+                    <button pButton pRipple icon="pi pi-trash" title="Eliminar Meta" class="p-button-rounded" (click)="eliminarObjetivo(meta, '¿Está seguro que desea eliminar la meta?', 3)"></button>
+                  </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="7">No se encontrarón registros.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+      </p-tabPanel>
+      <p-tabPanel header="Header IV">
+        <ng-template pTemplate = "header">
+            <span>Indicadores</span>
+        </ng-template>
+        <div>
+          <span class="buscar-crear">
+            <button pButton pRipple label="Crear Indicador" icon="pi pi-plus" (click)="openNewInd('Ingresar Indicador')" class="p-mr-2"></button>
+              <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+          </span>
+        </div>
+        <div class="widget-header mt-3"><h3>Listado de Indicadores</h3></div>
+        <p-table #dt1 [value]="listaIndicador" dataKey="id" [rowHover]="true" scrollHeight="500px"
+            [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+            [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+            [globalFilterFields]="['indpn_id','indpn_nombre', 'estadonombre', 'metapn_nombre', 'indpn_valor_inicial', 'indpn_valor_absoluto', 'indpn_valor_meta', 'indpn_expresion_n']" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="indpn_id" style="width: 5rem; text-align: center;">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                        Código
+                        <p-sortIcon field="indpn_id"></p-sortIcon>
+                    </div>
+                    </th>  
+                    <th pSortableColumn="indpn_nombre">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                        Nombre
+                        <p-sortIcon field="indpn_nombre"></p-sortIcon>
+                        <p-columnFilter type="text" field="indpn_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                      </div>
+                    </th>
+                    <th pSortableColumn="indpn_descripcion">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                          Nombre
+                          <p-sortIcon field="indpn_descripcion"></p-sortIcon>
+                          <p-columnFilter type="text" field="indpn_descripcion" display="menu" class="p-ml-auto"></p-columnFilter>
+                        </div>
+                      </th>
+                    <th pSortableColumn="metapn_nombre">
+                      <div class="p-d-flex p-jc-between p-ai-center">
+                        Meta
+                        <p-sortIcon field="metapn_nombre"></p-sortIcon>
+                        <p-columnFilter type="text" field="metapn_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                      </div>
+                    </th>
+                    <th pSortableColumn="indpn_expresion_n">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                          Expresión
+                          <p-sortIcon field="indpn_expresion_n"></p-sortIcon>
+                          <p-columnFilter type="text" field="indpn_expresion_n" display="menu" class="p-ml-auto"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th pSortableColumn="indpn_valor_inicial">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                          Valor Inicial
+                          <p-sortIcon field="indpn_valor_inicial"></p-sortIcon>
+                          <p-columnFilter type="text" field="indpn_valor_inicial" display="menu" class="p-ml-auto"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th pSortableColumn="indpn_valor_absoluto">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                          Valor Absoluto
+                          <p-sortIcon field="indpn_valor_absoluto"></p-sortIcon>
+                          <p-columnFilter type="text" field="indpn_valor_absoluto" display="menu" class="p-ml-auto"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th pSortableColumn="indpn_valor_meta">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                          Valor Meta
+                          <p-sortIcon field="indpn_valor_meta"></p-sortIcon>
+                          <p-columnFilter type="text" field="indpn_valor_meta" display="menu" class="p-ml-auto"></p-columnFilter>
+                        </div>
+                    </th>
+                    <th class="text-center">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                          Estado
+                          <p-columnFilter field="metapn_estado" matchMode="equals" display="menu">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                    <ng-template let-option pTemplate="item">
+                                        <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                    </ng-template>
+                                </p-dropdown>
+                            </ng-template>
+                        </p-columnFilter>
+                        </div>
+                    </th>
+                    <th style="width: 8rem" class="text-center">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Acción
+                        </div>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-ind>
+                <tr>
+                  <td class="text-center">
+                    {{ind.indpn_id}}
+                  </td>
+                  <td>
+                    {{ind.indpn_nombre}}
+                  </td>
+                  <td>
+                    {{ind.indpn_descripcion}}
+                  </td>
+                  <td>
+                      {{ind.metapn_nombre}}
+                  </td>
+                  <td>
+                    {{ind.indpn_expresion_n}}
+                  </td>
+                  <td>
+                    {{ind.indpn_valor_inicial}}
+                  </td>
+                  <td>
+                    {{ind.indpn_valor_absoluto}}
+                  </td>
+                  <td>
+                    {{ind.indpn_valor_meta}}
+                  </td>
+                  <td class="text-center">
+                    <span [class]="'customer-badge status-' + ind.indpn_estado">{{ind.estadonombre}}</span>
+                  </td>
+                  <td class="text-center">
+                    <button pButton pRipple icon="pi pi-pencil" title="Editar Indicador" class="p-button-rounded" (click)="modificarIndicador(ind, 'Modificar Indicador')"></button>
+                    <button pButton pRipple icon="pi pi-trash" title="Eliminar Indicador" class="p-button-rounded" (click)="eliminarIndicador(ind, '¿Está seguro que desea eliminar el indicador?')"></button>
+                  </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="7">No se encontrarón registros.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+      </p-tabPanel>
+  </p-tabView>

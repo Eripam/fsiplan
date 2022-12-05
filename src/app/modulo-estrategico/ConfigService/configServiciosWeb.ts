@@ -11,4 +11,9 @@ export class configServiciosWebEst {
   urlSerSiplanEstrPlan: string = environment.urlServiciosSiplan+'estructurap/';
   urlSerSiplanEje: string = environment.urlServiciosSiplan+'ejeE/';
   urlSerSiplanCronograma: string = environment.urlServiciosSiplan+'cronograma/';
+  urlSerSiplanPlanN: string = environment.urlServiciosSiplan+'planN/';
+  urlSerSiplanToken: string = environment.urlServiciosArchivos+'wsrepositorio/rutaRepositorio/';
+  urlSerSiplanArchivo: string = environment.urlServiciosSiplan+'archivo/';
+  urlSerSiplanEval:string=environment.urlServiciosSiplan+'evaluacion/';
+  urlSerSiplanFechas:string=this.urlSerSiplanEval+'fechas/'
 }

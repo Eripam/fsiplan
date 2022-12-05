@@ -13,6 +13,7 @@ export class SwAuditoriaService {
   }
 
   IngresarAuditoria(aud: any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanAud+'IngresarAuditoria';
     return this.http.post<any>(direccion, aud);
   }

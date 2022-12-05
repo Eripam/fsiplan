@@ -25,7 +25,7 @@
           <div class="col-3 text-center negrita">{{estructura.estcodigo}}</div><div class="col-7 borde">{{estructura.eplannombre}}</div>
         </div>
       </div>
-      <div class="form-group row m-1">
+      <div class="form-group row m-1" *ngIf="banPlan">
         <label for="name" class="col-sm-2 col-form-label">Depende de:</label>
         <div class="col-sm-10">
             <p-dropdown [options]="listaEstructuraPlanD" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtDepende" placeholder="Seleccionar Depende de:" optionValue="value" [filter]="true" filterBy="label" optionLabel="label" [showClear]="true" ></p-dropdown>
@@ -56,14 +56,17 @@
 [draggable]="false" [resizable]="false">
   <p>{{txtSubtitulo}}</p>
   <div class="p-fluid grid row mb-2">
-    <input type="hidden" [(ngModel)]="txtCodigo">
-    <div class="field col" *ngFor="let in of counter(anio);let i = index">
-      <p-inputNumber [(ngModel)]="txtCronograma[i]" placeholder="Año {{i+1}}" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="3"></p-inputNumber>
+    <div class="form-group row m-1">
+      <label for="name" class="col-sm-2 col-form-label">Indicador:</label>
+      <div class="col-sm-10">
+          <input type="hidden" [(ngModel)]="txtCodigo">
+          <p-dropdown [options]="listaIndicador" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtIndicador" placeholder="Seleccionar Indicador" optionValue="indpn_id" [filter]="true" filterBy="indpn_nombre" optionLabel="indpn_nombre" [showClear]="true"></p-dropdown>
+      </div>
     </div>
   </div>
   <ng-template pTemplate="footer">
     <p-button icon="pi pi-times" (click)="displayModal=false" label="Cancelar" styleClass="p-button-text"></p-button>
-    <p-button icon="pi pi-check" (click)="guardarCronograma()" label="Guardar" styleClass="p-button-text"></p-button>
+    <p-button icon="pi pi-check" (click)="guardarIndicador()" *ngIf="!eliminar" label="Guardar" styleClass="p-button-text"></p-button>
   </ng-template>
 </p-dialog>
 <div class="row">
@@ -91,7 +94,7 @@
     <p-tabView>
       <div>
         <span class="buscar-crear">
-          <button pButton pRipple label="Crear {{item.est_nombre}}" icon="pi pi-plus" class="p-mr-2" (click)="openNew(item)"></button>
+          <button pButton pRipple label="Crear {{item.est_nombre}}" icon="pi pi-plus" class="p-mr-2" (click)="openNew(item)" *ngIf="txtPlanEstado"></button>
           <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
         </span>
       </div>
@@ -128,7 +131,7 @@
                 <p-columnFilter type="text" field="codigopadre" display="menu" class="p-ml-auto"></p-columnFilter>
               </div>
             </th>
-            <th>
+            <th *ngIf="txtPlanEstado">
               Acción
             </th>
           </tr>
@@ -155,12 +158,13 @@
                 <span class="col-9 align-self-center">{{crid.codigopadre}}</span>
               </div>
             </td>
-            <td class="text-center">
+            <td class="text-center" *ngIf="txtPlanEstado">
               <button pButton pRipple icon="fas fa-edit" title="Editar" class="p-button-rounded p-button-text" (click)="editarEstructura(crid, item)"></button>
               <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarEstructura(crid)"></button>
               <button pButton pRipple icon="fas fa-cubes" title="Componentes" class="p-button-rounded p-button-text" *ngIf="item.est_componente"></button>
               <button pButton pRipple icon="fas fa-window-restore" title="Políticas" class="p-button-rounded p-button-text" *ngIf="item.est_politicas"></button>
-              <button pButton pRipple icon="fas fa-calendar-plus" title="Cronograma" class="p-button-rounded p-button-text" (click)="agregarCronograma(crid)" *ngIf="item.est_orden==maximo"></button>
+              <button pButton pRipple icon="fas fa-tachometer-alt" title="Indicadores" class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)" *ngIf="crid.count==0"></button>
+              <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables" class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)" *ngIf="crid.count==0"></button>
             </td>
           </tr>
         </ng-template>

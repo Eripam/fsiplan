@@ -10,6 +10,7 @@ import { SwEstructuraService } from '../../ServiciosWeb/Estructura/swEstructura.
 import { SwEstructuraPlanService } from '../../ServiciosWeb/EstructuraPlan/swEstructuraPlan.service';
 import { SwPlanService } from '../../ServiciosWeb/Plan/swPlan.service';
 import * as moment from 'moment';
+import { SwPlanNacionalService } from '../../ServiciosWeb/PlanNacional/swPlanNacional.service';
 
 @Component({
   selector: 'app-estructura-plan',
@@ -61,10 +62,14 @@ fechaf:string='';
 displayModal:boolean=false;
 txtSubtitulo:string='';
 txtCronograma:any[]=[];
-
+txtIndicador:number=0;
+txtIndBoolean:boolean=false;
+listaIndicador:any=[];
+banPlan:boolean=false;
+txtPlanP:number=0;
 //Variable para mostrar el loading en la tabla
 loading: boolean = true;
-constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEsPlan: SwEstructuraPlanService, private swEje: SwEjesService, private swCronograma: SwCronogramaService) { }
+constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEsPlan: SwEstructuraPlanService, private swEje: SwEjesService, private swPlanNacional:SwPlanNacionalService) { }
 
 async ngOnInit(){
   const datosS=await this.sesiones.obtenerDatosLogin();
@@ -162,6 +167,7 @@ async listarEstructuraPlan(estructura:any){
   }else{
     this.listaEstructuraPlan=[];
   }
+
   this.loading = false;
 }
 
@@ -186,17 +192,15 @@ async listarEstructuraPlanS(orden: any){
   this.loading = false;
 }
 
-async listarEstructuraPlanD(){
+async listarEstructuraPlanD(orden:any){
   this.listaEstructuraPlanD=[];
   const dat={
-    codigo:this.txtPlan,
-    tipo:2
+    codigo:this.txtPlanP,
+    tipo:4,
+    orden:orden
   }
   const datos:listaI=await new Promise<listaI>((resolve)=> this.swEsPlan.ListaEstructuraPlanes(dat).subscribe((translated)=> { resolve(translated)}));
-  if(datos.success){
-    this.listaEstructuraPlanD=[
-      {label:'Ninguno', value:0}
-    ] 
+  if(datos.success){ 
     for(let dato of datos.data){
       this.listaEstructuraPlanD.push({label:dato.est_codigo+'-'+dato.eplan_codigo, value:dato.eplan_id})
     }
@@ -206,13 +210,32 @@ async listarEstructuraPlanD(){
   this.loading = false;
 }
 
-obtenerEst(event:any){
+async listarIndicador(){
+  const dat={
+    tipo:2
+  }
+  const datos:listaI=await new Promise<listaI>((resolve)=> this.swPlanNacional.ListarIndicadoresPN(dat).subscribe((translated)=> { resolve(translated)}));
+  if(datos.success){
+    this.listaIndicador=datos.data;
+  }else{
+    this.listaIndicador=[];
+  }
+  this.loading = false;
+}
+
+async obtenerEst(event:any){
   this.txtPlan=event.value;
     for(let plan of this.listaPlanE){
       if(plan.plan_id==this.txtPlan){
         this.anio=plan.plan_anio;
         this.fechai=moment(plan.plan_fecha_inicio).format('YYYY');
         this.fechaf=moment(plan.plan_fecha_fin).format('YYYY');
+        if(plan.plan_planid==0 || plan.plan_planid==null || plan.plan_planid==''){
+          this.banPlan=false;
+        }else{
+          this.txtPlanP=plan.plan_planid;
+          this.banPlan=true;
+        }
         if(plan.plan_estado==2){
           this.txtPlanEstado=false;
         }else{
@@ -220,9 +243,16 @@ obtenerEst(event:any){
         }
       }
     }
-  this.listarEstructura();
-  this.listarEstructuraPlan(1);
-  this.listarEstructuraPlanD();
+  await this.listarEstructura();
+  if(this.listaEstructura.length>0){
+    var codigo;
+    for(let est of this.listaEstructura){
+      if(est.est_orden==1){
+        codigo=est.est_id;
+      }
+    }
+    this.listarEstructuraPlan(codigo);
+  }
   this.listarEjes();
   this.listarMaximo();
 }
@@ -304,15 +334,17 @@ async guardarEstructura(){
         });
         this.modalEstructura=false;
         await this.listarEstructuraPlan(this.txtTipo);
-        var suma=0;
+        /*var suma=0;
         for(let estructura of this.listaEstructuraPlan){
+          console.log(estructura.eplan_estructura);
+          console.log(this.txtTipo);
           if(estructura.eplan_estructura==this.txtTipo){
             suma++;
           }
         }
         if(suma==1){
           this.listarEstructura();
-        }
+        }*/
       } else {
         this.messageService.add({
           severity: 'error',
@@ -481,6 +513,7 @@ openNew(estructura:any){
       this.eliminar=false;
       this.listaEstructuraSelect=[];
       this.listarEstructuraPlanS(estructura.est_orden);
+      this.listarEstructuraPlanD(estructura.est_orden);
     }
   }else {
     this.messageService.add({
@@ -509,6 +542,11 @@ editarEstructura(est:any, estructura:any){
       this.txtAlineacion=0;
     }else{
       this.txtAlineacion=est.eplan_eplan_id;
+    }
+    if(est.count>0){
+      this.txtIndBoolean=false;
+    }else{
+      this.txtIndBoolean=true;
     }
     this.modalEstructura=true;
     this.txtEstado=est.eplan_estado;
@@ -540,6 +578,11 @@ eliminarEstructura(est:any){
     }else{
       this.txtAlineacion=est.eplan_eplan_id;
     }
+    if(est.count>0){
+      this.txtIndBoolean=false;
+    }else{
+      this.txtIndBoolean=true;
+    }
     this.modalEstructura=true;
     this.txtEstado=est.eplan_estado;
     this.eliminar=true;
@@ -550,6 +593,29 @@ eliminarEstructura(est:any){
     detail: this.mensajesg.NoAutorizado,
   });
 }
+}
+
+agregarIndicador(est:any){
+  if(this.txtIngresar){
+    this.tituloModal="Indicadores al que aporta";
+    this.txtSubtitulo=est.eplan_nombre;
+    this.txtIndicador=est.eplan_indicador;
+    this.txtCodigo=est.eplan_id;
+    this.txtTipo=est.eplan_estructura;
+    this.listarIndicador();
+    this.displayModal=true;
+    if(est.eplan_depende>0){
+      this.eliminar=true;
+    }else{
+      this.eliminar=false;
+    }
+  }else {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.NoAutorizado,
+    });
+  }
 }
 
 irPagina(){
@@ -564,98 +630,44 @@ listar(e:any){
   this.listarEstructuraPlan(this.listaEstructura[e.index].est_id);
 }
 
-async agregarCronograma(eplan:any){
-  const dat={
-    codigo:eplan.eplan_id
+async guardarIndicador(){
+  const datosAudi = {
+    aud_usuario: this.sessionUser,
+    aud_proceso: 'Ingresar',
+    aud_descripcion:
+      'Ingresar estructura - plan estratégico con los datos: {Código: ' +
+      this.txtCodigo +
+      ', Indicador: '+
+      this.txtIndicador+
+      '}',
+    aud_rol: this.sessionRol,
+    aud_dependencia: this.sessionDepC,
+  };
+  const dat:any={
+    eplan_id:this.txtCodigo,
+    eplan_indicador:this.txtIndicador,
+    auditoria:datosAudi
   }
-  const datos:listaI=await new Promise<listaI>((resolve)=> this.swCronograma.ListarCronograma(dat).subscribe((translated)=> { resolve(translated)}));
-  if(datos.success){
-    this.tituloModal='Modificar cronograma';
-    this.txtSubtitulo=eplan.codigo+'. '+eplan.eplan_nombre;
-    this.txtCodigo=eplan.eplan_id;
-    this.displayModal=true;
-    var i=0;
-    for(let cron of datos.data){
-      if(i<this.anio){
-        this.txtCronograma[i]=cron.cro_valor;
-        i++;
-      }
-    }
-  }else{
-    this.tituloModal='Agregar cronograma';
-    this.txtSubtitulo=eplan.codigo+'. '+eplan.eplan_nombre;
-    this.txtCodigo=eplan.eplan_id;
-    this.displayModal=true;
-    this.txtCronograma=[];
-  }
-}
-
-counter(i: number) {
-  return new Array(i);
-}
-
-async guardarCronograma(){
-  console.log(this.txtCronograma.length);
-  if(this.txtCronograma.length!=this.anio){
+  const datos = await new Promise<any>((resolve) =>
+    this.swEsPlan.ModificarEstructuraPlanesIndicador(dat).subscribe((translated) => {
+      resolve(translated);
+    })
+  );
+  if (datos.success) {
+    this.messageService.add({
+      severity: 'success',
+      summary: this.mensajesg.CabeceraExitoso,
+      detail: this.mensajesg.IngresadoCorrectamente,
+    });
+    this.displayModal=false;
+    await this.listarEstructuraPlan(this.txtTipo);
+  } else {
     this.messageService.add({
       severity: 'error',
       summary: this.mensajesg.CabeceraError,
-      detail: this.mensajesg.CamposVacios
+      detail: this.mensajesg.ErrorProceso,
     });
-  }else{
-    var sum:number=0;
-    for(let cro of this.txtCronograma){
-      sum=sum+Number(cro);
-    }
-    if(sum!=100){
-      this.messageService.add({
-        severity: 'error',
-        summary: this.mensajesg.ErrorProceso,
-        detail: 'Verifique los valores ingresados ya que la suma del cronograma debe dar el 100%, su valor es de: '+sum+'%',
-      });
-    }else{
-      const datosAudi = {
-        aud_usuario: this.sessionUser,
-        aud_proceso: 'Ingresar',
-        aud_descripcion:
-          'Ingresar cronograma con los datos: {Código Plan: ' +
-          this.txtCodigo +
-          ', Valores:' +
-          this.txtCronograma +
-          ', Fecha Inicio: '+
-          this.fechai+
-          ', Fecha Fin: '+
-          this.fechaf+
-          '}',
-        aud_rol: this.sessionRol,
-        aud_dependencia: this.sessionDepC,
-      };
-      const dato:any={
-        codigo:this.txtCodigo,
-        valores:this.txtCronograma,
-        fechainicio:this.fechai,
-        fechafin:this.fechaf,
-        auditoria:datosAudi
-      }
-      const datos = await new Promise<any>((resolve) =>
-      this.swCronograma.IngresarCronograma(dato).subscribe((translated) => {
-          resolve(translated);})
-      );
-      if (datos.success) {
-        this.messageService.add({
-        severity: 'success',
-        summary: this.mensajesg.CabeceraExitoso,
-        detail: this.mensajesg.IngresadoCorrectamente,
-      });
-      this.displayModal=false;
-      } else {
-        this.messageService.add({
-        severity: 'error',
-        summary: this.mensajesg.CabeceraError,
-        detail: this.mensajesg.ErrorProceso,
-        });
-      }
-    }
   }
+
 }
 }

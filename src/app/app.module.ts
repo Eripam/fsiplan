@@ -12,6 +12,7 @@ import { configServiciosWeb } from './modulo-seguridad/ConfigService/configServi
 
 //Import mensajes
 import { MensajesGenerales } from './Herramientas/Mensajes/MensajesGenerales.component';
+import { DatosCorreo } from './Herramientas/Correo/confOneDrive';
 
 //Import correo
 import { configCorreo} from './Herramientas/Correo/configCorreo';
@@ -54,7 +55,7 @@ import { ModuloReportesModule } from './modulo-reportes/modulo-reportes.module';
     ModuloEstrategicoModule,
     ModuloReportesModule
   ],
-  providers: [configServiciosWeb, MensajesGenerales, {provide: HTTP_INTERCEPTORS, useClass:SpinnerInterceptor, multi: true}, EjecutarScript, CasClient, HttpService, SesionUsuario, {provide:HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}, configCorreo],
+  providers: [configServiciosWeb, MensajesGenerales, {provide: HTTP_INTERCEPTORS, useClass:SpinnerInterceptor, multi: true}, EjecutarScript, CasClient, HttpService, SesionUsuario, {provide:HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}, configCorreo, DatosCorreo],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

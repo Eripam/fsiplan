@@ -36,6 +36,12 @@ export class CronogramaComponent implements OnInit {
   modalReporte:boolean=false;
   url:any;
   tipo:any;
+  anios:number=0;
+  periodo: number=0;
+  periodoa: any[]=[];
+  txtIngresar:boolean=false;
+  txtModificar:boolean=false;
+  txtPlanEstado:boolean=true;
 
   constructor(private sesiones:SesionUsuario, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swCronograma: SwCronogramaService, public sanitizer: DomSanitizer, public swEstrategicoRep:SwEstrategicoReporteService) { }
 
@@ -58,9 +64,12 @@ export class CronogramaComponent implements OnInit {
       padreop:this.route.snapshot.paramMap.get('enc')
     }
     this.listarPlanEstrategico();
-    this.listarEstructura();
+    this.listarEstructura(0);
+    this.listarPeriodo();
     const datosRol=await this.sesiones.obtenerOpcionesUsuario(valores);
     //this.url=this.sanitizer.bypassSecurityTrustResourceUrl(this.urlP);
+    this.txtIngresar=datosRol.rop_insertar;
+    this.txtModificar=datosRol.rop_modificar;
     this.items=[{label:datosRol.pop_nombre},{ label: datosRol.opc_nombre }]
     //Menu superio con enlace del home
     this.home = { icon: 'pi pi-home', routerLink: '/' };
@@ -81,6 +90,12 @@ export class CronogramaComponent implements OnInit {
           if(dat.plan_id==this.txtPlan){
             fechai=dat.plan_fecha_inicio;
             fechaf=dat.plan_fecha_fin;
+            this.anios=dat.plan_anio;
+            if(dat.plan_estado==2){
+              this.txtPlanEstado=false;
+            }else{
+              this.txtPlanEstado=true;
+            }
           }
         }
         var anio1=Number(moment(fechai).format('YYYY'));
@@ -103,6 +118,12 @@ export class CronogramaComponent implements OnInit {
       if(event.value==plan.plan_id){
         fechai=plan.plan_fecha_inicio;
         fechaf=plan.plan_fecha_fin;
+        this.anios=plan.plan_anio;
+        if(plan.plan_estado==2){
+          this.txtPlanEstado=false;
+        }else{
+          this.txtPlanEstado=true;
+        }
       }
     }
     var anio1=Number(moment(fechai).format('YYYY'));
@@ -111,12 +132,32 @@ export class CronogramaComponent implements OnInit {
       this.cols.push(i);
     }
     this.listarPlanEstrategico();
-    this.listarEstructura();
+    this.listarEstructura(0);
+    this.listarPeriodo();
   }
 
-  async listarEstructura(){
+  async listarPeriodo(){
+    this.periodoa=[];
     const dat={
-      codigo:this.txtPlan
+      perp_plan:this.txtPlan
+    }
+    const datos:listaI=await new Promise<listaI>((resolve)=> this.swCronograma.ListarPeriodoPlan(dat).subscribe((translated)=> { resolve(translated)}));
+    if(datos.success){
+      for(let dato of datos.data){
+        this.periodo=dato.per_maximo;
+      } 
+    }else{
+      this.periodo=0;
+    }
+    for(var i=1; i<=this.periodo; i++){
+      this.periodoa.push(i);
+    }
+  }
+
+  async listarEstructura(eplan:any){
+    const dat={
+      codigo:this.txtPlan,
+      eplan:eplan
     }
     const datos:listaI=await new Promise<listaI>((resolve)=> this.swCronograma.ListaEstructuraCronograma(dat).subscribe((translated)=> { resolve(translated)}));
     if(datos.success){
@@ -179,5 +220,113 @@ export class CronogramaComponent implements OnInit {
     downloadLink.download = fileName;
     downloadLink.target='_blank';
     downloadLink.click();*/
-}
+  }
+
+  async agregarCro(cronograma:any){
+    if(this.txtIngresar && this.txtModificar){
+    var suma=0;
+    for(let cro of cronograma){
+      suma=suma+Number(cro.cro_valor);
+    }
+    if(suma!=100){
+      this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.ErrorProceso,
+        detail: 'Verifique los valores ingresados ya que la suma del cronograma debe dar el 100%, su valor es de: '+suma+'%',
+      });
+    }else{
+      var i=0;
+      var eplan;
+      for(let cro of cronograma){
+        eplan=cro.cro_eplan;
+        if(cro.cro_id==0){
+          const datosAudi = {
+            aud_usuario: this.sessionUser,
+            aud_proceso: 'Ingresar',
+            aud_descripcion:
+              'Ingresar cronograma con los datos: {Código Plan: ' +
+              cro.cro_eplan +
+              ', Valores:' +
+              cro.cro_valor +
+              ', Anio: '+
+              cro.cro_anio+
+              ', Periodo: '+
+              cro.cro_periodo+
+              '}',
+            aud_rol: this.sessionRol,
+            aud_dependencia: this.sessionDepC,
+          };
+          const dato:any={
+            cro_eplan:cro.cro_eplan,
+            cro_valor:cro.cro_valor,
+            cro_anio:cro.cro_anio,
+            cro_periodo:cro.cro_periodo,
+            auditoria:datosAudi
+          }
+          const datos = await new Promise<any>((resolve) =>
+          this.swCronograma.IngresarCronograma(dato).subscribe((translated) => {
+              resolve(translated);})
+          );
+          if (datos.success) {
+            i++;
+          }
+        }else{
+          const datosAudi = {
+            aud_usuario: this.sessionUser,
+            aud_proceso: 'Modificar',
+            aud_descripcion:
+              'Modificar cronograma con los datos: {Código: ' +
+              cro.cro_id +
+              ', Código Plan:' +
+              cro.cro_eplan +
+              ', Valores:' +
+              cro.cro_valor +
+              ', Anio: '+
+              cro.cro_anio+
+              ', Periodo: '+
+              cro.cro_periodo+
+              '}',
+            aud_rol: this.sessionRol,
+            aud_dependencia: this.sessionDepC,
+          };
+          const dato:any={
+            cro_id:cro.cro_id,
+            cro_eplan:cro.cro_eplan,
+            cro_valor:cro.cro_valor,
+            cro_anio:cro.cro_anio,
+            cro_periodo:cro.cro_periodo,
+            auditoria:datosAudi
+          }
+          const datos = await new Promise<any>((resolve) =>
+          this.swCronograma.ModificarCronograma(dato).subscribe((translated) => {
+              resolve(translated);})
+          );
+          if (datos.success) {
+            i++;
+          }
+        }
+      }
+      if(cronograma.length==i){
+        this.listarEstructura(eplan);
+        this.messageService.add({
+        severity: 'success',
+        summary: this.mensajesg.CabeceraExitoso,
+        detail: this.mensajesg.ExitoProceso,
+      });
+      } else {
+        this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.CabeceraError,
+        detail: this.mensajesg.ErrorProceso,
+        });
+      }
+    }
+  }else {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.NoAutorizado,
+    });
+  }
+  }
 }

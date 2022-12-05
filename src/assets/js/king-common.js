@@ -50,7 +50,6 @@ $(document).ready(function() {
 	checkMinified();
 
     $('.header').on('click', '.row .col-1 .js-toggle-minified',function() {
-        alert("cdc");
 		if(!$('.left-sidebar').hasClass('minified')) {
 			$('.left-sidebar').addClass('minified');
 			$('.content-wrapper').addClass('expanded');

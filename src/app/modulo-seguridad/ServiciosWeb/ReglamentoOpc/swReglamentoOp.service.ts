@@ -13,14 +13,17 @@ export class SwReglamentoOpService {
   }
 
   IngresaReglamentoO(reglamentoO:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanRegO+'IngresarRegOpcion';
     return this.http.post<any>(direccion, reglamentoO);
   }
   ListarReglamentoO():Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion=this.UrlSiplanRegO+'ListaRegOp';
     return this.http.get<any>(direccion);
   }
   ModificarReglamentoO(reglamentoO:any):Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direcccion=this.UrlSiplanRegO+'ModificarRegOpcion';
     return this.http.post<any>(direcccion, reglamentoO);
   }

@@ -151,6 +151,7 @@ export class SesionUsuario implements CanActivate {
         sessionStorage.removeItem("perid");
         if(datos.success){
             sessionStorage.setItem('key', datos.token);
+            sessionStorage.setItem("archivo", "false");
             this.obtenerDatosLogin().then(task=>{
                 this.router.navigate([task.opc_url+'/'+task.rop_padreop]);
             })

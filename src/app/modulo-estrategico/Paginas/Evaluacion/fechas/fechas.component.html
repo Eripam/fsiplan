@@ -1,0 +1,142 @@
+<p-toast></p-toast>
+<!--Modal para ingresar periodo-->
+<p-dialog [(visible)]="modalFechas" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
+  <ng-template pTemplate="content">
+      <div class="form-group row m-1" *ngIf="txtCodigo>0">
+        <label for="name" class="col-sm-3 col-form-label">Código:</label>
+        <div class="col-sm-9">
+          <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
+        </div>
+      </div> 
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-3 col-form-label">Planes:</label>
+        <div class="col-sm-9">
+          <p-dropdown [options]="listaTipos" appendTo="body" [(ngModel)]="txtPlan" placeholder="Seleccionar Plan" optionValue="value" [filter]="true" filterBy="label" optionLabel="label" [showClear]="true" ></p-dropdown>
+      </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-3 col-form-label">Año:</label>
+        <div class="col-sm-9">
+            <p-dropdown [options]="cols" appendTo="body" [(ngModel)]="txtAnio" placeholder="Seleccionar Año" optionValue="anio" [filter]="true" filterBy="anio" optionLabel="anio" [showClear]="true" ></p-dropdown>
+        </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-3 col-form-label">Período:</label>
+        <div class="col-sm-9">
+          <p-dropdown [options]="anios" appendTo="body" [(ngModel)]="txtPeriodo" placeholder="Seleccionar Período" optionValue="value" [filter]="true" filterBy="label" optionLabel="label" [showClear]="true" ></p-dropdown>
+        </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-3 col-form-label">Fecha Inicio:</label>
+        <div class="col-sm-9">
+          <p-calendar [(ngModel)]="fechaI" [showTime]="true" appendTo="body" inputId="time" [showIcon]="true"></p-calendar>
+        </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-3 col-form-label">Fecha Fin:</label>
+        <div class="col-sm-9">
+          <p-calendar [(ngModel)]="fechaF" [showTime]="true" appendTo="body" inputId="time" [showIcon]="true"></p-calendar>
+        </div>
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-3 col-form-label">Tipo:</label>
+        <div class="col-sm-9">
+          <p-dropdown [options]="tipos" appendTo="body" [(ngModel)]="txtTipo" placeholder="Seleccionar Tipo" optionValue="value" [filter]="true" filterBy="label" optionLabel="label" [showClear]="true" ></p-dropdown>
+        </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogP()"></button>
+      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarFecha()"></button>
+  </ng-template>
+</p-dialog>
+<div class="row">
+  <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
+  <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
+  <div class="col-11 col-md-9">{{sesionDep}}</div></div>
+</div>
+<div class="navegacion">
+  <h2 class="navegacion__titulo">Activación de fechas</h2>
+  <em>Configuración de las fechas para evaluación del plan estatégico</em>
+</div>
+<p-tabView styleClass="tabview-custom">
+    <div>
+        <span class="buscar-crear">
+          <button pButton pRipple label="Agregar Fechas" icon="pi pi-plus" class="p-mr-2" (click)="openNew()"></button>
+            <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+        </span>
+    </div>
+    <div class="widget-header mt-3"><h3>Listado de Fechas</h3></div>
+    <p-table #dt1 [value]="listaFechas" dataKey="id" [rowHover]="true" scrollHeight="500px"
+        [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
+        [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+        [globalFilterFields]="['per_id','per_nombre', 'estadonombre', 'per_maximo']" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="per_id" style="width: 5rem; text-align: center;">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                    Código
+                    <p-sortIcon field="per_id"></p-sortIcon>
+                </div>
+                </th>  
+                <th pSortableColumn="per_nombre">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                    Nombre
+                    <p-sortIcon field="per_nombre"></p-sortIcon>
+                    <p-columnFilter type="text" field="per_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                  </div>
+                </th>
+                <th pSortableColumn="per_maximo" class="text-center">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                    Máximo
+                    <p-sortIcon field="per_maximo"></p-sortIcon>
+                  </div>
+                </th>
+                <th class="text-center">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      Estado
+                      <p-columnFilter field="per_estado" matchMode="equals" display="menu">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
+                                <ng-template let-option pTemplate="item">
+                                    <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                </ng-template>
+                            </p-dropdown>
+                        </ng-template>
+                    </p-columnFilter>
+                    </div>
+                </th>
+                <th style="width: 8rem" class="text-center">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Acción
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-per>
+            <tr>
+              <td class="text-center">
+                {{per.per_id}}
+              </td>
+              <td>
+                {{per.per_nombre}}
+              </td>
+              <td class="text-center">
+                {{per.per_maximo}}
+              </td>
+              <td class="text-center">
+                <span [class]="'customer-badge status-' + per.per_estado">{{per.estadonombre}}</span>
+              </td>
+              <td class="text-center">
+                <button pButton pRipple icon="pi pi-pencil" title="Editar Período" class="p-button-rounded"></button>
+                <button pButton pRipple icon="pi pi-trash" title="Eliminar Período" class="p-button-rounded"></button>
+              </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="7">No se encontrarón registros.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-tabView>

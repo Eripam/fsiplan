@@ -13,27 +13,31 @@ export class SwEstructuraService {
   }
 
   ListaEstructura(tipo:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEst+'ListarEstructura';
     return this.http.post<any>(direccion, tipo);
   }
 
   ListarMaximo(codigo:any):Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion=this.UrlSiplanEst+'ListarMaximo';
     return this.http.post<any>(direccion,codigo);
   }
 
   IngresarEstructura(datos:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEst+'IngresarEstructura';
     return this.http.post<any>(direccion, datos);
   }
 
   ModificarEstructura(datos:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEst+'ModificarEstructura';
     return this.http.post<any>(direccion, datos);
   }
 
-  
   EliminarEstructura(datos:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanEst+'EliminarEstructura';
     return this.http.post<any>(direccion, datos);
   }

@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { MensajesGenerales } from 'src/app/Herramientas/Mensajes/MensajesGenerales.component';
-import { eje, estructura, listaI } from '../../Interface/planEstrategico';
+import { eje, estructura, listaI, periodo } from '../../Interface/planEstrategico';
+import { SwCronogramaService } from '../../ServiciosWeb/Cronograma/swCronograma.service';
 import { SwEjesService } from '../../ServiciosWeb/EjeEstrategico/swEjes.service';
 import { SwEstructuraService } from '../../ServiciosWeb/Estructura/swEstructura.service';
 import { SwPlanService } from '../../ServiciosWeb/Plan/swPlan.service';
@@ -51,10 +52,14 @@ txtComponentes:boolean=false;
 txtPoliticas:boolean=false;
 txtPlanes:boolean=false;
 txtOrden:string="";
+listaPeriodo:any=[];
+listaPeriodoP:any=[];
+modalPeriodo:boolean=false;
+txtPeriodo:string='';
 
 //Variable para mostrar el loading en la tabla
 loading: boolean = true;
-constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEje: SwEjesService) { }
+constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEje: SwEjesService, private swCro: SwCronogramaService) { }
 
 async ngOnInit(){
   const datosS=await this.sesiones.obtenerDatosLogin();
@@ -74,9 +79,11 @@ async ngOnInit(){
     opcion:this.route.snapshot.paramMap.get('opc'),
     padreop:this.route.snapshot.paramMap.get('enc')
   }
-  this.listarPlanEstrategico();
+  await this.listarPlanEstrategico();
   this.listarEstructura();
   this.listarEjes();
+  this.listarPeriodo();
+  this.listarPeriodoPlan();
   const datosRol=await this.sesiones.obtenerOpcionesUsuario(valores);
   this.txtIngresar=datosRol.rop_insertar;
   this.txtModificar=datosRol.rop_modificar;
@@ -103,6 +110,17 @@ async listarPlanEstrategico(){
     this.listaPlanE=datos.data;
   }else{
     this.listaPlanE=[];
+  }
+  if(this.txtPlan>"0"){
+    for(let plan of this.listaPlanE){
+      if(plan.plan_id==this.txtPlan){
+        if(plan.plan_estado==2){
+          this.txtPlanEstado=false;
+        }else{
+          this.txtPlanEstado=true;
+        }
+      }
+    }
   }
   this.loading = false;
 }
@@ -135,6 +153,32 @@ async listarEjes(){
   this.loading = false;
 }
 
+async listarPeriodo(){
+  const dat={
+    tipo:1
+  }
+  const datos:listaI=await new Promise<listaI>((resolve)=> this.swCro.ListarPeriodo(dat).subscribe((translated)=> { resolve(translated)}));
+  if(datos.success){
+    this.listaPeriodo=datos.data;
+  }else{
+    this.listaPeriodo=[];
+  }
+  this.loading = false;
+}
+
+async listarPeriodoPlan(){
+  const dat={
+    perp_plan:this.txtPlan,
+  }
+  const datos:listaI=await new Promise<listaI>((resolve)=> this.swCro.ListarPeriodoPlan(dat).subscribe((translated)=> { resolve(translated)}));
+  if(datos.success){
+    this.listaPeriodoP=datos.data;
+  }else{
+    this.listaPeriodoP=[];
+  }
+  this.loading = false;
+}
+
 obtenerEst(event:any){
   this.txtPlan=event.value;
     for(let plan of this.listaPlanE){
@@ -148,6 +192,7 @@ obtenerEst(event:any){
     }
   this.listarEstructura();
   this.listarEjes();
+  this.listarPeriodoPlan();
 }
 
 openNew(){
@@ -208,8 +253,36 @@ openNewEje(){
   }
 }
 
+openNewPer(){
+  if(this.txtIngresar){
+    if(this.txtPlan=="0"){
+      this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.CabeceraError,
+        detail: this.mensajesg.SeleccionarPlan,
+      });
+    }else{
+      this.tituloModal='Asignar Período';
+      this.txtPeriodo='';
+      this.txtCodigo=0;
+      this.eliminar=false;
+      this.modalPeriodo=true;
+    }
+  }else{
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.NoAutorizado,
+    });
+  }
+}
+
 hideDialogPE(){
   this.modalEje=false;
+}
+
+hideDialogPL(){
+  this.modalPeriodo=false;
 }
 
 async guardarEstructura(){
@@ -520,6 +593,138 @@ async guardarEje(){
   }
 }
 
+async guardarPlan(){
+  if(this.txtPeriodo==''){
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.CamposVacios,
+    });
+  }else{
+    if(this.txtCodigo===0 && !this.eliminar){
+      const datosAudi = {
+        aud_usuario: this.sessionUser,
+        aud_proceso: 'Ingresar',
+        aud_descripcion:
+          'Ingresar período plan con los datos: {Plan estratégico: ' +
+          this.txtPlan +
+          ', Período:' +
+          this.txtPeriodo +
+          '}',
+        aud_rol: this.sessionRol,
+        aud_dependencia: this.sessionDepC,
+      };
+      const dat= {
+       perp_plan: this.txtPlan,
+       perp_periodo:this.txtPeriodo,
+       auditoria: datosAudi
+      };
+      const datos = await new Promise<any>((resolve) =>
+        this.swCro.IngresarPeriodoPlan(dat).subscribe((translated) => {
+          resolve(translated);
+        })
+      );
+      if (datos.success) {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.mensajesg.CabeceraExitoso,
+          detail: this.mensajesg.IngresadoCorrectamente,
+        });
+        this.modalPeriodo=false;
+        this.listarPeriodoPlan();
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: this.mensajesg.CabeceraError,
+          detail: 'Solo puede existir un período activo, verifique los datos ingresados',
+        });
+      }
+    }else if(this.txtCodigo>0 && !this.eliminar){
+      const datosAudi = {
+        aud_usuario: this.sessionUser,
+        aud_proceso: 'Modificar',
+        aud_descripcion:
+          'Modificar período plan estratégico con los datos: {Periodo:' +
+          this.txtPeriodo +
+          ', Plan: ' +
+          this.txtPlan +
+          ', Estado: '+
+          this.txtEstado+
+          '}',
+        aud_rol: this.sessionRol,
+        aud_dependencia: this.sessionDepC,
+      };
+      const dat= {
+       perp_periodo: this.txtPeriodo,
+       perp_plan:this.txtPlan,
+       perp_estado:this.txtEstado,
+       auditoria: datosAudi
+      };
+      const datos = await new Promise<any>((resolve) =>
+        this.swCro.ModificarPeriodoPlan(dat).subscribe((translated) => {
+          resolve(translated);
+        })
+      );
+      if (datos.success) {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.mensajesg.CabeceraExitoso,
+          detail: this.mensajesg.ModificadoCorrectamente,
+        });
+        this.modalPeriodo=false;
+        this.listarPeriodoPlan();
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: this.mensajesg.CabeceraError,
+          detail: this.mensajesg.ErrorProceso,
+        });
+      }
+    }else{
+      const datosAudi = {
+        aud_usuario: this.sessionUser,
+        aud_proceso: 'Eliminar',
+        aud_descripcion:
+          'Eliminar período de  plan estratégico con los datos: {Plan: ' +
+          this.txtPlan +
+          ', Estado: '+
+          this.txtEstado+
+          ', Periodo: '+
+          this.txtPeriodo+
+          '}',
+        aud_rol: this.sessionRol,
+        aud_dependencia: this.sessionDepC,
+      };
+      const dat= {
+        perp_periodo: this.txtPeriodo,
+        perp_plan:this.txtPlan,
+        perp_estado:this.txtEstado,
+        auditoria: datosAudi
+      };
+      const datos = await new Promise<any>((resolve) =>
+        this.swCro.EliminarPeriodoPlan(dat).subscribe((translated) => {
+          resolve(translated);
+        })
+      );
+      if (datos.success) {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.mensajesg.CabeceraExitoso,
+          detail: this.mensajesg.EliminadoCorrectamente,
+        });
+        this.modalPeriodo=false;
+        this.listarPeriodoPlan();
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: this.mensajesg.CabeceraError,
+          detail: this.mensajesg.ErrorProceso,
+        });
+      }
+    }
+  }
+}
+
 modificarEst(est:estructura){
   if(this.txtModificar){
     this.tituloModal="Modificar Estructura";
@@ -585,6 +790,40 @@ eliminarEje(eje:eje){
     this.txtNombre=eje.eje_nombre;
     this.txtEstado=eje.eje_estado;
     this.modalEje=true;
+    this.eliminar=true;
+  }else{
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.NoAutorizado,
+    });
+  }
+}
+
+modificarPeriodo(per:any){
+  if(this.txtModificar){
+    this.tituloModal="Modificar Período Plan";
+    this.txtPeriodo=per.perp_periodo;
+    this.txtEstado=per.perp_estado;
+    this.modalPeriodo=true;
+    this.txtCodigo=1;
+    this.eliminar=false;
+  }else{
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.NoAutorizado,
+    });
+  }
+}
+
+eliminarPeriodo(per:any){
+  if(this.txtEliminar){
+    this.tituloModal="Eliminar Período Plan";
+    this.txtPeriodo=per.perp_periodo;
+    this.txtEstado=per.perp_estado;
+    this.txtCodigo=1;
+    this.modalPeriodo=true;
     this.eliminar=true;
   }else{
     this.messageService.add({

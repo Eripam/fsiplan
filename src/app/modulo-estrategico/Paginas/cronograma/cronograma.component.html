@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <p-dialog [(visible)]="modalReporte" header="REPORTE PDF" [modal]="true" styleClass="p-fluid" position="top" [style]="{width:'60vw', height:'60vw'}">
   <embed [src]="url" [type]="tipo" width="100%" height="100%">
 </p-dialog>
@@ -23,39 +24,104 @@
 <p-treeTable [value]="estructura" [columns]="cols">
   <ng-template pTemplate="header">
     <tr>
-        <th class="text-center">Código</th>
-        <th class="text-center">Nombre</th>
-        <th *ngFor="let col of cols">{{col}}</th>
+        <th class="text-center" rowspan="2" style="font-size: 0.85em;">Código</th>
+        <th class="text-center" rowspan="2" style="font-size: 0.85em;">Nombre</th>
+        <th *ngFor="let col of cols" [attr.colspan]="periodo" class="text-center" style="font-size: 0.85em;">{{col}}</th>
+        <th rowspan="2"></th>
+    </tr>
+    <tr>
+      <ng-container *ngFor="let col of cols">
+        <th *ngFor="let per of periodoa" style="font-size: 0.85em;">
+          {{per}}
+        </th>
+      </ng-container>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+  <!--<ng-template pTemplate="body" let-rowNode let-rowData="rowData">
     <tr [ttRow]="rowNode">
         <ng-container *ngIf="rowData.orden==0; else orden">
           <td>
             <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
             {{rowData.eplan_codigo}}
           </td>
-          <th colspan="6">{{rowData.eplan_nombre}}</th>
+          <th [attr.colspan]="(anios+1)*periodo">{{rowData.eplan_nombre}}</th>
         </ng-container>
         <ng-template #orden>
-          <td>
-            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-            {{rowData.eplan_codigo}}
-          </td>
-          <td>{{rowData.eplan_nombre}}</td>
-          <ng-container *ngIf="rowData.cronograma.length>0; else sincronograma">
-            <td *ngFor="let cro of rowData.cronograma">
-              {{cro.cro_valor}}%
+          <ng-container *ngIf="rowData.suma>0 && rowData.suma<100; else color">
+            <td class="status-0">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              {{rowData.eplan_codigo}}
             </td>
+            <td class="status-0" style="font-size: 0.8em;">{{rowData.eplan_nombre}}</td>
+            <ng-container *ngIf="rowData.cronograma.length>0; else sincronograma">
+              <td class="status-0" *ngFor="let cro of rowData.cronograma" style="font-size: 0.8em;">
+                {{cro.cro_valor}}%
+              </td>
+            </ng-container>
+            <ng-template #sincronograma>
+              <th *ngFor="let col of cols"></th>
+            </ng-template>
           </ng-container>
-          <ng-template #sincronograma>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
+          <ng-template #color>
+            <td>
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              {{rowData.eplan_codigo}}
+            </td>
+            <td>{{rowData.eplan_nombre}}</td>
+            <ng-container *ngIf="rowData.cronograma.length>0; else sincronograma">
+              <td *ngFor="let cro of rowData.cronograma">
+                {{cro.cro_valor}}%
+              </td>
+            </ng-container>
+            <ng-template #sincronograma>
+              <th *ngFor="let col of cols"></th>
+            </ng-template>
           </ng-template>
         </ng-template>
     </tr>
+</ng-template>-->
+<ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+  <tr [ttRow]="rowNode">
+    <ng-container *ngIf="rowData.orden==0; else orden">
+      <td style="font-size: 0.8em;">
+        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+        {{rowData.eplan_codigo}}
+      </td>
+      <th [attr.colspan]="(anios+1)*periodo">{{rowData.eplan_nombre}}</th>
+    </ng-container>
+    <ng-template #orden>
+      <ng-container *ngIf="(rowData.suma>0 && rowData.suma<100) || rowData.suma==null; else color">
+        <td style="font-size: 0.8em;" class="status-0">
+          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+          {{rowData.eplan_codigo}}
+        </td>
+        <td class="status-0" style="font-size: 0.8em;">{{rowData.eplan_nombre}}</td>
+          <td class="status-0" style="font-size: 0.8em;" *ngFor="let cro of rowData.cronograma" ttEditableColumn>
+              <p-treeTableCellEditor>
+                  <ng-template pTemplate="input">
+                      <input pInputText type="text" class="form-control" [(ngModel)]="cro.cro_valor">
+                  </ng-template>
+                  <ng-template pTemplate="output">{{cro.cro_valor}}%</ng-template>
+              </p-treeTableCellEditor>
+          </td>
+      </ng-container>
+      <ng-template #color>
+        <td style="font-size: 0.8em;">
+          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+          {{rowData.eplan_codigo}}
+        </td>
+        <td style="font-size: 0.8em;">{{rowData.eplan_nombre}}</td>
+        <td style="font-size: 0.8em;" *ngFor="let cro of rowData.cronograma" ttEditableColumn>
+          <p-treeTableCellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" class="form-control" [(ngModel)]="cro.cro_valor">
+              </ng-template>
+              <ng-template pTemplate="output">{{cro.cro_valor}}%</ng-template>
+          </p-treeTableCellEditor>
+        </td>
+      </ng-template>
+      <td *ngIf="rowData.sumah==0"><div (click)="agregarCro(rowData.cronograma)" *ngIf="txtPlanEstado"><i class="fas fa-save"></i></div></td>
+    </ng-template>
+  </tr>            
 </ng-template>
 </p-treeTable>

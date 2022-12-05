@@ -14,41 +14,55 @@ export class SwEstructuraPlanService {
   }
 
   ListaEstructuraPlanes(tipo:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.urlSiplanEstructuraP+'ListarEstructuraPlan';
     return this.http.post<any>(direccion, tipo);
   }
 
   ListaEstructuraPlanesSelect(tipo:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.urlSiplanEstructuraP+'ListarEstructuraPlanSelect';
     return this.http.post<any>(direccion, tipo);
   }
 
   ListaEstructuraPlanMapa(codigo:any):Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.urlSiplanEstructuraP+'ListarEstructuraPlanMapa';
     return this.http.post<any>(direccion, codigo);
   }
 
   ListaEstructuraPlanMapaHijos(codigo:any):Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.urlSiplanEstructuraP+'ListarEstructuraPlanHijosMapa';
     return this.http.post<any>(direccion, codigo);
   }
 
   IngresarEstructuraPlanes(datos:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.urlSiplanEstructuraP+'IngresarEstructuraPlanes';
     return this.http.post<any>(direccion, datos);
   }
 
   ModificarEstructuraPlanes(datos:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.urlSiplanEstructuraP+'ModificarEstructuraPlanes';
     return this.http.post<any>(direccion, datos);
   }
 
+  ModificarEstructuraPlanesIndicador(datos:any):Observable<any>{
+    sessionStorage.setItem("archivo", "false");
+    let direccion=this.urlSiplanEstructuraP+'ModificarEstructuraPlanesIndicador';
+    return this.http.post<any>(direccion, datos);
+  }
+
   EliminarEstructuraPlanes(datos:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.urlSiplanEstructuraP+'EliminarEstructuraPlanes';
     return this.http.post<any>(direccion, datos);
   }
 
   ValidarEstructuraPlanes(datos:any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.urlSiplanEstructuraP+'ValidarEstructuraPlanes';
     return this.http.post<any>(direccion, datos);
   }

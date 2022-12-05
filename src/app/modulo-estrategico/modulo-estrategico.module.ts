@@ -33,6 +33,7 @@ import {InputNumberModule} from 'primeng/inputnumber';
 import {PanelModule} from 'primeng/panel';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {TreeTableModule} from 'primeng/treetable';
+import {SelectButtonModule} from 'primeng/selectbutton';
 
 //Paginas
 import { PlanComponent } from './Paginas/plan/plan.component';
@@ -41,6 +42,9 @@ import { configServiciosWebEst } from './ConfigService/configServiciosWeb';
 import { EstructuraPlanComponent } from './Paginas/estructura-plan/estructura-plan.component';
 import { MapaEstrategicoComponent } from './Paginas/mapa-estrategico/mapa-estrategico.component';
 import { CronogramaComponent } from './Paginas/cronograma/cronograma.component';
+import { ConfiguracionComponent } from './Paginas/configuracion/configuracion.component';
+import { PlanNacionalComponent } from './Paginas/plan-nacional/plan-nacional.component';
+import { FechasComponent } from './Paginas/Evaluacion/fechas/fechas.component';
 
 
 @NgModule({
@@ -49,7 +53,10 @@ import { CronogramaComponent } from './Paginas/cronograma/cronograma.component';
     EstructuraComponent,
     EstructuraPlanComponent,
     MapaEstrategicoComponent,
-    CronogramaComponent
+    CronogramaComponent,
+    ConfiguracionComponent,
+    PlanNacionalComponent,
+    FechasComponent
   ],
   imports: [
     CommonModule,
@@ -84,7 +91,8 @@ import { CronogramaComponent } from './Paginas/cronograma/cronograma.component';
     InputNumberModule,
     PanelModule,
     ScrollPanelModule,
-    TreeTableModule
+    TreeTableModule,
+    SelectButtonModule
   ],
   providers:[configServiciosWebEst]
 })

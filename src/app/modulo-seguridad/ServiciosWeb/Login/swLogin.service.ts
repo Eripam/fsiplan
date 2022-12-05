@@ -15,31 +15,37 @@ export class SwLoginService {
   }
 
   Login(perid: any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanL+'Login';
       return this.http.post<listaI>(direccion, perid);
   }
 
   LoginCorreo(perid: any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanL+'LoginCorreo';
       return this.http.post<listaI>(direccion, perid);
   }
 
   LoginRolDep(datos: any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanL+'LoginRolDep';
       return this.http.post<listaI>(direccion, datos);
   }
 
   DecodingLogin(token: any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanL+'DLogin';
       return this.http.post<listaI>(direccion, token);
   }
 
   ListaPerfiles(perid: any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanL+'ListarPerfil';
       return this.http.post<listaI>(direccion, perid);
   }
 
   VerificarOpciones(datos: any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanL+'VerificarOpcion';
       return this.http.post<listaI>(direccion, datos);
   }

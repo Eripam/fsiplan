@@ -15,36 +15,43 @@ export class SwProspectivaService {
   }
 
   ListarProspectiva(codigo:any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanPros+'ListaProspectiva';
       return this.http.post<listaI>(direccion, codigo);
   }
 
   ListarProspectivaApro(): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanPros+'ListaProspectivaAprobada';
       return this.http.get<listaI>(direccion);
   }
 
   ListaProspectivaExiste():Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion=this.UrlSiplanPros+'ListaProspectivaExiste';
     return this.http.get<any>(direccion);
   }
 
   IngresarProspectiva(pros: any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanPros+'IngresarProspectiva';
     return this.http.post<any>(direccion, pros);
   }
 
   ModificarProspectiva(pros: any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanPros+'ModificarProspectiva';
     return this.http.post<any>(direccion, pros);
   }
 
   IngresarVisionMision(pros: any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanPros+'IngresarVisionMision';
     return this.http.post<any>(direccion, pros);
   }
 
   ModificarVisionMision(pros: any): Observable<any>{
+    sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanPros+'ModificarVisionMision';
     return this.http.post<any>(direccion, pros);
   }
