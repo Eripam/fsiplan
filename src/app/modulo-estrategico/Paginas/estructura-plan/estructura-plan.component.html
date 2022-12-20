@@ -69,6 +69,76 @@
     <p-button icon="pi pi-check" (click)="guardarIndicador()" *ngIf="!eliminar" label="Guardar" styleClass="p-button-text"></p-button>
   </ng-template>
 </p-dialog>
+<p-dialog header="{{tituloModal}}" [(visible)]="modalResponsable" [modal]="true" [style]="{width: '60vw'}"
+[draggable]="false" [resizable]="false">
+  <p>{{txtSubtitulo}}</p>
+  <div class="p-fluid grid row mb-2">
+    <label for="name" class="col-form-label titulo">Responsables</label>
+    <div class="form-group row m-1">
+      <div class="col-12 row" *ngIf="txtPlanEstado">
+          <input type="hidden" [(ngModel)]="txtCodigo">
+          <div class="col-10">
+            <p-multiSelect [options]="listaDepResponsable" [(ngModel)]="txtResponsables" appendTo="body" [disabled]="eliminar" defaultLabel="Seleccionar Responsables" optionValue="dep_codigo" optionLabel="dep_nombre"></p-multiSelect>
+          </div>
+          <div class="col-2">
+            <button pButton pRipple icon="fas fa-save" title="Guardar" class="p-button-rounded p-button-text" (click)="guardarResponsables(1)"></button>
+          </div>
+      </div>
+      <div class="row mt-3 p-0 justify-content-center">
+        <div class="col-10 m-0 p-0">
+            <div class="row m-0 p-0">
+              <div class="col-8 borde m-0 p-0 negrita text-center">Unidad/Dependencia</div>
+              <div class="col-3 borde m-0 p-0 negrita text-center">Acción</div>
+            </div>
+            <div class="row m-0 p-0" *ngFor="let responsable of listaResponsable">
+              <ng-template ngFor let-tipo [ngForOf]="listaDep">
+                <div class="col-8 borde m-0 p-0 align-content-center" *ngIf="responsable.replan_dependencia==tipo.dep_codigo">  
+                  {{tipo.dep_nombre}}
+                </div>
+              </ng-template>
+              <div class="col-3 borde m-0 p-0 text-center">
+                <button pButton pRipple icon="fas fa-trash" title="Eliminar" *ngIf="txtPlanEstado" class="p-button-rounded p-button-text" (click)="eliminarResCor(responsable)"></button>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <label for="name" class="col-form-label titulo">Coresponsables</label>
+    <div class="form-group row m-1">
+      <div class="col-12 row" *ngIf="txtPlanEstado">
+        <input type="hidden" [(ngModel)]="txtCodigo">
+        <div class="col-10">
+          <p-multiSelect [options]="listaDepCoresponsables" [(ngModel)]="txtCoresponsables" appendTo="body" [disabled]="eliminar" defaultLabel="Seleccionar Coresponsables" optionValue="dep_codigo" optionLabel="dep_nombre"></p-multiSelect>
+        </div>
+        <div class="col-2">
+          <button pButton pRipple icon="fas fa-save" title="Guardar" class="p-button-rounded p-button-text" (click)="guardarResponsables(2)"></button>
+        </div>
+    </div>
+      <div class="row mt-3 p-0 justify-content-center">
+        <div class="col-10 m-0 p-0">
+            <div class="row m-0 p-0">
+              <div class="col-8 borde m-0 p-0 negrita text-center">Unidad/Dependencia</div>
+              <div class="col-3 borde m-0 p-0 negrita text-center">Acción</div>
+            </div>
+            <div class="row m-0 p-0" *ngFor="let coresponsable of listaCoresponsable">
+              <ng-template ngFor let-tipo [ngForOf]="listaDep">
+                <div class="col-8 borde m-0 p-0" *ngIf="coresponsable.replan_dependencia==tipo.dep_codigo">  
+                  {{tipo.dep_nombre}}
+                </div>
+              </ng-template>
+              <div class="col-3 borde m-0 p-0 text-center">
+                <button pButton pRipple icon="fas fa-trash" title="Eliminar" *ngIf="txtPlanEstado" (click)="eliminarResCor(coresponsable)" class="p-button-rounded p-button-text"></button>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-times" (click)="modalResponsable=false" label="Cancelar" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>
+<p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 <div class="row">
   <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
   <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
@@ -131,7 +201,7 @@
                 <p-columnFilter type="text" field="codigopadre" display="menu" class="p-ml-auto"></p-columnFilter>
               </div>
             </th>
-            <th *ngIf="txtPlanEstado">
+            <th>
               Acción
             </th>
           </tr>
@@ -158,14 +228,20 @@
                 <span class="col-9 align-self-center">{{crid.codigopadre}}</span>
               </div>
             </td>
-            <td class="text-center" *ngIf="txtPlanEstado">
+            <td class="text-center" *ngIf="txtPlanEstado; else iconos">
               <button pButton pRipple icon="fas fa-edit" title="Editar" class="p-button-rounded p-button-text" (click)="editarEstructura(crid, item)"></button>
               <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarEstructura(crid)"></button>
               <button pButton pRipple icon="fas fa-cubes" title="Componentes" class="p-button-rounded p-button-text" *ngIf="item.est_componente"></button>
               <button pButton pRipple icon="fas fa-window-restore" title="Políticas" class="p-button-rounded p-button-text" *ngIf="item.est_politicas"></button>
               <button pButton pRipple icon="fas fa-tachometer-alt" title="Indicadores" class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)" *ngIf="crid.count==0"></button>
-              <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables" class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)" *ngIf="crid.count==0"></button>
+              <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables" class="p-button-rounded p-button-text" (click)="ingresarResponsables(crid)" *ngIf="crid.count==0"></button>
             </td>
+            <ng-template #iconos>
+              <td class="text-center">
+                <button pButton pRipple icon="fas fa-tachometer-alt" title="Indicadores" class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)" *ngIf="crid.count==0"></button>
+                <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables" class="p-button-rounded p-button-text" (click)="ingresarResponsables(crid)" *ngIf="crid.count==0"></button>
+              </td>
+            </ng-template>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">

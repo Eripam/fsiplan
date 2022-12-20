@@ -16,4 +16,5 @@ export class configServiciosWebEst {
   urlSerSiplanArchivo: string = environment.urlServiciosSiplan+'archivo/';
   urlSerSiplanEval:string=environment.urlServiciosSiplan+'evaluacion/';
   urlSerSiplanFechas:string=this.urlSerSiplanEval+'fechas/'
+  urlSerSiplanResponsables:string = environment.urlServiciosSiplan+'responsable/';
 }

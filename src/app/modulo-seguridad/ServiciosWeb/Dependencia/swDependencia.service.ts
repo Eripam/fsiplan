@@ -50,6 +50,18 @@ export class swDependencia {
     return this.http.get<listaI>(direccion);
   }
 
+  ListaDependenciaCodigo(dep:any):Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
+    let direccion = this.UrlSiplanD+ 'ListaDependenciaCodigo';
+    return this.http.post<listaI>(direccion, dep);
+  }
+
+  ListaDependenciaFacAdmi(res:any): Observable<listaI>{
+    sessionStorage.setItem("archivo", "false");
+    let direccion = this.UrlSiplanD+ 'ListaDependenciaFacAdm';
+    return this.http.post<listaI>(direccion, res);
+  }
+
   ListaDependenciaPert(codigo:any): Observable<listaI>{
     sessionStorage.setItem("archivo", "false");
     let direccion = this.UrlSiplanD+ 'ListaDependenciaPertenece';

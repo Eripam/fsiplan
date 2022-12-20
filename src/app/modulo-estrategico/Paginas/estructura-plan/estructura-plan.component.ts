@@ -11,6 +11,8 @@ import { SwEstructuraPlanService } from '../../ServiciosWeb/EstructuraPlan/swEst
 import { SwPlanService } from '../../ServiciosWeb/Plan/swPlan.service';
 import * as moment from 'moment';
 import { SwPlanNacionalService } from '../../ServiciosWeb/PlanNacional/swPlanNacional.service';
+import { swDependencia } from 'src/app/modulo-seguridad/ServiciosWeb/Dependencia/swDependencia.service';
+import { SwResponsablesService } from '../../ServiciosWeb/Responsables/swResponsables.service';
 
 @Component({
   selector: 'app-estructura-plan',
@@ -69,7 +71,15 @@ banPlan:boolean=false;
 txtPlanP:number=0;
 //Variable para mostrar el loading en la tabla
 loading: boolean = true;
-constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEsPlan: SwEstructuraPlanService, private swEje: SwEjesService, private swPlanNacional:SwPlanNacionalService) { }
+modalResponsable:boolean=false;
+listaDepResponsable:any=[];
+listaDepCoresponsables:any=[];
+txtResponsables:any=[];
+txtCoresponsables:any=[];
+listaResponsable:any=[];
+listaCoresponsable:any=[];
+listaDep:any=[];
+constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEsPlan: SwEstructuraPlanService, private swEje: SwEjesService, private swPlanNacional:SwPlanNacionalService, private swDependencia: swDependencia, private swResponsable: SwResponsablesService, private DependenciaSer:swDependencia) { }
 
 async ngOnInit(){
   const datosS=await this.sesiones.obtenerDatosLogin();
@@ -84,6 +94,7 @@ async ngOnInit(){
     padreop:this.route.snapshot.paramMap.get('enc')
   }
   this.listarPlanEstrategico();
+  this.listarDependencias();
   const datosRol=await this.sesiones.obtenerOpcionesUsuario(valores);
   this.txtIngresar=datosRol.rop_insertar;
   this.txtModificar=datosRol.rop_modificar;
@@ -221,6 +232,36 @@ async listarIndicador(){
     this.listaIndicador=[];
   }
   this.loading = false;
+}
+
+async listarResponsables(eplan_id:any){
+  const dato={
+    replan_eplan:eplan_id,
+    replan_tipo:1,
+    tipo:1
+  }
+  const datos:listaI=await new Promise<listaI>((resolve)=> this.swDependencia.ListaDependenciaFacAdmi(dato).subscribe((translated)=> { resolve(translated)}));
+  if(datos.success){
+    this.listaDepResponsable=datos.data;
+  }else{
+    this.listaDepResponsable=[];
+  }
+  this.loading = false;
+}
+
+async listarCoresponsables(eplan_id:any){
+  const dato={
+    replan_eplan:eplan_id,
+    replan_tipo:2,
+    tipo:2
+  }
+  const datos:listaI= await new Promise<listaI>((resolve) => this.swDependencia.ListaDependenciaFacAdmi(dato).subscribe((translated)=>{resolve(translated)}));
+  if(datos.success){
+    this.listaDepCoresponsables=datos.data;
+  }else{
+    this.listaDepCoresponsables=[];
+  }
+  this.loading=false;
 }
 
 async obtenerEst(event:any){
@@ -668,6 +709,182 @@ async guardarIndicador(){
       detail: this.mensajesg.ErrorProceso,
     });
   }
+}
 
+//Función para listar todos los tipos de dependencias ingresados
+async listarDependencias() {
+  const datos:listaI = await new Promise<listaI>((resolve) =>  this.DependenciaSer.ListaDependencia().subscribe((translated) => { resolve(translated); }));
+  if(datos.success){
+    this.listaDep = datos.data;
+  }else{
+    this.listaDep =[];
+  }
+  this.loading = false;
+}
+
+async listarResponsable(eplan_id:any){
+  const dato={
+    replan_eplan:eplan_id,
+    replan_tipo:1
+  }
+
+  const datos:listaI=await new Promise<listaI>((resolve)=> this.swResponsable.ListarResponsables(dato).subscribe((translated)=>{resolve(translated)}));
+  if(datos.success){
+    this.listaResponsable=datos.data; 
+  }else{
+    this.listaResponsable=[];
+  }
+
+  this.loading = false;
+}
+
+async listarCoresponsable(eplan_id:any){
+  const dato={
+    replan_eplan:eplan_id,
+    replan_tipo:2
+  }
+
+  const datos:listaI=await new Promise<listaI>((resolve)=> this.swResponsable.ListarResponsables(dato).subscribe((translated)=>{resolve(translated)}));
+  if(datos.success){
+    this.listaCoresponsable=datos.data; 
+  }else{
+    this.listaCoresponsable=[];
+  }
+
+  this.loading = false;
+}
+
+ingresarResponsables(est:any){
+  if(this.txtIngresar){
+    this.modalResponsable=true;
+    this.tituloModal="Responsables y Coresponsables";
+    this.txtSubtitulo=est.eplan_nombre;
+    this.txtCodigo=est.eplan_id;
+    this.listarResponsables(est.eplan_id);
+    this.listarCoresponsables(est.eplan_id);
+    this.listarResponsable(est.eplan_id);
+    this.listarCoresponsable(est.eplan_id);    
+  }else{
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.NoAutorizado,
+    });
+  }
+}
+
+async guardarResponsables(tipo:any){
+  const datosAudi = {
+    aud_usuario: this.sessionUser,
+    aud_proceso: 'Ingresar',
+    aud_descripcion:
+      'Ingresar responsables - coresponsables con los datos: {Código: ' +
+      this.txtCodigo +
+      ', Responsables: '+
+      this.txtResponsables+
+      ', Coresponsables: '+
+      this.txtCoresponsables+
+      '}',
+    aud_rol: this.sessionRol,
+    aud_dependencia: this.sessionDepC,
+  };
+  const dat:any={
+    eplan_id:this.txtCodigo,
+    tipo:tipo,
+    responsables:this.txtResponsables,
+    coresponsables:this.txtCoresponsables,
+    auditoria:datosAudi
+  }
+  const datos = await new Promise<any>((resolve) =>
+    this.swResponsable.IngresarResponsable(dat).subscribe((translated) => {
+      resolve(translated);
+    })
+  );
+  if (datos.success) {
+    this.listarResponsable(this.txtCodigo);
+    this.listarCoresponsable(this.txtCodigo);
+    this.txtResponsables=[];
+    this.txtCoresponsables=[];
+    this.messageService.add({
+      severity: 'success',
+      summary: this.mensajesg.CabeceraExitoso,
+      detail: this.mensajesg.IngresadoCorrectamente,
+    });
+  } else {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: 'No se puede repetir los responsables',
+    });
+  }
+
+}
+
+async eliminarResCor(res:any){
+  if(this.txtEliminar){
+    var dependencia;
+    const datos={
+      dep_codigo:res.replan_dependencia
+    }
+    const dato=await new Promise<any>((resolve)=>this.swDependencia.ListaDependenciaCodigo(datos).subscribe((translated)=>{resolve(translated)}));
+    if(dato.success){
+      dependencia=dato.data[0].dep_nombre;
+    }
+    this.confirmationService.confirm({
+      message: 'Esta seguro que desea eliminar a <b>'+dependencia + '</b> de '+ '<b>'+this.txtSubtitulo+'</b>',
+      accept: () => {
+          this.eliminarResponsableCo(res);
+      }
+  });
+  }else{
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.NoAutorizado,
+    });
+  }
+}
+
+async eliminarResponsableCo(res:any){
+  const datosAudi = {
+    aud_usuario: this.sessionUser,
+    aud_proceso: 'Eliminar',
+    aud_descripcion:
+      'Eliminar responsables - coresponsables con los datos: {Dependencia: ' +
+       + res.replan_dependencia+
+      ', Estructura Plan: '+
+       res.replan_eplan+
+       ', Tipo: '+
+       res.replan_tipo+
+      '}',
+    aud_rol: this.sessionRol,
+    aud_dependencia: this.sessionDepC,
+  };
+  const dat:any={
+    replan_eplan:res.replan_eplan,
+    replan_dependencia:res.replan_dependencia,
+    replan_tipo:res.replan_tipo,
+    auditoria:datosAudi
+  }
+  const datos = await new Promise<any>((resolve) =>
+    this.swResponsable.EliminarResponsable(dat).subscribe((translated) => {
+      resolve(translated);
+    })
+  );
+  if (datos.success) {
+    this.listarResponsable(res.replan_eplan);
+    this.listarCoresponsable(res.replan_eplan);
+    this.messageService.add({
+      severity: 'success',
+      summary: this.mensajesg.CabeceraExitoso,
+      detail: this.mensajesg.EliminadoCorrectamente,
+    });
+  } else {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.mensajesg.CabeceraError,
+      detail: this.mensajesg.ErrorProceso,
+    });
+  }
 }
 }
