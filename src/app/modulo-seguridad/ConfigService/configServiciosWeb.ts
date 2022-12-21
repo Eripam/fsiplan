@@ -18,4 +18,5 @@ export class configServiciosWeb {
   urlServiciosSiplanRegOp: string= environment.urlServiciosSiplan+'regopc/';
   urlServiciosSiplanLog: string = environment.urlServiciosSiplan+'login/';
   urlServiciosSiplanAud: string = environment.urlServiciosSiplan+'auditoria/';
+
 }

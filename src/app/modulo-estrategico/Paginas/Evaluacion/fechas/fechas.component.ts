@@ -6,6 +6,7 @@ import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { MensajesGenerales } from 'src/app/Herramientas/Mensajes/MensajesGenerales.component';
 import { listaI } from 'src/app/modulo-estrategico/Interface/planEstrategico';
 import { SwCronogramaService } from 'src/app/modulo-estrategico/ServiciosWeb/Cronograma/swCronograma.service';
+import { SwEvaluacionService } from 'src/app/modulo-estrategico/ServiciosWeb/Evaluacion/swEvaluacion.service';
 import { SwPlanService } from 'src/app/modulo-estrategico/ServiciosWeb/Plan/swPlan.service';
 
 @Component({
@@ -53,7 +54,7 @@ export class FechasComponent implements OnInit {
   fechaI:any;
   fechaF:any;
   
-  constructor(private sesiones:SesionUsuario, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swConfiguracion: SwCronogramaService) { }
+  constructor(private sesiones:SesionUsuario, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swConfiguracion: SwCronogramaService, private swFechasEval: SwEvaluacionService) { }
 
   async ngOnInit(){
     const datosS=await this.sesiones.obtenerDatosLogin();
@@ -133,12 +134,56 @@ export class FechasComponent implements OnInit {
 
   }
 
-  guardarFecha(){
-
-  }
-
-  hideDialogP(){
-    this.modalFechas=false;
+  async guardarFecha(){
+    const datosAudi = {
+      aud_usuario: this.sessionUser,
+      aud_proceso: 'Ingresar',
+      aud_descripcion:
+        'Ingresar plan estratégico con los datos: {Código: ' +
+        this.txtCodigo +
+        ', Planes:' +
+        this.txtPlan +
+        ', Año:' +
+        this.txtAnio +
+        ', Periodo:' +
+        this.txtPeriodo +
+        ', Fecha Inicio:' +
+        this.fechaI +
+        ', Fecha Fin:' +
+        this.fechaF +
+        ', Tipos:' +
+        this.txtTipo +
+        '}',
+      aud_rol: this.sessionRol,
+      aud_dependencia: this.sessionDepC,
+    };
+    const dat:any= {
+      feval_tipo:this.txtTipo,
+      feval_periodo:this.txtPeriodo,
+      feval_anio:this.txtAnio,
+      feva_fechai:this.fechaI,
+      feval_fechaf:this.fechaF
+    };
+    const datos = await new Promise<any>((resolve) =>
+      this.swFechasEval.IngresarFechasEval(dat).subscribe((translated) => {
+        resolve(translated);
+      })
+    );
+    if (datos.success) {
+      this.messageService.add({
+        severity: 'success',
+        summary: this.mensajesg.CabeceraExitoso,
+        detail: this.mensajesg.IngresadoCorrectamente,
+      });
+      this.modalFechas=false;
+      this.listarFechas();
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.CabeceraError,
+        detail: this.mensajesg.ErrorProceso,
+      });
+    }
   }
 
   openNew(){
