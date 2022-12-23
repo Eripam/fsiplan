@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { configServiciosWeb } from '../../ConfigService/configServiciosWeb';
-import {listaI, rolpersona} from '../../Interface/seguridad';
+import {listaI} from '../../Interface/seguridad';
 
 @Injectable({
   providedIn: 'root'

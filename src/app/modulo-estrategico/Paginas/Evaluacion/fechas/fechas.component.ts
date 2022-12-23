@@ -135,6 +135,13 @@ export class FechasComponent implements OnInit {
   }
 
   async guardarFecha(){
+    if(this.txtTipo==0 || this.txtTipo == null || this.txtPeriodo==0 || this.txtPeriodo == null || this.txtAnio == 0 || this.txtAnio == null || this.fechaF=='' || this.fechaI== ''){
+      this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.CabeceraError,
+        detail: this.mensajesg.CamposVacios,
+      });
+    }else{
     const datosAudi = {
       aud_usuario: this.sessionUser,
       aud_proceso: 'Ingresar',
@@ -161,8 +168,9 @@ export class FechasComponent implements OnInit {
       feval_tipo:this.txtTipo,
       feval_periodo:this.txtPeriodo,
       feval_anio:this.txtAnio,
-      feva_fechai:this.fechaI,
-      feval_fechaf:this.fechaF
+      feval_fechai:moment(this.fechaI).format("YYYY/MM/DD h:mm"),
+      feval_fechaf:moment(this.fechaF).format("YYYY/MM/DD h:mm"),
+      auditoria:datosAudi
     };
     const datos = await new Promise<any>((resolve) =>
       this.swFechasEval.IngresarFechasEval(dat).subscribe((translated) => {
@@ -181,14 +189,20 @@ export class FechasComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: this.mensajesg.CabeceraError,
-        detail: this.mensajesg.ErrorProceso,
+        detail: datos.data,
       });
     }
+  }
   }
 
   openNew(){
     if(this.txtIngresar){
       this.tituloModal="Agregar Fecha";
+      this.txtTipo=0;
+      this.txtPeriodo=0;
+      this.txtAnio=0;
+      this.fechaI='';
+      this.fechaF='';
       this.modalFechas=true;
     }else{
       this.messageService.add({severity: 'error', summary: this.mensajesg.NoAutorizado, detail: this.mensajesg.NoAutorizado});
