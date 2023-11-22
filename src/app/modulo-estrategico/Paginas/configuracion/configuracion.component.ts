@@ -46,7 +46,7 @@ txtMaximo:number=0;
 //Variable para mostrar el loading en la tabla
 loading: boolean = true;
 
-constructor(private sesiones:SesionUsuario, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swPeriodo: SwCronogramaService, private swPlanN: SwPlanNacionalService) { }
+constructor(private sesiones:SesionUsuario, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private swPeriodo: SwCronogramaService, private swPlanN: SwPlanNacionalService) { }
 
 async ngOnInit(){
   const datosS=await this.sesiones.obtenerDatosLogin();

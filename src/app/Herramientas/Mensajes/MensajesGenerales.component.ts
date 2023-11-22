@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
 
 export class MensajesGenerales {
     IngresadoCorrectamente: string = 'Ingresado correctamente.';
-    ModificadoCorrectamente: string = 'modificado correctamente.';
-    EliminadoCorrectamente:string = 'eliminado correctamente';
+    ModificadoCorrectamente: string = 'Modificado correctamente.';
+    EliminadoCorrectamente:string = 'Eliminado correctamente';
     ExitoProceso: string = 'Proceso ejecutador correctamente';
     ErrorProceso: string = 'Error en al tratar de ejecutar la acción';
     CamposVacios: string = 'Verifique que los campos esten ingresados correctamente y no esten vacios.';

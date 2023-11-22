@@ -28,6 +28,13 @@ const routes: Routes = [
           import('../modulo-estrategico/modulo-estrategico.module').then(
             (m)=>m.ModuloEstrategicoModule
           )
+      },
+      {
+        path:'planes',
+        loadChildren:()=>
+          import('../modulo-planes/modulo-planes.module').then(
+            (m)=>m.ModuloPlanesModule
+          )
       }
     ],
   },

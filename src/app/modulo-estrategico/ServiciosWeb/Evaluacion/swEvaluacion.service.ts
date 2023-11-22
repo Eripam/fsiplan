@@ -12,10 +12,10 @@ export class SwEvaluacionService {
     this.UrlSiplanEval=server.urlSerSiplanEval+'fechas/';
   }
 
-  ListarFechas(tipo:any): Observable<any>{
+  ListarFechas(): Observable<any>{
     sessionStorage.setItem("archivo", "false");
-    let direccion = this.UrlSiplanEval+'ListarPlanesActivos';
-    return this.http.post<any>(direccion, tipo);
+    let direccion = this.UrlSiplanEval+'ListarFechas';
+    return this.http.get<any>(direccion);
   }
 
   IngresarFechasEval(datos:any): Observable<any>{

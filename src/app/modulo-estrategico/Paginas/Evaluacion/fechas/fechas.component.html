@@ -9,10 +9,22 @@
         </div>
       </div> 
       <div class="form-group row m-1">
+        <label for="name" class="col-sm-3 col-form-label">Nombre:</label>
+        <div class="col-sm-9">
+          <input type="text" pInputText class="form-control" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre">
+        </div>
+      </div> 
+      <div class="form-group row m-1" *ngIf="txtCodigo==0">
         <label for="name" class="col-sm-3 col-form-label">Planes:</label>
         <div class="col-sm-9">
           <p-dropdown [options]="listaTipos" appendTo="body" [(ngModel)]="txtPlan" placeholder="Seleccionar Plan" optionValue="value" [filter]="true" filterBy="label" optionLabel="label" [showClear]="true" ></p-dropdown>
+        </div>
       </div>
+      <div class="form-group row m-1" *ngIf="txtCodigo>0">
+        <label for="" class="col-sm-3 col-form-label">Plan Estratégico</label>
+        <div class="col-sm-9">
+          <p-dropdown [options]="listaPlanE" appendTo="body" [(ngModel)]="txtPlan" placeholder="Seleccionar Plan" optionValue="plan_id" [filter]="true" filterBy="plan_nombre" optionLabel="plan_nombre" [showClear]="true" ></p-dropdown>
+        </div>
       </div>
       <div class="form-group row m-1">
         <label for="name" class="col-sm-3 col-form-label">Año:</label>
@@ -44,6 +56,12 @@
           <p-dropdown [options]="tipos" appendTo="body" [(ngModel)]="txtTipo" placeholder="Seleccionar Tipo" optionValue="value" [filter]="true" filterBy="label" optionLabel="label" [showClear]="true" ></p-dropdown>
         </div>
       </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-3 col-form-label">Observación:</label>
+        <div class="col-sm-9">
+          <textarea class="form-control" required name="txtObservacion" [(ngModel)]="txtObservacion" placeholder="Observación"></textarea>
+        </div>
+      </div>
   </ng-template>
   <ng-template pTemplate="footer">
       <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="modalFechas=false"></button>
@@ -70,41 +88,63 @@
     <p-table #dt1 [value]="listaFechas" dataKey="id" [rowHover]="true" scrollHeight="500px"
         [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
         [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
-        [globalFilterFields]="['per_id','per_nombre', 'estadonombre', 'per_maximo']" responsiveLayout="scroll">
+        [globalFilterFields]="['fecha_id','fecha_nombre', 'procesonombre', 'fecha_observacion', 'fecha_fi', 'fecha_ff', 'fecha_periodo', 'tiponombre', 'fecha_fi', 'fecha_ff']" responsiveLayout="scroll">
         <ng-template pTemplate="header">
             <tr>
-                <th pSortableColumn="per_id" style="width: 5rem; text-align: center;">
+                <th pSortableColumn="fecha_id" style="width: 5rem; text-align: center;">
                   <div class="p-d-flex p-jc-between p-ai-center">
                     Código
-                    <p-sortIcon field="per_id"></p-sortIcon>
+                    <p-sortIcon field="fecha_id"></p-sortIcon>
                 </div>
                 </th>  
-                <th pSortableColumn="per_nombre">
+                <th pSortableColumn="fecha_nombre">
                   <div class="p-d-flex p-jc-between p-ai-center">
                     Nombre
-                    <p-sortIcon field="per_nombre"></p-sortIcon>
-                    <p-columnFilter type="text" field="per_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
+                    <p-sortIcon field="fecha_nombre"></p-sortIcon>
+                    <p-columnFilter type="text" field="fecha_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
                   </div>
                 </th>
-                <th pSortableColumn="per_maximo" class="text-center">
+                <th pSortableColumn="fecha_observacion" class="text-center">
                   <div class="p-d-flex p-jc-between p-ai-center">
-                    Máximo
-                    <p-sortIcon field="per_maximo"></p-sortIcon>
+                    Observacion
+                    <p-sortIcon field="fecha_observacion"></p-sortIcon>
                   </div>
                 </th>
-                <th class="text-center">
-                    <div class="p-d-flex p-jc-between p-ai-center">
-                      Estado
-                      <p-columnFilter field="per_estado" matchMode="equals" display="menu">
-                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <p-dropdown [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Any">
-                                <ng-template let-option pTemplate="item">
-                                    <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
-                                </ng-template>
-                            </p-dropdown>
-                        </ng-template>
-                    </p-columnFilter>
-                    </div>
+                <th pSortableColumn="procesonombre" class="text-center">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                    Proceso
+                    <p-sortIcon field="procesonombre"></p-sortIcon>
+                  </div>
+                </th>
+                <th pSortableColumn="tiponombre" class="text-center">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                    Tipo
+                    <p-sortIcon field="tiponombre"></p-sortIcon>
+                  </div>
+                </th>
+                <th pSortableColumn="fecha_anio" class="text-center">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                    Año
+                    <p-sortIcon field="fecha_anio"></p-sortIcon>
+                  </div>
+                </th>
+                <th pSortableColumn="fecha_periodo" class="text-center">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                    Periodo
+                    <p-sortIcon field="fecha_periodo"></p-sortIcon>
+                  </div>
+                </th>
+                <th pSortableColumn="fecha_fi" class="text-center">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                    Fecha Inicio
+                    <p-sortIcon field="fecha_fi"></p-sortIcon>
+                  </div>
+                </th>
+                <th pSortableColumn="fecha_ff" class="text-center">
+                  <div class="p-d-flex p-jc-between p-ai-center">
+                    Fecha Fin
+                    <p-sortIcon field="fecha_ff"></p-sortIcon>
+                  </div>
                 </th>
                 <th style="width: 8rem" class="text-center">
                     <div class="p-d-flex p-jc-between p-ai-center">
@@ -113,23 +153,38 @@
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-per>
+        <ng-template pTemplate="body" let-fecha>
             <tr>
               <td class="text-center">
-                {{per.per_id}}
+                {{fecha.fecha_id}}
               </td>
               <td>
-                {{per.per_nombre}}
+                {{fecha.fecha_nombre}}
               </td>
               <td class="text-center">
-                {{per.per_maximo}}
+                {{fecha.fecha_observacion}}
               </td>
               <td class="text-center">
-                <span [class]="'customer-badge status-' + per.per_estado">{{per.estadonombre}}</span>
+                {{fecha.procesonombre}}
               </td>
               <td class="text-center">
-                <button pButton pRipple icon="pi pi-pencil" title="Editar Período" class="p-button-rounded"></button>
-                <button pButton pRipple icon="pi pi-trash" title="Eliminar Período" class="p-button-rounded"></button>
+                {{fecha.tiponombre}}
+              </td>
+              <td class="text-center">
+                {{fecha.fecha_anio}}
+              </td>
+              <td class="text-center">
+                {{fecha.fecha_periodo}}
+              </td>
+              <td class="text-center">
+                {{fecha.fecha_fi|date : 'd/MM/YY, h:mm:ss a'}}
+              </td>
+              <td class="text-center">
+                {{fecha.fecha_ff|date : 'd/MM/YY, h:mm:ss a'}}
+              </td>
+              <td class="text-center">
+                <button pButton pRipple icon="pi pi-pencil" title="Editar Fecha" class="p-button-rounded" (click)="modificarFecha(fecha)"></button>
+                <button pButton pRipple icon="pi pi-trash" title="Eliminar Fecha" class="p-button-rounded"></button>
               </td>
             </tr>
         </ng-template>

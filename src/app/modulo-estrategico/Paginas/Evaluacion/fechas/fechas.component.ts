@@ -53,6 +53,7 @@ export class FechasComponent implements OnInit {
   tipos:any=[]=[];
   fechaI:any;
   fechaF:any;
+  txtObservacion:any;
   
   constructor(private sesiones:SesionUsuario, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swConfiguracion: SwCronogramaService, private swFechasEval: SwEvaluacionService) { }
 
@@ -130,12 +131,18 @@ export class FechasComponent implements OnInit {
     this.loading = false;
   }
 
-  listarFechas(){
-
+  async listarFechas(){
+    const datos:listaI=await new Promise<listaI>((resolve)=> this.swFechasEval.ListarFechas().subscribe((translated)=> {resolve(translated)}))
+    if(datos.success){
+      this.listaFechas=datos.data;
+    }else{
+      this.listaFechas=[];
+    }
+    this.loading=false;
   }
 
   async guardarFecha(){
-    if(this.txtTipo==0 || this.txtTipo == null || this.txtPeriodo==0 || this.txtPeriodo == null || this.txtAnio == 0 || this.txtAnio == null || this.fechaF=='' || this.fechaI== ''){
+    if(this.txtTipo==0 || this.txtTipo == null || this.txtPeriodo==0 || this.txtPeriodo == null || this.txtAnio == 0 || this.txtAnio == null || this.fechaF=='' || this.fechaI== '' || this.txtNombre=='' || this.txtObservacion== ''){
       this.messageService.add({
         severity: 'error',
         summary: this.mensajesg.CabeceraError,
@@ -155,12 +162,16 @@ export class FechasComponent implements OnInit {
         ', Periodo:' +
         this.txtPeriodo +
         ', Fecha Inicio:' +
-        this.fechaI +
+        moment(this.fechaI).format("YYYY/MM/DD h:mm")+
         ', Fecha Fin:' +
-        this.fechaF +
+        moment(this.fechaF).format("YYYY/MM/DD h:mm") +
         ', Tipos:' +
         this.txtTipo +
-        '}',
+        ', Nombre:' +
+        this.txtNombre +
+        ', Observación:' +
+        this.txtObservacion +
+        ', Proceso: 2}',
       aud_rol: this.sessionRol,
       aud_dependencia: this.sessionDepC,
     };
@@ -170,6 +181,9 @@ export class FechasComponent implements OnInit {
       feval_anio:this.txtAnio,
       feval_fechai:moment(this.fechaI).format("YYYY/MM/DD h:mm"),
       feval_fechaf:moment(this.fechaF).format("YYYY/MM/DD h:mm"),
+      feval_nombre: this.txtNombre,
+      feval_observacion:this.txtObservacion,
+      feval_proceso:2,
       auditoria:datosAudi
     };
     const datos = await new Promise<any>((resolve) =>
@@ -195,6 +209,24 @@ export class FechasComponent implements OnInit {
   }
   }
 
+  modificarFecha(fecha:any){
+    if(this.txtModificar){
+      this.tituloModal='Modificar Fecha';
+      this.txtCodigo=fecha.fecha_id;
+      this.txtNombre=fecha.fecha_nombre;
+      this.txtObservacion=fecha.fecha_observacion;
+      this.txtAnio=fecha.fecha_anio;
+      this.txtPeriodo=fecha.fecha_periodo;
+      this.txtTipo=fecha.fecha_tipo;
+      this.fechaI=new Date(fecha.fecha_fi);
+      this.fechaF=new Date(fecha.fecha_ff);
+      this.txtPlan=fecha.fecha_plan;
+      this.modalFechas=true;
+    }else{
+      this.messageService.add({severity: 'error', summary: this.mensajesg.NoAutorizado, detail: this.mensajesg.NoAutorizado});
+    }
+  }
+
   openNew(){
     if(this.txtIngresar){
       this.tituloModal="Agregar Fecha";
@@ -203,6 +235,8 @@ export class FechasComponent implements OnInit {
       this.txtAnio=0;
       this.fechaI='';
       this.fechaF='';
+      this.txtNombre='';
+      this.txtObservacion='';
       this.modalFechas=true;
     }else{
       this.messageService.add({severity: 'error', summary: this.mensajesg.NoAutorizado, detail: this.mensajesg.NoAutorizado});

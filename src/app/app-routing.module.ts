@@ -9,7 +9,7 @@ const routes: Routes = [
   loadChildren:()=>import ('./modulo-inicio/modulo-inicio.module').then((m)=>m.ModuloInicioModule)
  },
  {
-  path: '/templa',
+  path: 'templa/',
   loadChildren:()=>import ('./modulo-templates/modulo-templates.module').then((m)=>m.ModuloTemplatesModule)
  },
  {
