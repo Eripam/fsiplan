@@ -35,6 +35,7 @@ import { ErrorAccesoComponent } from './Herramientas/PaginasError/error-acceso/e
 import { AuthInterceptorService } from './Herramientas/interceptor.interceptor';
 import { ModuloEstrategicoModule } from './modulo-estrategico/modulo-estrategico.module';
 import { ModuloReportesModule } from './modulo-reportes/modulo-reportes.module';
+import { ModuloPlanesModule} from './modulo-planes/modulo-planes.module';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { ModuloReportesModule } from './modulo-reportes/modulo-reportes.module';
     ModuloSeguridadModule,
     ModuloProspectivaModule,
     ModuloEstrategicoModule,
-    ModuloReportesModule
+    ModuloReportesModule,
+    ModuloPlanesModule
   ],
   providers: [configServiciosWeb, MensajesGenerales, {provide: HTTP_INTERCEPTORS, useClass:SpinnerInterceptor, multi: true}, EjecutarScript, CasClient, HttpService, SesionUsuario, {provide:HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}, configCorreo, DatosCorreo],
   bootstrap: [AppComponent]

@@ -25,6 +25,12 @@
           </div>
         </div>
       </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label">Tipo Plan:</label>
+        <div class="col-sm-10">
+          <p-dropdown [options]="listaTPlanes" appendTo="body" [(ngModel)]="txtTipoPlan" placeholder="Seleccionar Tipo" optionValue="tplan_id" [filter]="true" filterBy="tplan_nombre" optionLabel="tplan_nombre" [showClear]="true" ></p-dropdown>
+        </div>
+      </div>
       <div class="form-group row m-1" *ngIf="txtCodigo>0">
         <label for="txtEstado" class="col-sm-2 col-form-label">Estado:</label>
         <div class="col-sm-10">
@@ -36,44 +42,9 @@
       </div>
   </ng-template>
   <ng-template pTemplate="footer">
-      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogP()"></button>
+      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="modalPlan=false"></button>
       <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarPlan()"></button>
   </ng-template>
-</p-dialog>
-<p-dialog [(visible)]="modalPlanAprobar" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '50vw'}">
-  <ng-template pTemplate="content">
-      <div class="form-group row m-1">
-        <label for="name" class="col-sm-2 col-form-label">Código:</label>
-        <div class="col-sm-10">
-          <input type="text" pInputText class="form-control" disabled="true" required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Nombre">
-        </div>
-      </div>
-      <div class="form-group row m-1">
-        <label for="name" class="col-sm-2 col-form-label">Plan Estratégico:</label>
-      <div class="col-sm-10 align-self-center">
-        {{txtPlanEst}}
-      </div>
-      </div>  
-      <div class="form-group row m-1">
-          <label for="name" class="col-sm-2 col-form-label">Nombre Archivo:</label>
-          <div class="col-sm-10">
-            <input type="text" pInputText class="form-control" [disabled]="eliminar" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre">
-          </div>
-      </div>
-      <div class="form-group row m-1">
-        <label for="name" class="col-sm-2 col-form-label">Archivo:</label>
-        <div class="col-sm-10">
-          <input type="file" pInputText class="form-control" [disabled]="eliminar" required name="txtArchivo" (change)="capturarFile($event)">
-        </div>
-    </div>
-  </ng-template>
-  <ng-template pTemplate="footer">
-      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogAp()"></button>
-      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="OnDriveAlmacenar()" *ngIf="txtBotonG"></button>
-  </ng-template>
-</p-dialog>
-<p-dialog [(visible)]="modalReporte" header="DOCUMENTO DE APROBACIÓN" [modal]="true" styleClass="p-fluid" position="top" [style]="{width:'60vw', height:'60vw'}">
-  <div id="ver-pdf"></div>
 </p-dialog>
 <div class="row">
   <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
@@ -87,7 +58,7 @@
 <p-tabView styleClass="tabview-custom">
       <div>
         <span class="buscar-crear">
-          <button pButton pRipple label="Crear Plan" icon="pi pi-plus" class="p-mr-2" (click)="openNew()"></button>
+          <button pButton pRipple label="Crear Plan" icon="pi pi-plus" class="p-mr-2" (click)="nuevoPlan()"></button>
             <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
         </span>
     </div>
@@ -177,20 +148,11 @@
               </td>
               <td style="text-align: justify;">{{plan.plan.plan_vision}}</td>
               <td style="text-align: justify;">{{plan.plan.plan_mision}}</td>
-              <ng-template ngFor let-tipo [ngForOf]="listaDep">
-                <td *ngIf="plan.plan.plan_dependencia==tipo.dep_codigo">  
-                  {{tipo.dep_nombre}}
-                </td>
-              </ng-template>
               <td class="text-center">
                 <span [class]="'customer-badge status-' + plan.plan.plan_estado">{{plan.plan.estadonombre}}</span>
               </td>
               <td class="text-center">
-                <button pButton pRipple icon="pi pi-pencil" title="Editar Plan Estratégico" class="p-button-rounded" (click)="modificarPlan(plan.plan)" *ngIf="plan.plan.plan_estado!=2"></button>
-                <button pButton pRipple icon="pi pi-trash" title="Elimiar Plan Estratégico" class="p-button-rounded" (click)="eliminarPlan(plan.plan)" *ngIf="plan.plan.plan_estado!=2"></button>
-                <button pButton pRipple icon="fas fa-cog" title="Estructura Plan Estratégico"  class="p-button-rounded" (click)="irpagina(plan.plan)"></button>
-                <button pButton pRipple icon="fas fa-clipboard-check" title="Aprobar Plan"  class="p-button-rounded" (click)="aprobarPlan(plan.plan)" *ngIf="plan.plan.plan_estado==1"></button>
-                <button pButton pRipple icon="fas fa-file-pdf" title="Ver resolución"  class="p-button-rounded" (click)="verResolucion(plan.archivo)" *ngIf="plan.plan.plan_estado==2"></button>
+                
             </td>
           </tr>
       </ng-template>

@@ -38,8 +38,6 @@ import {SelectButtonModule} from 'primeng/selectbutton';
 
 import { configServiciosWebPlan } from './ConfigService/configServiciosWeb';
 
-
-
 @NgModule({
   declarations: [
     PlanesComponent
