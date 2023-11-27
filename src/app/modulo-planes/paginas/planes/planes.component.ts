@@ -43,6 +43,8 @@ export class PlanesComponent implements OnInit {
   txtEliminar:boolean=false;
   txtProspectiva:number=0;
   txtCodigoV:number=0;
+  txtPlanEst:boolean=false;
+  txtPOA:boolean=false;
   //lista tipo dependencia
   eliminar:boolean=false;
   fechaI: string='';
@@ -97,7 +99,6 @@ export class PlanesComponent implements OnInit {
     }else{
       this.listaTPlanes=[];
     }
-    console.log(this.listaTPlanes);
     this.loading = false;
   }
 
@@ -121,11 +122,243 @@ export class PlanesComponent implements OnInit {
     this.txtCodigo=0;
     this.txtFechaF="";
     this.txtFechaI="";
+    this.eliminar=false;
     this.txtTipoPlan=0;
     this.modalPlan=true;
   }
 
-  guardarPlan(){
+  async guardarPlan(){
+    if(this.txtNombre=='' || this.txtFechaI==''|| this.txtFechaF=='' || this.txtTipoPlan==0){
+      this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.CabeceraError,
+        detail: this.mensajesg.CamposVacios,
+      });
+    }else{
+      if(this.txtCodigo===0 && !this.eliminar){
+          const datosAudi = {
+            aud_usuario: this.sessionUser,
+            aud_proceso: 'Ingresar',
+            aud_descripcion:
+              'Ingresar plan con los datos: {Código: ' +
+              this.txtCodigo +
+              ', Nombre:' +
+              this.txtNombre +
+              ', Fecha Inicio: ' +
+              this.txtFechaI +
+              ', Fecha Fin: '+
+              this.txtFechaF+
+              ', Tipo: ' +
+              this.txtTipoPlan +
+              ', Plan Estrategico: '+
+              this.txtPlanEst+
+              ', Plan Operativo Anual: '+
+              this.txtPOA+
+              '}',
+            aud_rol: this.sessionRol,
+            aud_dependencia: this.sessionDepC,
+          };
+          const dat:planes= {
+            plan_id:this.txtCodigo,
+            plan_nombre: this.txtNombre,
+            plan_fecha_inicio: this.txtFechaI,
+            plan_fecha_fin: this.txtFechaF,
+            auditoria: datosAudi,
+            plan_estado:this.txtEstado,
+            plan_tipoplan:this.txtTipoPlan,
+            plan_planest:this.txtPlanEst,
+            plan_poa:this.txtPOA
+          };
+          const datos = await new Promise<any>((resolve) =>
+            this.swPlanes.IngresarPlanes(dat).subscribe((translated) => {
+              resolve(translated);
+            })
+          );
+          if (datos.success) {
+            this.messageService.add({
+              severity: 'success',
+              summary: this.mensajesg.CabeceraExitoso,
+              detail: this.mensajesg.IngresadoCorrectamente,
+            });
+            this.modalPlan=false;
+            this.listarPlanes();
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: this.mensajesg.CabeceraError,
+              detail: this.mensajesg.ErrorProceso,
+            });
+          }
+      }else if(this.txtCodigo>0 && !this.eliminar){
+        const datosAudi = {
+          aud_usuario: this.sessionUser,
+          aud_proceso: 'Modificar',
+          aud_descripcion:
+            'Modificar plan con los datos: {Código: ' +
+            this.txtCodigo +
+            ', Nombre:' +
+            this.txtNombre +
+            ', Fecha Inicio: ' +
+            this.txtFechaI +
+            ', Fecha Fin: '+
+            this.txtFechaF+
+            ', Tipo: ' +
+            this.txtTipoPlan +
+            ', Plan Estrategico: '+
+            this.txtPlanEst+
+            ', Plan Operativo Anual: '+
+            this.txtPOA+
+            '}',
+          aud_rol: this.sessionRol,
+          aud_dependencia: this.sessionDepC,
+        };
+        const dat:planes= {
+          plan_id:this.txtCodigo,
+          plan_nombre: this.txtNombre,
+          plan_fecha_inicio: this.txtFechaI,
+          plan_fecha_fin: this.txtFechaF,
+          auditoria: datosAudi,
+          plan_estado:this.txtEstado,
+          plan_planest:this.txtPlanEst,
+          plan_tipoplan:this.txtTipoPlan,
+          plan_poa:this.txtPOA
+        };
+        console.log(dat);
+        const datos = await new Promise<any>((resolve) =>
+          this.swPlanes.ModificarPlanes(dat).subscribe((translated) => {
+            resolve(translated);
+          })
+        );
+        if (datos.success) {
+          this.messageService.add({
+            severity: 'success',
+            summary: this.mensajesg.CabeceraExitoso,
+            detail: this.mensajesg.ModificadoCorrectamente,
+          });
+          this.modalPlan=false;
+          this.listarPlanes();
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: this.mensajesg.CabeceraError,
+            detail: this.mensajesg.ErrorProceso,
+          });
+        }
+      }else{
+          const datosAudi = {
+            aud_usuario: this.sessionUser,
+            aud_proceso: 'Eliminar',
+            aud_descripcion:
+              'Eliminar plan con los datos: {Código: ' +
+              this.txtCodigo +
+              ', Nombre:' +
+              this.txtNombre +
+              ', Fecha Inicio: ' +
+              this.txtFechaI +
+              ', Fecha Fin: '+
+              this.txtFechaF+
+              ', Tipo: ' +
+              this.txtTipoPlan +
+              ', Plan Estrategico: '+
+              this.txtPlanEst+
+              ', Plan Operativo Anual: '+
+              this.txtPOA+
+              '}',
+            aud_rol: this.sessionRol,
+            aud_dependencia: this.sessionDepC,
+          };
+          const dat:planes= {
+            plan_id:this.txtCodigo,
+            plan_nombre: this.txtNombre,
+            plan_fecha_inicio: this.txtFechaI,
+            plan_fecha_fin: this.txtFechaF,
+            auditoria: datosAudi,
+            plan_estado:this.txtEstado,
+            plan_planest:this.txtPlanEst,
+            plan_tipoplan:this.txtTipoPlan,
+            plan_poa:this.txtPOA
+          };
+          const datos = await new Promise<any>((resolve) =>
+            this.swPlanes.EliminarPlanes(dat).subscribe((translated) => {
+              resolve(translated);
+            })
+          );
+          if (datos.success) {
+            this.messageService.add({
+              severity: 'success',
+              summary: this.mensajesg.CabeceraExitoso,
+              detail: this.mensajesg.EliminadoCorrectamente,
+            });
+            this.modalPlan=false;
+            this.listarPlanes();
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: this.mensajesg.CabeceraError,
+              detail: this.mensajesg.ErrorProceso,
+            });
+          }
+      }
+    }
+  }
 
+  modificarPlan(plan:planes){
+    if(this.txtModificar){
+      this.tituloModal="Modificar Plan";
+      this.txtCodigo=plan.plan_id;
+      this.txtNombre=plan.plan_nombre;
+      var fechai=new Date(plan.plan_fecha_inicio);
+      var mes=fechai.getMonth()+1;
+      this.txtFechaI=fechai.getDate() + '/' + mes + '/' + fechai.getFullYear();
+      var fechaf=new Date(plan.plan_fecha_fin);
+      var mesf=fechaf.getMonth()+1;
+      this.txtFechaF=fechaf.getDate() + '/' + mesf + '/' + fechaf.getFullYear();
+      this.txtEstado=plan.plan_estado;
+      this.modalPlan=true;
+      this.eliminar=false;
+      this.txtTipoPlan=plan.plan_tipoplan;
+      this.txtPlanEst=plan.plan_planest;
+      this.txtPOA=plan.plan_poa;
+      this.fechaI=plan.plan_fecha_inicio;
+      this.fechaF=plan.plan_fecha_fin;
+      this.listarTipoPlanes();
+    }else{
+      this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.CabeceraError,
+        detail: this.mensajesg.NoAutorizado,
+      });
+    }
+  }
+
+  eliminarPlan(plan:planes){
+    if(this.txtEliminar){
+      this.tituloModal="Eliminar Plan";
+      this.txtCodigo=plan.plan_id;
+      this.txtNombre=plan.plan_nombre;
+      var fechai=new Date(plan.plan_fecha_inicio);
+      var mes=fechai.getMonth()+1;
+      this.txtFechaI=fechai.getDate() + '/' + mes + '/' + fechai.getFullYear();
+      var fechaf=new Date(plan.plan_fecha_fin);
+      var mesf=fechaf.getMonth()+1;
+      this.txtFechaF=fechaf.getDate() + '/' + mesf + '/' + fechaf.getFullYear();
+      this.txtEstado=plan.plan_estado;
+      this.eliminar=true;
+      this.modalPlan=true;
+      this.txtTipoPlan=plan.plan_tipoplan;
+      this.txtPlanEst=plan.plan_planest;
+      this.txtPOA=plan.plan_poa;
+      this.listarTipoPlanes();
+    }else{
+      this.messageService.add({
+        severity: 'error',
+        summary: this.mensajesg.CabeceraError,
+        detail: this.mensajesg.NoAutorizado,
+      });
+    }
+  }
+
+  irpagina(plan:planes){
+    this.router.navigate(['planes/estructura/23/'+plan.plan_id+'/'+this.route.snapshot.paramMap.get('enc')]);
   }
 }

@@ -6,5 +6,7 @@ export class configServiciosWebPlan {
 
   //urlServiciosSiplan:string ='http://localhost:4300/';
   //urlServiciosSiplan:string ='https://pruebas.espoch.edu.ec:8181/';
-  urlSerSiplan:string = environment.urlServiciosSiplan+'planes/'
+  urlSerSiplan:string = environment.urlServiciosSiplan+'planes/';
+  urlSerSiplanEstructura:string = environment.urlServiciosSiplan+'estructuraPlanes/'
+  urlSerSiplanEstPlanes: string = environment.urlServiciosSiplan+'estructuraPlanesDatos/';
 }

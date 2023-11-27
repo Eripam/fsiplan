@@ -35,12 +35,17 @@ import {PanelModule} from 'primeng/panel';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {TreeTableModule} from 'primeng/treetable';
 import {SelectButtonModule} from 'primeng/selectbutton';
+import {DividerModule} from 'primeng/divider';
 
 import { configServiciosWebPlan } from './ConfigService/configServiciosWeb';
+import { EstructuraComponent } from './paginas/estructura/estructura.component';
+import { EstructuraPlanComponent } from './paginas/estructura-plan/estructura-plan.component';
 
 @NgModule({
   declarations: [
-    PlanesComponent
+    PlanesComponent,
+    EstructuraComponent,
+    EstructuraPlanComponent
   ],
   imports: [
     CommonModule,
@@ -77,6 +82,7 @@ import { configServiciosWebPlan } from './ConfigService/configServiciosWeb';
     ScrollPanelModule,
     TreeTableModule,
     SelectButtonModule,
+    DividerModule
   ],
   providers:[configServiciosWebPlan]
 })

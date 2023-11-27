@@ -6,40 +6,34 @@ import { configServiciosWebPlan } from '../../ConfigService/configServiciosWeb';
 @Injectable({
   providedIn: 'root'
 })
-export class SwPlanService {
+export class SwEstructuraService {
 
   urlPlanes:string;
   constructor(private http:HttpClient, private server:configServiciosWebPlan) { 
-    this.urlPlanes=server.urlSerSiplan;
+    this.urlPlanes=server.urlSerSiplanEstructura;
   }
 
-  ListarTipoPlan():Observable<any>{
+  ListarEstructuraPlan(dato:any):Observable<any>{
     sessionStorage.setItem("archivo", "false");
-    let direccion=this.urlPlanes+'ListarTiposPlanes';
-    return this.http.get<any>(direccion);
+    let direccion=this.urlPlanes+'ListarEstructuraPlan';
+    return this.http.post<any>(direccion, dato);
   }
 
-  ListarPlanes(tipo:any): Observable<any>{
+  IngresarEstructuraP(datos:any): Observable<any>{
     sessionStorage.setItem("archivo", "false");
-    let direccion=this.urlPlanes+'ListarPlanes';
-    return this.http.post<any>(direccion, tipo);
-  }
-
-  IngresarPlanes(datos:any): Observable<any>{
-    sessionStorage.setItem("archivo", "false");
-    let direccion=this.urlPlanes+'IngresarPlanes';
+    let direccion=this.urlPlanes+'IngresarEstructura';
     return this.http.post<any>(direccion, datos);
   }
 
-  ModificarPlanes(datos:any):Observable<any>{
+  ModificarEstructuraP(datos:any):Observable<any>{
     sessionStorage.setItem("archivo", "false");
-    let direccion=this.urlPlanes+'ModificarPlanes';
+    let direccion=this.urlPlanes+'ModificarEstructura';
     return this.http.post<any>(direccion, datos);
   }
 
-  EliminarPlanes(datos:any):Observable<any>{
+  EliminarEstructuraP(datos:any):Observable<any>{
     sessionStorage.setItem("archivo", "false");
-    let direccion=this.urlPlanes+'EliminarPlanes';
+    let direccion=this.urlPlanes+'EliminarEstructura';
     return this.http.post<any>(direccion, datos);
   }
 }

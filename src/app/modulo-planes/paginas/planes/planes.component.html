@@ -28,8 +28,23 @@
       <div class="form-group row m-1">
         <label for="name" class="col-sm-2 col-form-label">Tipo Plan:</label>
         <div class="col-sm-10">
-          <p-dropdown [options]="listaTPlanes" appendTo="body" [(ngModel)]="txtTipoPlan" placeholder="Seleccionar Tipo" optionValue="tplan_id" [filter]="true" filterBy="tplan_nombre" optionLabel="tplan_nombre" [showClear]="true" ></p-dropdown>
+          <p-dropdown [options]="listaTPlanes" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtTipoPlan" placeholder="Seleccionar Tipo" optionValue="tplan_id" [filter]="true" filterBy="tplan_nombre" optionLabel="tplan_nombre" [showClear]="true" ></p-dropdown>
         </div>
+      </div>
+      <p-divider align="left" type="dashed">
+        <b>Alineación</b>
+      </p-divider>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label">Plan Estratégico:</label>
+        <div class="row col-sm-6 align-self-center">
+          <div class="col-1 align-middle">NO</div><div class="col-2"><p-inputSwitch [(ngModel)]="txtPlanEst" [disabled]="eliminar"></p-inputSwitch></div><div class="col-1">SI</div>
+        </div>  
+      </div>
+      <div class="form-group row m-1">
+        <label for="name" class="col-sm-2 col-form-label">Plan Operativo Anual:</label>
+        <div class="row col-sm-6 align-self-center">
+          <div class="col-1 align-middle">NO</div><div class="col-2"><p-inputSwitch [(ngModel)]="txtPOA" [disabled]="eliminar"></p-inputSwitch></div><div class="col-1">SI</div>
+        </div>  
       </div>
       <div class="form-group row m-1" *ngIf="txtCodigo>0">
         <label for="txtEstado" class="col-sm-2 col-form-label">Estado:</label>
@@ -96,19 +111,14 @@
                   <p-columnFilter type="text" field="plan_fecha_fin" display="menu" class="p-ml-auto"></p-columnFilter>
                 </div>
                </th>
-               <th pSortableColumn="plan_vision">
-                <div class="p-d-flex p-jc-between p-ai-center text-center">
-                  Visión
-                </div>
-               </th>
-               <th pSortableColumn="plan_mision">
-                <div class="p-d-flex p-jc-between p-ai-center text-center">
-                  Misión
+               <th pSortableColumn="pro_ff">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                  Plan Estratégico
                 </div>
                </th>
                <th pSortableColumn="pro_ff">
                 <div class="p-d-flex p-jc-between p-ai-center">
-                  Dependencia
+                  Plan Operativo Anual
                 </div>
                </th>
                <th class="text-center">
@@ -135,24 +145,32 @@
       <ng-template pTemplate="body" let-plan>
           <tr>
               <td class="text-center">
-                  {{plan.plan.plan_id}}
+                  {{plan.plan_id}}
               </td>
               <td>
-                  {{plan.plan.plan_nombre}}
+                  {{plan.plan_nombre}}
               </td>
               <td>
-                {{plan.plan.plan_fecha_inicio|date}}
+                {{plan.plan_fecha_inicio|date}}
               </td>
               <td>
-                {{plan.plan.plan_fecha_fin|date}}
+                {{plan.plan_fecha_fin|date}}
               </td>
-              <td style="text-align: justify;">{{plan.plan.plan_vision}}</td>
-              <td style="text-align: justify;">{{plan.plan.plan_mision}}</td>
+              <td *ngIf="plan.plan_planest; else elsePlan" class="text-center">
+                <i class="fas fa-check-square"></i>
+              </td>
+              <ng-template #elsePlan><td class="text-center"><i class="fas fa-window-close"></i></td></ng-template>
+              <td *ngIf="plan.plan_poa; else elsePoa" class="text-center">
+                <i class="fas fa-check-square"></i>
+              </td>
+              <ng-template #elsePoa><td class="text-center"><i class="fas fa-window-close"></i></td></ng-template>
               <td class="text-center">
-                <span [class]="'customer-badge status-' + plan.plan.plan_estado">{{plan.plan.estadonombre}}</span>
+                <span [class]="'customer-badge status-' + plan.plan_estado">{{plan.estadonombre}}</span>
               </td>
               <td class="text-center">
-                
+                <button pButton pRipple icon="pi pi-pencil" title="Editar Plan Estratégico" class="p-button-rounded" (click)="modificarPlan(plan)"></button>
+                <button pButton pRipple icon="pi pi-trash" title="Elimiar Plan Estratégico" class="p-button-rounded" (click)="eliminarPlan(plan)"></button>
+                <button pButton pRipple icon="fas fa-cog" title="Estructura Plan"  class="p-button-rounded" (click)="irpagina(plan)"></button>
             </td>
           </tr>
       </ng-template>
