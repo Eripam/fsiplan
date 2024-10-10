@@ -3,9 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { SesionUsuario } from 'src/app/casClient/SesionUsuario';
 import { MensajesGenerales } from 'src/app/Herramientas/Mensajes/MensajesGenerales.component';
-import { eje, estructura, listaI, periodo } from '../../Interface/planEstrategico';
+import { estructura, listaI } from '../../Interface/planEstrategico';
 import { SwCronogramaService } from '../../ServiciosWeb/Cronograma/swCronograma.service';
-import { SwEjesService } from '../../ServiciosWeb/EjeEstrategico/swEjes.service';
 import { SwEstructuraService } from '../../ServiciosWeb/Estructura/swEstructura.service';
 import { SwPlanService } from '../../ServiciosWeb/Plan/swPlan.service';
 
@@ -42,11 +41,9 @@ txtCodigoV:number=0;
 listaPlanE:any=[];
 //lista tipo dependencia
 listaDep: any []=[];
-listaEje:any[]=[];
 txtPlanEstado:boolean=true;
 txtIdentificador:string="";
 eliminar:boolean=false;
-modalEje:boolean=false;
 txtEjes:boolean=false;
 txtComponentes:boolean=false;
 txtPoliticas:boolean=false;
@@ -59,7 +56,7 @@ txtPeriodo:string='';
 
 //Variable para mostrar el loading en la tabla
 loading: boolean = true;
-constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swEje: SwEjesService, private swCro: SwCronogramaService) { }
+constructor(private sesiones:SesionUsuario, private swEstructura: SwEstructuraService, private messageService: MessageService, private mensajesg:MensajesGenerales, private router: Router, private route: ActivatedRoute, private confirmationService: ConfirmationService, private swPlan: SwPlanService, private swCro: SwCronogramaService) { }
 
 async ngOnInit(){
   const datosS=await this.sesiones.obtenerDatosLogin();
@@ -81,7 +78,6 @@ async ngOnInit(){
   }
   await this.listarPlanEstrategico();
   this.listarEstructura();
-  this.listarEjes();
   this.listarPeriodo();
   this.listarPeriodoPlan();
   const datosRol=await this.sesiones.obtenerOpcionesUsuario(valores);
@@ -139,20 +135,6 @@ async listarEstructura(){
   this.loading = false;
 }
 
-async listarEjes(){
-  const dat={
-    codigo:this.txtPlan,
-    tipo:1
-  }
-  const datos:listaI=await new Promise<listaI>((resolve)=> this.swEje.ListaEje(dat).subscribe((translated)=> { resolve(translated)}));
-  if(datos.success){
-    this.listaEje=datos.data;
-  }else{
-    this.listaEje=[];
-  }
-  this.loading = false;
-}
-
 async listarPeriodo(){
   const dat={
     tipo:1
@@ -191,7 +173,6 @@ obtenerEst(event:any){
       }
     }
   this.listarEstructura();
-  this.listarEjes();
   this.listarPeriodoPlan();
 }
 
@@ -229,30 +210,6 @@ hideDialogP(){
   this.modalEstructura=false;
 }
 
-openNewEje(){
-  if(this.txtIngresar){
-    if(this.txtPlan=="0"){
-      this.messageService.add({
-        severity: 'error',
-        summary: this.mensajesg.CabeceraError,
-        detail: this.mensajesg.SeleccionarPlan,
-      });
-    }else{
-      this.tituloModal='Ingresar Eje Estratégico';
-      this.txtCodigo=0;
-      this.txtNombre="";
-      this.modalEje=true;
-      this.eliminar=false;
-    }
-  }else {
-    this.messageService.add({
-      severity: 'error',
-      summary: this.mensajesg.CabeceraError,
-      detail: this.mensajesg.NoAutorizado,
-    });
-  }
-}
-
 openNewPer(){
   if(this.txtIngresar){
     if(this.txtPlan=="0"){
@@ -275,10 +232,6 @@ openNewPer(){
       detail: this.mensajesg.NoAutorizado,
     });
   }
-}
-
-hideDialogPE(){
-  this.modalEje=false;
 }
 
 hideDialogPL(){
@@ -440,148 +393,6 @@ async guardarEstructura(){
         });
         this.modalEstructura=false;
         this.listarEstructura();
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: this.mensajesg.CabeceraError,
-          detail: this.mensajesg.ErrorProceso,
-        });
-      }
-    }
-  }
-}
-
-async guardarEje(){
-  if(this.txtNombre==''){
-    this.messageService.add({
-      severity: 'error',
-      summary: this.mensajesg.CabeceraError,
-      detail: this.mensajesg.CamposVacios,
-    });
-  }else{
-    if(this.txtCodigo===0 && !this.eliminar){
-      const datosAudi = {
-        aud_usuario: this.sessionUser,
-        aud_proceso: 'Ingresar',
-        aud_descripcion:
-          'Ingresar eje estratégico con los datos: {Código: ' +
-          this.txtCodigo +
-          ', Nombre:' +
-          this.txtNombre +
-          ', Plan: ' +
-          this.txtPlan +
-          '}',
-        aud_rol: this.sessionRol,
-        aud_dependencia: this.sessionDepC,
-      };
-      const dat:eje= {
-       eje_id: this.txtCodigo,
-       eje_nombre:this.txtNombre,
-       eje_estado:this.txtEstado,
-       eje_plan:this.txtPlan,
-       auditoria: datosAudi
-      };
-      const datos = await new Promise<any>((resolve) =>
-        this.swEje.IngresarEje(dat).subscribe((translated) => {
-          resolve(translated);
-        })
-      );
-      if (datos.success) {
-        this.messageService.add({
-          severity: 'success',
-          summary: this.mensajesg.CabeceraExitoso,
-          detail: this.mensajesg.IngresadoCorrectamente,
-        });
-        this.modalEje=false;
-        this.listarEjes();
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: this.mensajesg.CabeceraError,
-          detail: this.mensajesg.ErrorProceso,
-        });
-      }
-    }else if(this.txtCodigo>0 && !this.eliminar){
-      const datosAudi = {
-        aud_usuario: this.sessionUser,
-        aud_proceso: 'Modificar',
-        aud_descripcion:
-          'Modificar eje estratégico con los datos: {Código: ' +
-          this.txtCodigo +
-          ', Nombre:' +
-          this.txtNombre +
-          ', Plan: ' +
-          this.txtPlan +
-          ', Estado: '+
-          this.txtEstado+
-          '}',
-        aud_rol: this.sessionRol,
-        aud_dependencia: this.sessionDepC,
-      };
-      const dat:eje= {
-       eje_id: this.txtCodigo,
-       eje_nombre:this.txtNombre,
-       eje_estado:this.txtEstado,
-       eje_plan:this.txtPlan,
-       auditoria: datosAudi
-      };
-      const datos = await new Promise<any>((resolve) =>
-        this.swEje.ModificarEje(dat).subscribe((translated) => {
-          resolve(translated);
-        })
-      );
-      if (datos.success) {
-        this.messageService.add({
-          severity: 'success',
-          summary: this.mensajesg.CabeceraExitoso,
-          detail: this.mensajesg.ModificadoCorrectamente,
-        });
-        this.modalEje=false;
-        this.listarEjes();
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: this.mensajesg.CabeceraError,
-          detail: this.mensajesg.ErrorProceso,
-        });
-      }
-    }else{
-      const datosAudi = {
-        aud_usuario: this.sessionUser,
-        aud_proceso: 'Eliminar',
-        aud_descripcion:
-          'Eliminar eje estratégicocon los datos: {Código: ' +
-          this.txtCodigo +
-          ', Nombre:' +
-          this.txtNombre +
-          ', Plan: ' +
-          this.txtPlan +
-          ', Estado: '+
-          this.txtEstado+
-          '}',
-        aud_rol: this.sessionRol,
-        aud_dependencia: this.sessionDepC,
-      };
-      const dat:eje= {
-       eje_id: this.txtCodigo,
-       eje_nombre:this.txtNombre,
-       eje_estado:this.txtEstado,
-       eje_plan:this.txtPlan,
-       auditoria: datosAudi
-      };
-      const datos = await new Promise<any>((resolve) =>
-        this.swEje.EliminarEje(dat).subscribe((translated) => {
-          resolve(translated);
-        })
-      );
-      if (datos.success) {
-        this.messageService.add({
-          severity: 'success',
-          summary: this.mensajesg.CabeceraExitoso,
-          detail: this.mensajesg.EliminadoCorrectamente,
-        });
-        this.modalEje=false;
-        this.listarEjes();
       } else {
         this.messageService.add({
           severity: 'error',
@@ -756,40 +567,6 @@ eliminarEst(est:estructura){
     this.txtIdentificador=est.est_codigo;
     this.txtEstado=est.est_estado;
     this.modalEstructura=true;
-    this.eliminar=true;
-  }else{
-    this.messageService.add({
-      severity: 'error',
-      summary: this.mensajesg.CabeceraError,
-      detail: this.mensajesg.NoAutorizado,
-    });
-  }
-}
-
-modificarEje(eje:eje){
-  if(this.txtModificar){
-    this.tituloModal="Modificar Eje Estratégico";
-    this.txtCodigo=eje.eje_id;
-    this.txtNombre=eje.eje_nombre;
-    this.txtEstado=eje.eje_estado;
-    this.modalEje=true;
-    this.eliminar=false;
-  }else{
-    this.messageService.add({
-      severity: 'error',
-      summary: this.mensajesg.CabeceraError,
-      detail: this.mensajesg.NoAutorizado,
-    });
-  }
-}
-
-eliminarEje(eje:eje){
-  if(this.txtEliminar){
-    this.tituloModal="Eliminar Eje Estratégico";
-    this.txtCodigo=eje.eje_id;
-    this.txtNombre=eje.eje_nombre;
-    this.txtEstado=eje.eje_estado;
-    this.modalEje=true;
     this.eliminar=true;
   }else{
     this.messageService.add({

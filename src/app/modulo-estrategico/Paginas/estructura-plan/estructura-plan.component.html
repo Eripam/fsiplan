@@ -1,105 +1,124 @@
 <p-toast></p-toast>
 <!--Modal para ingresar prospectiva-->
-<p-dialog [(visible)]="modalEstructura" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top" [style]="{width: '60vw'}">
+<p-dialog [(visible)]="modalEstructura" header="{{tituloModal}}" [modal]="true" styleClass="p-fluid" position="top"
+  [style]="{width: '60vw'}">
   <ng-template pTemplate="content">
-      <div class="form-group row m-1" *ngIf="txtCodigo>0">
-        <label for="name" class="col-sm-2 col-form-label">Id:</label>
-        <div class="col-sm-10">
-          <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo" placeholder="Código">
-        </div>
-      </div> 
-      <div class="form-group row m-1">
-          <label for="name" class="col-sm-2 col-form-label">Nombre:</label>
-          <div class="col-sm-10">
-            <textarea pInputText class="form-control" [disabled]="eliminar" required name="txtNombre" [(ngModel)]="txtNombre" placeholder="Nombre"></textarea>
-          </div>
+    <div class="form-group row m-1" *ngIf="txtCodigo>0">
+      <label for="name" class="col-sm-2 col-form-label">Id:</label>
+      <div class="col-sm-10">
+        <input type="text" pInputText class="form-control" readonly required name="txtCodigo" [(ngModel)]="txtCodigo"
+          placeholder="Código">
       </div>
-      <div class="form-group row m-1">
-        <label for="name" class="col-sm-2 col-form-label">Pertenece a:</label>
-        <div class="col-sm-10">
-            <p-dropdown [options]="listaEstructuraPlanS" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtAlineacion" placeholder="Seleccionar Pertenece a" optionValue="value" [filter]="true" filterBy="label" optionLabel="label" [showClear]="true" (onChange)="listarEstructuraSelect($event)"></p-dropdown>
-        </div>
+    </div>
+    <div class="form-group row m-1">
+      <label for="name" class="col-sm-2 col-form-label">Nombre:</label>
+      <div class="col-sm-10">
+        <textarea pInputText class="form-control" [disabled]="eliminar" required name="txtNombre"
+          [(ngModel)]="txtNombre" placeholder="Nombre"></textarea>
       </div>
-      <div class="form-group row m-1 mt-3 mb-3">
-        <div class="row align-self-center justify-content-center" *ngFor="let estructura of listaEstructuraSelect">
-          <div class="col-3 text-center negrita">{{estructura.estcodigo}}</div><div class="col-7 borde">{{estructura.eplannombre}}</div>
-        </div>
+    </div>
+    <div class="form-group row m-1">
+      <label for="name" class="col-sm-2 col-form-label">Pertenece a:</label>
+      <div class="col-sm-10">
+        <p-dropdown [options]="listaEstructuraPlanS" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtAlineacion"
+          placeholder="Seleccionar Pertenece a" optionValue="value" [filter]="true" filterBy="label" optionLabel="label"
+          [showClear]="true" (onChange)="listarEstructuraSelect($event)"></p-dropdown>
       </div>
-      <div class="form-group row m-1" *ngIf="banPlan">
-        <label for="name" class="col-sm-2 col-form-label">Depende de:</label>
-        <div class="col-sm-10">
-            <p-dropdown [options]="listaEstructuraPlanD" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtDepende" placeholder="Seleccionar Depende de:" optionValue="value" [filter]="true" filterBy="label" optionLabel="label" [showClear]="true" ></p-dropdown>
-        </div>
+    </div>
+    <div class="form-group row m-1 mt-3 mb-3">
+      <div class="row align-self-center justify-content-center" *ngFor="let estructura of listaEstructuraSelect">
+        <div class="col-3 text-center negrita">{{estructura.estcodigo}}</div>
+        <div class="col-7 borde">{{estructura.eplannombre}}</div>
       </div>
-      <div class="form-group row m-1" *ngIf="Eje">
-        <label for="name" class="col-sm-2 col-form-label">Eje Estratégico:</label>
-        <div class="col-sm-10">
-            <p-dropdown [options]="listaEje" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtEje" placeholder="Seleccionar Eje:" optionValue="eje_id" [filter]="true" filterBy="eje_nombre" optionLabel="eje_nombre" [showClear]="true" ></p-dropdown>
-        </div>
+    </div>
+    <div class="form-group row m-1" *ngIf="banPlan">
+      <label for="name" class="col-sm-2 col-form-label">Depende de:</label>
+      <div class="col-sm-10">
+        <p-dropdown [options]="listaEstructuraPlanD" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtDepende"
+          placeholder="Seleccionar Depende de:" optionValue="value" [filter]="true" filterBy="label" optionLabel="label"
+          [showClear]="true"></p-dropdown>
       </div>
-      <div class="form-group row m-1" *ngIf="txtCodigo>0">
-        <label for="txtEstado" class="col-sm-2 col-form-label">Estado:</label>
-        <div class="col-sm-10">
-          <select name="sltEstado" id="sltEstado" class="form-control" [disabled]="eliminar" [(ngModel)]="txtEstado">
-            <option [ngValue]='1'>Activo</option>
-            <option [ngValue]='0'>Inactivo</option>
-          </select>
-        </div>
+    </div>
+    <div class="form-group row m-1" *ngIf="Eje">
+      <label for="name" class="col-sm-2 col-form-label">Eje Estratégico:</label>
+      <div class="col-sm-10">
+        <p-dropdown [options]="listaEje" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtEje"
+          placeholder="Seleccionar Eje:" optionValue="eje_id" [filter]="true" filterBy="eje_nombre"
+          optionLabel="eje_nombre" [showClear]="true"></p-dropdown>
       </div>
+    </div>
+    <div class="form-group row m-1" *ngIf="txtCodigo>0">
+      <label for="txtEstado" class="col-sm-2 col-form-label">Estado:</label>
+      <div class="col-sm-10">
+        <select name="sltEstado" id="sltEstado" class="form-control" [disabled]="eliminar" [(ngModel)]="txtEstado">
+          <option [ngValue]='1'>Activo</option>
+          <option [ngValue]='0'>Inactivo</option>
+        </select>
+      </div>
+    </div>
   </ng-template>
   <ng-template pTemplate="footer">
-      <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogP()"></button>
-      <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarEstructura()"></button>
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogP()"></button>
+    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+      (click)="guardarEstructura()"></button>
   </ng-template>
 </p-dialog>
 <p-dialog header="{{tituloModal}}" [(visible)]="displayModal" [modal]="true" [style]="{width: '60vw'}"
-[draggable]="false" [resizable]="false">
+  [draggable]="false" [resizable]="false">
   <p>{{txtSubtitulo}}</p>
   <div class="p-fluid grid row mb-2">
     <div class="form-group row m-1">
       <label for="name" class="col-sm-2 col-form-label">Indicador:</label>
       <div class="col-sm-10">
-          <input type="hidden" [(ngModel)]="txtCodigo">
-          <p-dropdown [options]="listaIndicador" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtIndicador" placeholder="Seleccionar Indicador" optionValue="indpn_id" [filter]="true" filterBy="indpn_nombre" optionLabel="indpn_nombre" [showClear]="true"></p-dropdown>
+        <input type="hidden" [(ngModel)]="txtCodigo">
+        <p-dropdown [options]="listaIndicador" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtIndicador"
+          placeholder="Seleccionar Indicador" optionValue="indpn_id" [filter]="true" filterBy="indpn_nombre"
+          optionLabel="indpn_nombre" [showClear]="true"></p-dropdown>
       </div>
     </div>
   </div>
   <ng-template pTemplate="footer">
     <p-button icon="pi pi-times" (click)="displayModal=false" label="Cancelar" styleClass="p-button-text"></p-button>
-    <p-button icon="pi pi-check" (click)="guardarIndicador()" *ngIf="!eliminar" label="Guardar" styleClass="p-button-text"></p-button>
+    <p-button icon="pi pi-check" (click)="guardarIndicador()" *ngIf="!eliminar" label="Guardar"
+      styleClass="p-button-text"></p-button>
   </ng-template>
 </p-dialog>
 <p-dialog header="{{tituloModal}}" [(visible)]="modalResponsable" [modal]="true" [style]="{width: '60vw'}"
-[draggable]="false" [resizable]="false">
+  [draggable]="false" [resizable]="false">
   <p>{{txtSubtitulo}}</p>
   <div class="p-fluid grid row mb-2">
     <label for="name" class="col-form-label titulo">Responsables</label>
     <div class="form-group row m-1">
       <div class="col-12 row" *ngIf="txtPlanEstado">
-          <input type="hidden" [(ngModel)]="txtCodigo">
-          <div class="col-10">
-            <p-multiSelect [options]="listaDepResponsable" [(ngModel)]="txtResponsables" appendTo="body" [disabled]="eliminar" defaultLabel="Seleccionar Responsables" optionValue="dep_codigo" optionLabel="dep_nombre"></p-multiSelect>
-          </div>
-          <div class="col-2">
-            <button pButton pRipple icon="fas fa-save" title="Guardar" class="p-button-rounded p-button-text" (click)="guardarResponsables(1)"></button>
-          </div>
+        <input type="hidden" [(ngModel)]="txtCodigo">
+        <div class="col-10">
+          <p-multiSelect [options]="listaDepResponsable" [(ngModel)]="txtResponsables" appendTo="body"
+            [disabled]="eliminar" defaultLabel="Seleccionar Responsables" optionValue="dep_codigo"
+            optionLabel="dep_nombre"></p-multiSelect>
+        </div>
+        <div class="col-2">
+          <button pButton pRipple icon="fas fa-save" title="Guardar" class="p-button-rounded p-button-text"
+            (click)="guardarResponsables(1)"></button>
+        </div>
       </div>
       <div class="row mt-3 p-0 justify-content-center">
         <div class="col-10 m-0 p-0">
-            <div class="row m-0 p-0">
-              <div class="col-8 borde m-0 p-0 negrita text-center">Unidad/Dependencia</div>
-              <div class="col-3 borde m-0 p-0 negrita text-center">Acción</div>
-            </div>
-            <div class="row m-0 p-0" *ngFor="let responsable of listaResponsable">
-              <ng-template ngFor let-tipo [ngForOf]="listaDep">
-                <div class="col-8 borde m-0 p-0 align-content-center" *ngIf="responsable.replan_dependencia==tipo.dep_codigo">  
-                  {{tipo.dep_nombre}}
-                </div>
-              </ng-template>
-              <div class="col-3 borde m-0 p-0 text-center">
-                <button pButton pRipple icon="fas fa-trash" title="Eliminar" *ngIf="txtPlanEstado" class="p-button-rounded p-button-text" (click)="eliminarResCor(responsable)"></button>
+          <div class="row m-0 p-0">
+            <div class="col-8 borde m-0 p-0 negrita text-center">Unidad/Dependencia</div>
+            <div class="col-3 borde m-0 p-0 negrita text-center">Acción</div>
+          </div>
+          <div class="row m-0 p-0" *ngFor="let responsable of listaResponsable">
+            <ng-template ngFor let-tipo [ngForOf]="listaDep">
+              <div class="col-8 borde m-0 p-0 align-content-center"
+                *ngIf="responsable.replan_dependencia==tipo.dep_codigo">
+                {{tipo.dep_nombre}}
               </div>
+            </ng-template>
+            <div class="col-3 borde m-0 p-0 text-center">
+              <button pButton pRipple icon="fas fa-trash" title="Eliminar" *ngIf="txtPlanEstado"
+                class="p-button-rounded p-button-text" (click)="eliminarResCor(responsable)"></button>
             </div>
+          </div>
         </div>
       </div>
     </div>
@@ -108,41 +127,48 @@
       <div class="col-12 row" *ngIf="txtPlanEstado">
         <input type="hidden" [(ngModel)]="txtCodigo">
         <div class="col-10">
-          <p-multiSelect [options]="listaDepCoresponsables" [(ngModel)]="txtCoresponsables" appendTo="body" [disabled]="eliminar" defaultLabel="Seleccionar Coresponsables" optionValue="dep_codigo" optionLabel="dep_nombre"></p-multiSelect>
+          <p-multiSelect [options]="listaDepCoresponsables" [(ngModel)]="txtCoresponsables" appendTo="body"
+            [disabled]="eliminar" defaultLabel="Seleccionar Coresponsables" optionValue="dep_codigo"
+            optionLabel="dep_nombre"></p-multiSelect>
         </div>
         <div class="col-2">
-          <button pButton pRipple icon="fas fa-save" title="Guardar" class="p-button-rounded p-button-text" (click)="guardarResponsables(2)"></button>
+          <button pButton pRipple icon="fas fa-save" title="Guardar" class="p-button-rounded p-button-text"
+            (click)="guardarResponsables(2)"></button>
         </div>
-    </div>
+      </div>
       <div class="row mt-3 p-0 justify-content-center">
         <div class="col-10 m-0 p-0">
-            <div class="row m-0 p-0">
-              <div class="col-8 borde m-0 p-0 negrita text-center">Unidad/Dependencia</div>
-              <div class="col-3 borde m-0 p-0 negrita text-center">Acción</div>
-            </div>
-            <div class="row m-0 p-0" *ngFor="let coresponsable of listaCoresponsable">
-              <ng-template ngFor let-tipo [ngForOf]="listaDep">
-                <div class="col-8 borde m-0 p-0" *ngIf="coresponsable.replan_dependencia==tipo.dep_codigo">  
-                  {{tipo.dep_nombre}}
-                </div>
-              </ng-template>
-              <div class="col-3 borde m-0 p-0 text-center">
-                <button pButton pRipple icon="fas fa-trash" title="Eliminar" *ngIf="txtPlanEstado" (click)="eliminarResCor(coresponsable)" class="p-button-rounded p-button-text"></button>
+          <div class="row m-0 p-0">
+            <div class="col-8 borde m-0 p-0 negrita text-center">Unidad/Dependencia</div>
+            <div class="col-3 borde m-0 p-0 negrita text-center">Acción</div>
+          </div>
+          <div class="row m-0 p-0" *ngFor="let coresponsable of listaCoresponsable">
+            <ng-template ngFor let-tipo [ngForOf]="listaDep">
+              <div class="col-8 borde m-0 p-0" *ngIf="coresponsable.replan_dependencia==tipo.dep_codigo">
+                {{tipo.dep_nombre}}
               </div>
+            </ng-template>
+            <div class="col-3 borde m-0 p-0 text-center">
+              <button pButton pRipple icon="fas fa-trash" title="Eliminar" *ngIf="txtPlanEstado"
+                (click)="eliminarResCor(coresponsable)" class="p-button-rounded p-button-text"></button>
             </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <ng-template pTemplate="footer">
-    <p-button icon="pi pi-times" (click)="modalResponsable=false" label="Cancelar" styleClass="p-button-text"></p-button>
+    <p-button icon="pi pi-times" (click)="modalResponsable=false" label="Cancelar"
+      styleClass="p-button-text"></p-button>
   </ng-template>
 </p-dialog>
 <p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 <div class="row">
   <div class="col-12 col-lg-7"><p-breadcrumb [model]="items" [home]="home"></p-breadcrumb></div>
-  <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;"><div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
-  <div class="col-11 col-md-9">{{sesionDep}}</div></div>
+  <div class="col-12 col-lg-5 row text-end align-self-center p-0 m-0" style="color: gray;">
+    <div class="col-1 col-md-3" style="font-weight: bold;">Unidad/Dependencia:</div>
+    <div class="col-11 col-md-9">{{sesionDep}}</div>
+  </div>
 </div>
 <div class="navegacion">
   <h2 class="navegacion__titulo">Generación de Plan Estratégico</h2>
@@ -150,29 +176,41 @@
 </div>
 <div class="row">
   <div class="row col-8 m-2">
-      <div class="col-3 tituloPros align-self-center">Plan Estratégico:</div>
-      <div class="col-9"><p-dropdown [options]="listaPlanE" appendTo="body" [(ngModel)]="txtPlan" placeholder="Seleccionar Plan Estratégico" optionValue="plan_id" [filter]="true" filterBy="plan_nombre" optionLabel="plan_nombre" [showClear]="true" (onChange)="obtenerEst($event)"></p-dropdown></div>
+    <div class="col-3 tituloPros align-self-center">Plan Estratégico:</div>
+    <div class="col-9"><p-dropdown [options]="listaPlanE" appendTo="body" [(ngModel)]="txtPlan"
+        placeholder="Seleccionar Plan Estratégico" optionValue="plan_id" [filter]="true" filterBy="plan_nombre"
+        optionLabel="plan_nombre" [showClear]="true" (onChange)="obtenerEst($event)"></p-dropdown></div>
   </div>
   <div class="row col-4 text-end" *ngIf="txtPlan!='0' && txtPlan!=''">
     <div>
-      <button pButton pRipple type="button" icon="pi pi-sitemap" class="p-button-rounded" title="Ver mapa" (click)="irPagina()"></button>
-      <button pButton pRipple type="button" icon="far fa-calendar-alt" title="Ver cronograma" class="p-button-rounded" (click)="irPaginaCronograma()"></button></div>
+      <button pButton pRipple type="button" icon="pi pi-sitemap" class="p-button-rounded" title="Ver mapa"
+        (click)="irPagina()"></button>
+      <button pButton pRipple type="button" icon="far fa-calendar-alt" title="Ver cronograma" class="p-button-rounded"
+        (click)="irPaginaCronograma()"></button>
+    </div>
   </div>
 </div>
 <p-tabView (onChange)="listar($event)">
-  <p-tabPanel [header]="item.est_nombre" *ngFor="let item of listaEstructura; let i = index" [selected]="i == 0" [disabled]="!item.existe">
+  <p-tabPanel [header]="item.est_nombre" *ngFor="let item of listaEstructura; let i = index" [selected]="i == 0"
+    [disabled]="!item.existe">
     <p-tabView>
       <div>
         <span class="buscar-crear">
-          <button pButton pRipple label="Crear {{item.est_nombre}}" icon="pi pi-plus" class="p-mr-2" (click)="openNew(item)" *ngIf="txtPlanEstado"></button>
-          <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')" placeholder="Buscar" />
+          <button pButton pRipple label="Crear {{item.est_nombre}}" icon="pi pi-plus" class="p-mr-2"
+            (click)="openNew(item)" *ngIf="txtPlanEstado"></button>
+          <input pInputText type="text" (input)="dt1.filterGlobal($any($event.target).value, 'contains')"
+            placeholder="Buscar" />
         </span>
       </div>
-      <div class="widget-header mt-3"><h3>Listado de {{item.est_nombre}}</h3></div>
-      <p-table #dt1 [value]="listaEstructuraPlan" dataKey="id" [rowHover]="true" scrollHeight="500px"
-        [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-gridlines p-datatable-sm"
-        [paginator]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
-        [globalFilterFields]="['eplan_id','eplan_nombre', 'estadonombre', 'codigo', 'codigopadre']" responsiveLayout="scroll">
+      <div class="widget-header mt-3">
+        <h3>Listado de {{item.est_nombre}}</h3>
+      </div>
+      <p-table #dt1 [value]="listaEstructuraPlan" dataKey="id" [rowHover]="true" scrollHeight="500px" [rows]="10"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading"
+        styleClass="p-datatable-gridlines p-datatable-sm" [paginator]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas" [filterDelay]="0"
+        [globalFilterFields]="['eplan_id','eplan_nombre', 'estadonombre', 'codigo', 'codigopadre']"
+        responsiveLayout="scroll">
         <ng-template pTemplate="header">
           <tr>
             <th pSortableColumn="codigo" class="text-center" style="width: 8rem">
@@ -219,27 +257,38 @@
               </div>
             </td>
             <td *ngIf="item.est_eje" class="text-center">
-              <div  class="row m-0 p-0">
+              <div class="row m-0 p-0">
                 <span class="col-9 align-self-center">{{crid.eje_nombre}}</span>
               </div>
             </td>
             <td class="text-center">
-              <div  class="row m-0 p-0">
+              <div class="row m-0 p-0">
                 <span class="col-9 align-self-center">{{crid.codigopadre}}</span>
               </div>
             </td>
             <td class="text-center" *ngIf="txtPlanEstado; else iconos">
-              <button pButton pRipple icon="fas fa-edit" title="Editar" class="p-button-rounded p-button-text" (click)="editarEstructura(crid, item)"></button>
-              <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text" (click)="eliminarEstructura(crid)"></button>
-              <button pButton pRipple icon="fas fa-cubes" title="Componentes" class="p-button-rounded p-button-text" *ngIf="item.est_componente"></button>
-              <button pButton pRipple icon="fas fa-window-restore" title="Políticas" class="p-button-rounded p-button-text" *ngIf="item.est_politicas"></button>
-              <button pButton pRipple icon="fas fa-tachometer-alt" title="Indicadores" class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)" *ngIf="crid.count==0"></button>
-              <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables" class="p-button-rounded p-button-text" (click)="ingresarResponsables(crid)" *ngIf="crid.count==0"></button>
+              <button pButton pRipple icon="fas fa-edit" title="Editar" class="p-button-rounded p-button-text"
+                (click)="editarEstructura(crid, item)"></button>
+              <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text"
+                (click)="eliminarEstructura(crid)"></button>
+              <button pButton pRipple icon="fas fa-cubes" title="Componentes" class="p-button-rounded p-button-text"
+                *ngIf="item.est_componente"></button>
+              <button pButton pRipple icon="fas fa-window-restore" title="Políticas"
+                class="p-button-rounded p-button-text" *ngIf="item.est_politicas"></button>
+              <button pButton pRipple icon="fas fa-tachometer-alt" title="Indicadores"
+                class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)" *ngIf="crid.count==0"></button>
+              <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables"
+                class="p-button-rounded p-button-text" (click)="ingresarResponsables(crid)"
+                *ngIf="crid.count==0"></button>
             </td>
             <ng-template #iconos>
               <td class="text-center">
-                <button pButton pRipple icon="fas fa-tachometer-alt" title="Indicadores" class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)" *ngIf="crid.count==0"></button>
-                <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables" class="p-button-rounded p-button-text" (click)="ingresarResponsables(crid)" *ngIf="crid.count==0"></button>
+                <button pButton pRipple icon="fas fa-tachometer-alt" title="Indicadores"
+                  class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)"
+                  *ngIf="crid.count==0"></button>
+                <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables"
+                  class="p-button-rounded p-button-text" (click)="ingresarResponsables(crid)"
+                  *ngIf="crid.count==0"></button>
               </td>
             </ng-template>
           </tr>

@@ -48,7 +48,6 @@ export interface eje{
     eje_id:        number;
     eje_nombre:    string;
     eje_estado:    string;
-    eje_plan:      string;
     estadonombre?: string;
     auditoria:     auditoria;
 }
