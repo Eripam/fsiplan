@@ -234,10 +234,9 @@ export class EstructuraPlanComponent implements OnInit {
       })
     );
     if (datos.success) {
-      this.listaEstructuraPlanS = [{ label: 'Ninguno', value: 0 }];
       for (let dato of datos.data) {
         this.listaEstructuraPlanS.push({
-          label: dato.est_codigo + '-' + dato.eplan_codigo,
+          label: dato.est_codigo + '-' + dato.eplan_codigo+': '+dato.nombre_corto+'...',
           value: dato.eplan_id,
         });
       }
@@ -262,7 +261,7 @@ export class EstructuraPlanComponent implements OnInit {
     if (datos.success) {
       for (let dato of datos.data) {
         this.listaEstructuraPlanD.push({
-          label: dato.est_codigo + '-' + dato.eplan_codigo,
+          label: dato.est_codigo + '-' + dato.eplan_codigo+': '+dato.nombre_corto+'...',
           value: dato.eplan_id,
         });
       }
