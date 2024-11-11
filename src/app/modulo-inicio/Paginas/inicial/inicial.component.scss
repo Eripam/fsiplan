@@ -1,0 +1,206 @@
+
+.fondo {
+    background: url("https://oficina.espoch.edu.ec/dtic/images/1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+    animation: fondo 90s infinite ease-in-out;
+  }
+  
+  .eslogan {
+    color: #b49f61;
+  }
+  @keyframes fondo {
+    0% {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://oficina.espoch.edu.ec/dtic/images/1.jpg");
+    }
+  
+    22% {
+      transform: scale(1.2);
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://oficina.espoch.edu.ec/dtic/images/1.jpg");
+    }
+  
+    33% {
+      transform: scale(1);
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://oficina.espoch.edu.ec/dtic/images/1.jpg");
+    }
+  
+    44% {
+      transform: scale(1.2);
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://oficina.espoch.edu.ec/dtic/images/7.jpg");
+    }
+  
+    55% {
+      transform: scale(1);
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://oficina.espoch.edu.ec/dtic/images/7.jpg");
+    }
+  
+    66% {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://oficina.espoch.edu.ec/dtic/images/7.jpg");
+      transform: scale(1.2);
+    }
+  
+    77% {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://oficina.espoch.edu.ec/dtic/images/9.jpg");
+      transform: scale(1);
+    }
+  
+    88% {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://oficina.espoch.edu.ec/dtic/images/9.jpg");
+  
+      transform: scale(1.2);
+    }
+  
+    100% {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+        url("https://oficina.espoch.edu.ec/dtic/images/9.jpg");
+      transform: scale(1);
+    }
+  }
+  
+  .container {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    display: grid;
+    grid-template-rows: 1fr 4fr 1fr;
+  }
+  
+  .case {
+    display: flex;
+    align-items: end;
+    text-shadow: 0 2px 5px rgb(0 0 0/25%);
+    font-size: 50px;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .content {
+    margin-left: 30px;
+  
+    display: grid;
+    grid-template-columns: 1fr;
+    padding-left: 10px;
+    flex-wrap: wrap;
+    text-align: left;
+    border-left: 10px solid red;
+    line-height: 0.1;
+  }
+  
+  @media only screen and (max-width: 900px) {
+    .case {
+      font-size: 1em; /* Cambiar el tamaño de fuente para pantallas más pequeñas */
+    }
+  
+    .content {
+      padding: 10px;
+    }
+  }
+  
+  @media only screen and (max-height: 768px) {
+    .case {
+      font-size: 1em; /* Cambiar el tamaño de fuente para pantallas más pequeñas */
+    }
+  }
+  
+  .div {
+    /* background-color: black; */
+  }
+  
+  .title-slider{
+    position: relative;
+    font-size: 50px;
+    font-weight: 100;
+    z-index: 9;
+    text-align: left;
+    font-family:"Oswald", sans-serif !important;
+    padding: 0;
+    text-shadow: 1px 1px 2px #000000;
+    -webkit-transform: translateY(70%);
+    -ms-transform: translateY(70%);
+    transform: translateY(70%);
+    -webkit-animation: textSlide 1s ease-in-out;
+    animation: textSlide 1s ease-in-out;
+    -webkit-animation: textSlide 1s cubic-bezier(0, 0, 0, 1);
+    animation: textSlide 1s cubic-bezier(0, 0, 0, 1);
+    -webkit-animation-delay: 0.8s;
+    animation-delay: 0.8s;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+  }
+
+  .header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    height: 70px;
+    z-index: 10;
+  }
+  .efecto-blur {
+    padding: 8px 5%;
+    background: rgb(255 255 255 / 5%);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-bottom: 0.5px solid rgb(255 255 255 / 15%);
+  }
+  
+  .button {
+    background-color: transparent;
+    border: 3px solid white;
+    cursor: pointer;
+    outline: none;
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    border-radius: 5px;
+    transition: all 0.3s;
+    padding: 12px 24px;
+    font-size: 20px;
+    line-height: 1em;
+  }
+  
+  .logo {
+    display: flex;
+    color: white;
+  }
+  
+  .button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+  .footer {
+    background-color: red;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    font-size: 0.9em;
+    color: white;
+    z-index: 1000;
+  
+    /*Sin fixed*/
+    /* background-color: red;
+    margin-top: auto;
+    text-align: center;
+    align-content: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    font-size: 1em;
+    color: white;
+    z-index: 10000000;
+    height: 3em; */
+  }
+  
