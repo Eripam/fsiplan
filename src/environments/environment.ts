@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  urlServiciosSiplanC :'http://localhost:3000/rutaCentalizada/',
-  urlServiciosSiplan:'http://localhost:3000/',
+  urlServiciosSiplanC: 'http://localhost:8128/rutaCentalizada/',
+  urlServiciosSiplan: 'http://localhost:8128/',
   urlServiciosArchivos: 'https://pruebas.espoch.edu.ec/',
 };
 

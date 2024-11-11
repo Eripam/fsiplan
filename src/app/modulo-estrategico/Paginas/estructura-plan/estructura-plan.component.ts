@@ -241,12 +241,11 @@ export class EstructuraPlanComponent implements OnInit {
             '-' +
             dato.eplan_codigo +
             ': ' +
-            dato.eplan_nombre +
+            dato.nombre_corto +
             '...',
           value: dato.eplan_id,
         });
       }
-      console.log(this.listaEstructuraPlanS);
     } else {
       this.listaEstructuraPlanS = [];
     }
@@ -382,11 +381,15 @@ export class EstructuraPlanComponent implements OnInit {
   }
 
   async listarEstructuraSelect(event: any) {
-    if (event.value == 0) {
+    this.listarHistorial(event.value);
+  }
+
+  async listarHistorial(dato: any) {
+    if (dato == 0) {
       this.listaEstructuraSelect = [];
     } else {
       const dat = {
-        codigo: event.value,
+        codigo: dato,
       };
       const datos: listaI = await new Promise<listaI>((resolve) =>
         this.swEsPlan
@@ -668,8 +671,10 @@ export class EstructuraPlanComponent implements OnInit {
     }
   }
 
-  editarEstructura(est: any, estructura: any) {
+  async editarEstructura(est: any, estructura: any) {
     if (this.txtModificar) {
+      await this.listarEstructuraPlanS(est.est_orden);
+      await this.listarEstructuraPlanD(est.est_orden);
       this.tituloModal = 'Modificar ' + estructura.est_nombre;
       this.txtCodigo = est.eplan_id;
       this.txtNombre = est.eplan_nombre;
@@ -683,12 +688,11 @@ export class EstructuraPlanComponent implements OnInit {
       } else {
         this.txtDepende = est.eplan_depende;
       }
-      console.log(est.eplan_eplan_id);
       if (est.eplan_eplan_id === null || est.eplan_eplan_id === '') {
         this.txtAlineacion = 0;
       } else {
         this.txtAlineacion = Number(est.eplan_eplan_id);
-        console.log(this.txtAlineacion);
+        this.listarHistorial(est.eplan_eplan_id);
       }
       if (est.count > 0) {
         this.txtIndBoolean = false;
@@ -698,9 +702,6 @@ export class EstructuraPlanComponent implements OnInit {
       this.modalEstructura = true;
       this.txtEstado = est.eplan_estado;
       this.eliminar = false;
-      console.log(est.est_orden);
-      this.listarEstructuraPlanS(est.est_orden);
-      this.listarEstructuraPlanD(est.est_orden);
     } else {
       this.messageService.add({
         severity: 'error',

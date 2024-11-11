@@ -218,28 +218,28 @@
                 Código
               </div>
             </th>
-            <th pSortableColumn="eplan_nomre" class="text-center">
+            <th pSortableColumn="eplan_nomre" class="text-center" style="width: 50rem">
               <div class="p-d-flex p-jc-between p-ai-center">
                 Nombre
                 <p-sortIcon field="eplan_nombre"></p-sortIcon>
                 <p-columnFilter type="text" field="eplan_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
               </div>
             </th>
-            <th pSortableColumn="eje_nombre" class="text-center" *ngIf="item.est_eje">
+            <th pSortableColumn="eje_nombre" class="text-center" style="width: 20rem" *ngIf="item.est_eje">
               <div class="p-d-flex p-jc-between p-ai-center">
                 Ejes Estratégicos
                 <p-sortIcon field="eje_nombre"></p-sortIcon>
                 <p-columnFilter type="text" field="eje_nombre" display="menu" class="p-ml-auto"></p-columnFilter>
               </div>
             </th>
-            <th pSortableColumn="eje_nombre" class="text-center" style="width: 8rem">
+            <th pSortableColumn="eje_nombre" class="text-center" style="width: 20rem">
               <div class="p-d-flex p-jc-between p-ai-center">
                 Pertenece a
                 <p-sortIcon field="codigopadre"></p-sortIcon>
                 <p-columnFilter type="text" field="codigopadre" display="menu" class="p-ml-auto"></p-columnFilter>
               </div>
             </th>
-            <th>
+            <th class="text-center">
               Acción
             </th>
           </tr>
@@ -272,21 +272,14 @@
                 (click)="editarEstructura(crid, item)"></button>
               <button pButton pRipple icon="fas fa-trash" title="Eliminar" class="p-button-rounded p-button-text"
                 (click)="eliminarEstructura(crid)"></button>
-              <button pButton pRipple icon="fas fa-cubes" title="Componentes" class="p-button-rounded p-button-text"
-                *ngIf="item.est_componente"></button>
               <button pButton pRipple icon="fas fa-window-restore" title="Políticas"
                 class="p-button-rounded p-button-text" *ngIf="item.est_politicas"></button>
-              <button pButton pRipple icon="fas fa-tachometer-alt" title="Indicadores"
-                class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)" *ngIf="crid.count==0"></button>
               <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables"
                 class="p-button-rounded p-button-text" (click)="ingresarResponsables(crid)"
                 *ngIf="crid.count==0"></button>
             </td>
             <ng-template #iconos>
               <td class="text-center">
-                <button pButton pRipple icon="fas fa-tachometer-alt" title="Indicadores"
-                  class="p-button-rounded p-button-text" (click)="agregarIndicador(crid)"
-                  *ngIf="crid.count==0"></button>
                 <button pButton pRipple icon="fa-solid fa-users-line" title="Responsables"
                   class="p-button-rounded p-button-text" (click)="ingresarResponsables(crid)"
                   *ngIf="crid.count==0"></button>
