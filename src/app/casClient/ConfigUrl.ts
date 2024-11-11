@@ -8,8 +8,10 @@ export let CONFIG = {
         CASLOGOUT: 'https://seguridad.espoch.edu.ec/cas/logout?',
         CASVALIDATE: 'https://seguridad.espoch.edu.ec/cas/p3/serviceValidate?',
         // REDIRECT_URI: 'https://pyariel.espoch.edu.ec:8080/cas',
-        REDIRECT_URI: 'https://localhost:4200/cas',
-        LOGOUT_REDIRECT: 'https://localhost:4200/logout/',
+        // REDIRECT_URI: 'https://localhost:4200/cas',
+        // LOGOUT_REDIRECT: 'https://localhost:4200/logout/',
+        REDIRECT_URI: 'https://planestrategico.espoch.edu.ec/cas',
+        LOGOUT_REDIRECT: 'https://planestrategico.espoch.edu.ec/logout/',
         LOGOUT_CORREO: 'https://login.microsoftonline.com/common/oauth2/logout?',
         VALIDATEJAVA:'https://servicioscomprobante.espoch.edu.ec/ServicioWebComprobantes/ServiciosComprobantes/ValidateCas/'
        

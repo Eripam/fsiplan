@@ -79,6 +79,7 @@ export class EstructuraPlanComponent implements OnInit {
   listaResponsable: any = [];
   listaCoresponsable: any = [];
   listaDep: any = [];
+  orden: number=0;
   constructor(
     private sesiones: SesionUsuario,
     private swEstructura: SwEstructuraService,
@@ -233,10 +234,9 @@ export class EstructuraPlanComponent implements OnInit {
       })
     );
     if (datos.success) {
-      this.listaEstructuraPlanS = [{ label: 'Ninguno', value: 0 }];
       for (let dato of datos.data) {
         this.listaEstructuraPlanS.push({
-          label: dato.est_codigo + '-' + dato.eplan_codigo,
+          label: dato.est_codigo + '-' + dato.eplan_codigo+': '+dato.nombre_corto+'...',
           value: dato.eplan_id,
         });
       }
@@ -261,7 +261,7 @@ export class EstructuraPlanComponent implements OnInit {
     if (datos.success) {
       for (let dato of datos.data) {
         this.listaEstructuraPlanD.push({
-          label: dato.est_codigo + '-' + dato.eplan_codigo,
+          label: dato.est_codigo + '-' + dato.eplan_codigo+': '+dato.nombre_corto+'...',
           value: dato.eplan_id,
         });
       }
@@ -426,6 +426,9 @@ export class EstructuraPlanComponent implements OnInit {
           aud_rol: this.sessionRol,
           aud_dependencia: this.sessionDepC,
         };
+        if(this.banPlan && this.orden===1){
+          this.txtEje="-1";
+        }
         const dat: any = {
           eplan_id: this.txtCodigo,
           eplan_nombre: this.txtNombre,
@@ -639,6 +642,7 @@ export class EstructuraPlanComponent implements OnInit {
         this.Eje = estructura.est_eje;
         this.eliminar = false;
         this.listaEstructuraSelect = [];
+        this.orden=estructura.est_orden;
         this.listarEstructuraPlanS(estructura.est_orden);
         this.listarEstructuraPlanD(estructura.est_orden);
       }
@@ -660,6 +664,7 @@ export class EstructuraPlanComponent implements OnInit {
       this.Eje = estructura.est_eje;
       this.txtEje = est.eje_id;
       this.txtTipo = est.eplan_estructura;
+      this.orden=estructura.est_orden;
       if (est.eplan_depende == null || est.eplan_depende == '') {
         this.txtDepende = 0;
       } else {

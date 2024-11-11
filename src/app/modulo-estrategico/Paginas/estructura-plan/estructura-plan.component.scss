@@ -10,3 +10,11 @@
 .titulo{
     font-weight: bold;;
 }
+
+.ellipsis {
+    display: inline-block;
+    max-width: 150px; /* Ajusta el tamaño según tus necesidades */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

@@ -17,7 +17,7 @@
           [(ngModel)]="txtNombre" placeholder="Nombre"></textarea>
       </div>
     </div>
-    <div class="form-group row m-1">
+    <div class="form-group row m-1" *ngIf="orden!==1">
       <label for="name" class="col-sm-2 col-form-label">Pertenece a:</label>
       <div class="col-sm-10">
         <p-dropdown [options]="listaEstructuraPlanS" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtAlineacion"
@@ -31,7 +31,7 @@
         <div class="col-7 borde">{{estructura.eplannombre}}</div>
       </div>
     </div>
-    <div class="form-group row m-1" *ngIf="banPlan">
+    <div class="form-group row m-1" *ngIf="banPlan && orden===1">
       <label for="name" class="col-sm-2 col-form-label">Depende de:</label>
       <div class="col-sm-10">
         <p-dropdown [options]="listaEstructuraPlanD" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtDepende"
@@ -39,8 +39,8 @@
           [showClear]="true"></p-dropdown>
       </div>
     </div>
-    <div class="form-group row m-1" *ngIf="Eje">
-      <label for="name" class="col-sm-2 col-form-label">Eje Estratégico:</label>
+    <div class="form-group row m-1" *ngIf="Eje && !banPlan">
+      <label for="name" class="col-sm-2 col-form-label">Función:</label>
       <div class="col-sm-10">
         <p-dropdown [options]="listaEje" appendTo="body" [disabled]="eliminar" [(ngModel)]="txtEje"
           placeholder="Seleccionar Eje:" optionValue="eje_id" [filter]="true" filterBy="eje_nombre"
